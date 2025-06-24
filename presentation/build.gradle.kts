@@ -49,12 +49,19 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
+    // hilt
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
 
+    // coroutine
     implementation(libs.kotlinx.coroutines.android)
 
+    // image
     implementation(libs.coil)
 
+    // androidx-lifecycle-viewmodel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    // log
+    implementation(libs.timber)
 }
