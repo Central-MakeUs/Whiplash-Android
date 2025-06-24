@@ -1,25 +1,23 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "com.whiplash.akuma"
+    namespace = "com.whiplash.data"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.whiplash.akuma"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -39,43 +37,27 @@ android {
 }
 
 dependencies {
-    implementation(project(":data"))
     implementation(project(":domain"))
-    implementation(project(":presentation"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // hilt
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
 
-    // dataStore
     implementation(libs.datastore)
 
-    // kotlinx-serialization
     implementation(libs.kotlinx.serialization.json)
 
-    // coroutine
-    implementation(libs.kotlinx.coroutines.android)
-
-    // coil
-    implementation(libs.coil)
-
-    // androidx-lifecycle-viewmodel
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-
-    // retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.converter.scalars)
 
-    // log
-    implementation(libs.timber)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.urlconnection)
+    implementation(libs.logging.interceptor)
 }

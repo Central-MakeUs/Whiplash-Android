@@ -20,6 +20,7 @@ okhttp = "4.12.0"
 okhttpUrlconnection = "4.9.2"
 retrofit = "3.0.0"
 timber = "5.0.1"
+jetbrainsKotlinJvm = "2.0.21"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,3 +59,5 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt"}
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version = "1.9.22" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
