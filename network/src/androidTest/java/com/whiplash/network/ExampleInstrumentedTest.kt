@@ -1,4 +1,4 @@
-package com.example.network
+package com.whiplash.network
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

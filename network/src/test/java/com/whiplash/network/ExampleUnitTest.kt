@@ -1,4 +1,4 @@
-package com.example.network
+package com.whiplash.network
 
 import org.junit.Test
 
