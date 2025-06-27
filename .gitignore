@@ -18,3 +18,4 @@ local.properties
 .idea/ChatHistory_schema_v2.xml
 .idea/firebender/
 *.firebender
+.idea/vcs.xml
