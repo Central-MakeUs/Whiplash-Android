@@ -21,6 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "Akuma"
 include(":app")
+include(":network")
 include(":data")
 include(":presentation")
 include(":domain")

@@ -71,11 +71,6 @@ dependencies {
     // androidx-lifecycle-viewmodel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    // retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.converter.scalars)
-
     // log
     implementation(libs.timber)
 }

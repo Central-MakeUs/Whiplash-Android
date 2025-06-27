@@ -1,14 +1,13 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.whiplash.data"
+    namespace = "com.whiplash.network"
     compileSdk = 35
 
     defaultConfig {
@@ -38,19 +37,16 @@ android {
 
 dependencies {
     implementation(project(":domain"))
-    implementation(project(":network"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
-
-    implementation(libs.datastore)
-
     implementation(libs.kotlinx.serialization.json)
 }
