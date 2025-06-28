@@ -1,5 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Grey -->
+    <color name="grey_50">#F6F8FA</color>
+    <color name="grey_100">#EAEBED</color>
+    <color name="grey_200">#CBCDD3</color>
+    <color name="grey_300">#ADAFB7</color>
+    <color name="grey_400">#7B7C85</color>
+    <color name="grey_500">#5E5F66</color>
+    <color name="grey_600">#37383F</color>
+    <color name="grey_700">#333338</color>
+    <color name="grey_800">#2B2C30</color>
+    <color name="grey_900">#1A1B1E</color>
+
+    <!-- Main color -->
+    <color name="lemon_100">#F9FFD5</color>
+    <color name="lemon_400">#DCFF0E</color>
+    
+    <!-- Sub color -->
+    <color name="pink_100">#FFE9FF</color>
+    <color name="pink_400">#FE65FE</color>
+
+    <!-- Status color -->
+    <color name="error">#FF4342</color>
+    <color name="error_100">#FFEBEB</color>
+
+    <color name="success">#1DE231</color>
+    <color name="success_100">#D4FFD8</color>
 </resources>
