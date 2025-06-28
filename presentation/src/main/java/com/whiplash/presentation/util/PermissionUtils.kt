@@ -1,5 +1,6 @@
 package com.whiplash.presentation.util
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -11,8 +12,8 @@ object PermissionUtils {
     private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
 
     private val LOCATION_PERMISSIONS = arrayOf(
-        android.Manifest.permission.ACCESS_FINE_LOCATION,
-        android.Manifest.permission.ACCESS_COARSE_LOCATION
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
     )
 
     /**
@@ -26,11 +27,11 @@ object PermissionUtils {
     fun hasLocationPermission(context: Context): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(
                     context,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_COARSE_LOCATION
                 ) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -90,13 +91,13 @@ object PermissionUtils {
 
         val fineLocationGranted = permissions.zip(grantedResults.toTypedArray())
             .any { (permission, result) ->
-                permission == android.Manifest.permission.ACCESS_FINE_LOCATION &&
+                permission == Manifest.permission.ACCESS_FINE_LOCATION &&
                         result == PackageManager.PERMISSION_GRANTED
             }
 
         val coarseLocationGranted = permissions.zip(grantedResults.toTypedArray())
             .any { (permission, result) ->
-                permission == android.Manifest.permission.ACCESS_COARSE_LOCATION &&
+                permission == Manifest.permission.ACCESS_COARSE_LOCATION &&
                         result == PackageManager.PERMISSION_GRANTED
             }
 
