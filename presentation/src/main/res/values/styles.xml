@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Title Styles -->
+    <style name="title1_b_40" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="android:textSize">40dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="title2_b_32" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="android:textSize">32dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="title3_b_28" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="android:textSize">28dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="title4_b_24" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textSize">24dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="title5_b_22" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textSize">22dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <!-- Subtitle Styles -->
+    <style name="subtitle1_b_20" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textSize">20dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="subtitle2_m_20" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textSize">20dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_medium</item>
+    </style>
+
+    <style name="subtitle3_b_18" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="subtitle4_m_18" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_medium</item>
+    </style>
+
+    <style name="subtitle5_b_16" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textSize">16dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="subtitle6_b_14" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textSize">14dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <!-- Body Styles -->
+    <style name="body1_m_16" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">16dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_medium</item>
+    </style>
+
+    <style name="body2_m_14" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">14dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_medium</item>
+    </style>
+
+    <style name="body3_b_12" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">12dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="body4_m_12" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">12dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_medium</item>
+    </style>
+
+    <style name="body5_m_11" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">11dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_medium</item>
+    </style>
+</resources>
