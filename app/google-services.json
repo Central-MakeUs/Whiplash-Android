@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "615004113990",
+    "project_id": "whiplash-491f0",
+    "storage_bucket": "whiplash-491f0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615004113990:android:3728d60034e0c9bd8c4e47",
+        "android_client_info": {
+          "package_name": "com.whiplash.akuma"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615004113990-mpv4kvdps44pvi9es40d4i5shinqienp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whiplash.akuma",
+            "certificate_hash": "220fa55e7e30a031697176c52029e1c2bf6ac976"
+          }
+        },
+        {
+          "client_id": "615004113990-67b442v8mjvo7bdet7fdj1usahoq0jbd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6kH-8qyDtZ6lCbMX4UB-wNtzxWwO9hzI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615004113990-67b442v8mjvo7bdet7fdj1usahoq0jbd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
