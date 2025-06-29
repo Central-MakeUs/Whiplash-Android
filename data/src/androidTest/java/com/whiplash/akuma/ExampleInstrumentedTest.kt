@@ -1,4 +1,4 @@
-package com.whiplash.data
+package com.whiplash.akuma
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

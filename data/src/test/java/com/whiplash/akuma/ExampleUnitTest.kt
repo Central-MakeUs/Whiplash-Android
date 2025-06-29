@@ -1,4 +1,4 @@
-package com.whiplash.data
+package com.whiplash.akuma
 
 import org.junit.Test
 
