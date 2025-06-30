@@ -12,6 +12,7 @@ import io.mockk.coVerify
 import io.mockk.mockk
 
 class SignInWithGoogleUseCaseTest {
+
     private val repository = mockk<GoogleAuthRepository>()
     private lateinit var useCase: SignInWithGoogleUseCase
 
