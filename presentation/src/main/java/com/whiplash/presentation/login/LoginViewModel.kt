@@ -7,6 +7,7 @@ import com.whiplash.domain.model.UserEntity
 import com.whiplash.domain.repository.login.GoogleAuthRepository
 import com.whiplash.domain.usecase.login.GetCurrentUserUseCase
 import com.whiplash.domain.usecase.login.GetGoogleSignInIntentUseCase
+import com.whiplash.domain.usecase.login.HandleGoogleSignInResultUseCase
 import com.whiplash.domain.usecase.login.SignInWithGoogleUseCase
 import com.whiplash.domain.usecase.login.SignOutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,7 @@ class LoginViewModel @Inject constructor(
     private val getGoogleSignInIntentUseCase: GetGoogleSignInIntentUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val googleAuthRepository: GoogleAuthRepository
+    private val handleGoogleSignInResultUseCase: HandleGoogleSignInResultUseCase,
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -51,13 +52,13 @@ class LoginViewModel @Inject constructor(
         try {
             _uiState.update { it.copy(isLoading = true) }
 
-            googleAuthRepository.handleSignInResult(data)
+            handleGoogleSignInResultUseCase.invoke(data)
                 .onSuccess { idToken ->
-                    Timber.d("## [구글 로그인] ID Token 획득 성공")
+                    Timber.d("## [구글 로그인] 로그인 성공. idToken : $idToken")
                     signInWithGoogleToken(idToken)
                 }
                 .onFailure { e ->
-                    Timber.e("## [구글 로그인] Sign-In 결과 처리 실패: ${e.message}")
+                    Timber.e("## [구글 로그인] 로그인 결과 처리 실패: ${e.message}")
                     _uiState.update {
                         it.copy(
                             error = e.message ?: "로그인에 실패했습니다",
@@ -66,7 +67,7 @@ class LoginViewModel @Inject constructor(
                     }
                 }
         } catch (e: Exception) {
-            Timber.e("## [구글 로그인] handleSignInResult 에러: ${e.message}")
+            Timber.e("## [구글 로그인] 로그인 결과 처리 에러: ${e.message}")
             _uiState.update {
                 it.copy(
                     error = e.message ?: "로그인에 실패했습니다",
@@ -78,11 +79,9 @@ class LoginViewModel @Inject constructor(
 
     private suspend fun signInWithGoogleToken(idToken: String) {
         try {
-            Timber.d("## [구글 로그인] 토큰으로 Firebase 인증 시작")
-
             signInWithGoogleUseCase.invoke(idToken)
                 .onSuccess { user ->
-                    Timber.d("## [구글 로그인] Firebase 인증 성공. 유저 정보 : $user")
+                    Timber.d("## [구글 로그인] 파이어베이스 인증 성공. 유저 정보 : $user")
                     _uiState.update {
                         it.copy(
                             user = user,
@@ -91,7 +90,7 @@ class LoginViewModel @Inject constructor(
                         )
                     }
                 }.onFailure { e ->
-                    Timber.e("## [구글 로그인] Firebase 인증 실패 : ${e.message}")
+                    Timber.e("## [구글 로그인] 파이어베이스 인증 실패 : ${e.message}")
                     _uiState.update {
                         it.copy(
                             error = e.message ?: "로그인에 실패했습니다",
@@ -100,7 +99,7 @@ class LoginViewModel @Inject constructor(
                     }
                 }
         } catch (e: Exception) {
-            Timber.e("## [구글 로그인] signInWithGoogleToken 에러 : ${e.message}")
+            Timber.e("## [구글 로그인] 파이어베이스 인증 에러 : ${e.message}")
             _uiState.update {
                 it.copy(
                     error = e.message ?: "로그인에 실패했습니다",
