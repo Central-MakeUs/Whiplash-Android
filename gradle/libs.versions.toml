@@ -30,6 +30,9 @@ googleid = "1.1.1"
 googleServices = "4.4.3"
 playServicesAuth = "21.2.0"
 
+coreTesting = "2.2.0"
+mockk = "1.13.8"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -59,6 +62,10 @@ converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "coreTesting" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines-core" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 
 # 구글 로그인
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
