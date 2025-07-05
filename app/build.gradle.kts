@@ -61,6 +61,9 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
 
+    // 카카오 로그인
+    implementation(libs.kakao.v2.user)
+
     // hilt
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)

@@ -75,4 +75,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
+
+    // 카카오 로그인
+    implementation(libs.kakao.v2.user)
 }
