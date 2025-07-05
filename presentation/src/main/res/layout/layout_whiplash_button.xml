@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.AppCompatButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/btnWhiplash"
+    style="@style/subtitle5_b_16"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="10dp"
+    android:textColor="@color/black"
+    tools:backgroundTint="@color/lemon_400"
+    tools:text="버튼 글자">
+
+</androidx.appcompat.widget.AppCompatButton>
