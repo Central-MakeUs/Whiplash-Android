@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="dim">#00000080</color>
 
     <!-- Grey -->
     <color name="grey_50">#F6F8FA</color>
@@ -16,6 +17,7 @@
     <color name="grey_900">#1A1B1E</color>
 
     <!-- Main color -->
+    <color name="lemon_10p">#DCFF0E1A</color>
     <color name="lemon_100">#F9FFD5</color>
     <color name="lemon_400">#DCFF0E</color>
     

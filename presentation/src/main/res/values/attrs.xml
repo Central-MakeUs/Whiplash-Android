@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 공통 버튼 -->
+    <declare-styleable name="WhiplashCommonButton">
+        <attr name="buttonBackgroundColor" format="color|reference" />
+        <attr name="buttonText" format="string" />
+        <attr name="buttonTextColor" format="color|reference" />
+    </declare-styleable>
+</resources>
