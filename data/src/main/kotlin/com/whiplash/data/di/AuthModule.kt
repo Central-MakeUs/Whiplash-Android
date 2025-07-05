@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.whiplash.domain.repository.login.GoogleAuthRepository
 import com.whiplash.domain.usecase.login.GetCurrentUserUseCase
 import com.whiplash.domain.usecase.login.GetGoogleSignInIntentUseCase
+import com.whiplash.domain.usecase.login.HandleGoogleSignInResultUseCase
 import com.whiplash.domain.usecase.login.SignInWithGoogleUseCase
 import com.whiplash.domain.usecase.login.SignOutUseCase
 import dagger.Module
@@ -47,4 +48,9 @@ object AuthModule {
     @Singleton
     fun provideGetCurrentUserUseCase(repository: GoogleAuthRepository): GetCurrentUserUseCase =
         GetCurrentUserUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideHandleGoogleSignInResultUseCase(repository: GoogleAuthRepository): HandleGoogleSignInResultUseCase =
+        HandleGoogleSignInResultUseCase(repository)
 }
