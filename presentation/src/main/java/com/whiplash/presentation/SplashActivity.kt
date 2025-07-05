@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.whiplash.presentation.databinding.ActivitySplashBinding
+import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,6 +30,9 @@ class SplashActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             delay(1000)
+            navigateTo<MainActivity> {
+                finishCurrentActivity()
+            }
         }
     }
 }
