@@ -13,6 +13,19 @@ object ActivityUtils {
     /**
      * 액티비티 이동 함수
      *
+     * 사용 예시:
+     * ```kotlin
+     * // 이동만 처리
+     * context.navigateTo<MainActivity>()
+     *
+     * // 값 추가해서 이동
+     * context.navigateTo<MainActivity>(
+     *     intentExtras = mapOf("userId" to 123, "userName" to "홍길동"),
+     *     intentFlags = Intent.FLAG_ACTIVITY_CLEAR_TOP,
+     *     hasFinishCurrentActivity = true
+     * )
+     * ```
+     *
      * @param intentExtras putExtra()에 담을 데이터를 가진 map
      * @param intentFlags 인텐트 플래그. 여러 플래그 사용 시 or 연산으로 조합해야 함
      * @param hasFinishCurrentActivity 현재 액티비티에서 finish() 호출 여부
