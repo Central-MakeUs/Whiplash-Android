@@ -3,13 +3,12 @@ package com.whiplash.presentation.login
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.whiplash.domain.model.UserEntity
-import com.whiplash.domain.repository.login.GoogleAuthRepository
-import com.whiplash.domain.usecase.login.GetCurrentUserUseCase
-import com.whiplash.domain.usecase.login.GetGoogleSignInIntentUseCase
-import com.whiplash.domain.usecase.login.HandleGoogleSignInResultUseCase
-import com.whiplash.domain.usecase.login.SignInWithGoogleUseCase
-import com.whiplash.domain.usecase.login.SignOutUseCase
+import com.whiplash.domain.entity.UserEntity
+import com.whiplash.domain.usecase.login.google.GetCurrentUserUseCase
+import com.whiplash.domain.usecase.login.google.GetGoogleSignInIntentUseCase
+import com.whiplash.domain.usecase.login.google.HandleGoogleSignInResultUseCase
+import com.whiplash.domain.usecase.login.google.SignInWithGoogleUseCase
+import com.whiplash.domain.usecase.login.google.SignOutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +20,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class GoogleLoginViewModel @Inject constructor(
     private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
     private val getGoogleSignInIntentUseCase: GetGoogleSignInIntentUseCase,
     private val signOutUseCase: SignOutUseCase,

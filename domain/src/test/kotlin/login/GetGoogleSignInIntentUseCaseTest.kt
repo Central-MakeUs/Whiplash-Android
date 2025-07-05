@@ -1,7 +1,7 @@
 package login
 
 import com.whiplash.domain.repository.login.GoogleAuthRepository
-import com.whiplash.domain.usecase.login.GetGoogleSignInIntentUseCase
+import com.whiplash.domain.usecase.login.google.GetGoogleSignInIntentUseCase
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.*

@@ -4,11 +4,15 @@ import android.content.Context
 import androidx.credentials.CredentialManager
 import com.google.firebase.auth.FirebaseAuth
 import com.whiplash.domain.repository.login.GoogleAuthRepository
-import com.whiplash.domain.usecase.login.GetCurrentUserUseCase
-import com.whiplash.domain.usecase.login.GetGoogleSignInIntentUseCase
-import com.whiplash.domain.usecase.login.HandleGoogleSignInResultUseCase
-import com.whiplash.domain.usecase.login.SignInWithGoogleUseCase
-import com.whiplash.domain.usecase.login.SignOutUseCase
+import com.whiplash.domain.repository.login.KakaoAuthRepository
+import com.whiplash.domain.usecase.login.google.GetCurrentUserUseCase
+import com.whiplash.domain.usecase.login.google.GetGoogleSignInIntentUseCase
+import com.whiplash.domain.usecase.login.google.HandleGoogleSignInResultUseCase
+import com.whiplash.domain.usecase.login.google.SignInWithGoogleUseCase
+import com.whiplash.domain.usecase.login.google.SignOutUseCase
+import com.whiplash.domain.usecase.login.kakao.GetCurrentKakaoUserUseCase
+import com.whiplash.domain.usecase.login.kakao.SignInWithKakaoUseCase
+import com.whiplash.domain.usecase.login.kakao.SignOutKakaoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -53,4 +57,19 @@ object AuthModule {
     @Singleton
     fun provideHandleGoogleSignInResultUseCase(repository: GoogleAuthRepository): HandleGoogleSignInResultUseCase =
         HandleGoogleSignInResultUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideSignInWithKakaoUseCase(repository: KakaoAuthRepository): SignInWithKakaoUseCase =
+        SignInWithKakaoUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideSignOutKakaoUseCase(repository: KakaoAuthRepository): SignOutKakaoUseCase =
+        SignOutKakaoUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetCurrentKakaoUserUseCase(repository: KakaoAuthRepository): GetCurrentKakaoUserUseCase =
+        GetCurrentKakaoUserUseCase(repository)
 }

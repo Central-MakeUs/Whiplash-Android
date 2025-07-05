@@ -1,6 +1,6 @@
 package com.whiplash.domain.repository.login
 
-import com.whiplash.domain.model.UserEntity
+import com.whiplash.domain.entity.UserEntity
 
 interface GoogleAuthRepository {
     suspend fun signInWithGoogleToken(idToken: String): Result<UserEntity>

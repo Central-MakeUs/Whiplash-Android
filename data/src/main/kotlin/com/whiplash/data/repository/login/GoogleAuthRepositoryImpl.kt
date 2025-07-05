@@ -8,7 +8,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.whiplash.data.BuildConfig
-import com.whiplash.domain.model.UserEntity
+import com.whiplash.domain.entity.UserEntity
 import com.whiplash.domain.repository.login.GoogleAuthRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await

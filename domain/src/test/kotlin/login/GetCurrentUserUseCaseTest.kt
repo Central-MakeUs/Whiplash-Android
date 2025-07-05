@@ -1,8 +1,8 @@
 package login
 
-import com.whiplash.domain.model.UserEntity
+import com.whiplash.domain.entity.UserEntity
 import com.whiplash.domain.repository.login.GoogleAuthRepository
-import com.whiplash.domain.usecase.login.GetCurrentUserUseCase
+import com.whiplash.domain.usecase.login.google.GetCurrentUserUseCase
 import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.*

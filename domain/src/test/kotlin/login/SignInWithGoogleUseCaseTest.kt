@@ -1,8 +1,8 @@
 package login
 
-import com.whiplash.domain.model.UserEntity
+import com.whiplash.domain.entity.UserEntity
 import com.whiplash.domain.repository.login.GoogleAuthRepository
-import com.whiplash.domain.usecase.login.SignInWithGoogleUseCase
+import com.whiplash.domain.usecase.login.google.SignInWithGoogleUseCase
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test

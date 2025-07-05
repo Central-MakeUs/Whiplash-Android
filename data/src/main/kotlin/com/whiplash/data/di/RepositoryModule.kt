@@ -1,7 +1,9 @@
 package com.whiplash.data.di
 
 import com.whiplash.data.repository.login.GoogleAuthRepositoryImpl
+import com.whiplash.data.repository.login.KakaoAuthRepositoryImpl
 import com.whiplash.domain.repository.login.GoogleAuthRepository
+import com.whiplash.domain.repository.login.KakaoAuthRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,5 +15,8 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindGoogleAuthRepository(impl: GoogleAuthRepositoryImpl): GoogleAuthRepository
+
+    @Binds
+    abstract fun bindKakaoAuthRepository(impl: KakaoAuthRepositoryImpl): KakaoAuthRepository
 
 }
