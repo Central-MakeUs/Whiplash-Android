@@ -25,18 +25,30 @@ class KakaoAuthRepositoryImpl @Inject constructor(
 
     override suspend fun signOutKakao(): Result<Unit> {
         return try {
+            // 먼저 토큰 존재 여부 확인
+            val currentToken = TokenManagerProvider.instance.manager.getToken()
+            if (currentToken == null) {
+                Timber.d("## [카카오 레포 impl] 이미 로그아웃된 상태")
+                return Result.success(Unit)
+            }
+
             suspendCancellableCoroutine { continuation ->
                 UserApiClient.instance.logout { error ->
                     if (error != null) {
                         Timber.e("## [카카오 레포 impl] 카카오 로그아웃 실패 : $error")
+                        // 토큰이 이미 만료된 경우에도 로컬 토큰 삭제
+                        TokenManagerProvider.instance.manager.clear()
+                        continuation.resume(Unit)
                     } else {
                         Timber.d("## [카카오 레포 impl] 카카오 로그아웃 성공")
+                        TokenManagerProvider.instance.manager.clear()
                         continuation.resume(Unit)
                     }
                 }
             }
             Result.success(Unit)
         } catch (e: Exception) {
+            TokenManagerProvider.instance.manager.clear()
             Result.failure(e)
         }
     }

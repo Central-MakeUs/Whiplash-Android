@@ -120,6 +120,12 @@ class KakaoLoginViewModel @Inject constructor(
 
     fun signOut() = viewModelScope.launch(Dispatchers.IO) {
         try {
+            // 이미 로그아웃된 상태라면 바로 처리
+            if (!_uiState.value.isSignIn) {
+                Timber.d("## [카카오 로그아웃] 이미 로그아웃된 상태")
+                return@launch
+            }
+
             _uiState.update { it.copy(isLoading = true) }
 
             signOutKakaoUseCase()
