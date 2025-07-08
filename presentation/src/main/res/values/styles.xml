@@ -130,4 +130,21 @@
         <item name="android:letterSpacing">0</item>
         <item name="fontFamily">@font/pretendard_medium</item>
     </style>
+
+    <!-- Number Styles -->
+    <style name="number1_b_28" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="android:textSize">28dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
+
+    <style name="number2_b_64" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="android:textSize">64dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontFamily">@font/pretendard_bold</item>
+    </style>
 </resources>
