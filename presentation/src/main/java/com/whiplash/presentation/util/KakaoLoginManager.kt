@@ -17,7 +17,7 @@ object KakaoLoginManager {
                 Timber.e("## [카카오 로그인] 카카오 로그인 실패 : $error")
                 continuation.resume(Result.failure(error))
             } else if (token != null) {
-                Timber.d("## [카카오 로그인] 카카오 로그인 성공 : ${token.accessToken}")
+                Timber.d("## [카카오 로그인] 카카오 로그인 성공. accessToken : ${token.accessToken}")
                 continuation.resume(Result.success(token))
             } else {
                 continuation.resume(Result.failure(Exception("카카오 로그인 실패 - 토큰이 null")))

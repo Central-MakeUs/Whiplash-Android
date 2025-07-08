@@ -29,7 +29,6 @@ class KakaoAuthRepositoryImpl @Inject constructor(
                 UserApiClient.instance.logout { error ->
                     if (error != null) {
                         Timber.e("## [카카오 레포 impl] 카카오 로그아웃 실패 : $error")
-                        continuation.resume(throw error)
                     } else {
                         Timber.d("## [카카오 레포 impl] 카카오 로그아웃 성공")
                         continuation.resume(Unit)
@@ -84,9 +83,8 @@ class KakaoAuthRepositoryImpl @Inject constructor(
         UserApiClient.instance.me { user, error ->
             if (error != null) {
                 Timber.e("## [카카오 레포 impl] 사용자 정보 요청 실패 : $error")
-                continuation.resume(throw error)
             } else if (user != null) {
-                Timber.i("## [카카오 레포 impl] 사용자 정보 요청 성공: $user")
+                Timber.d("## [카카오 레포 impl] 사용자 정보 요청 성공: $user")
 
                 val kakaoUserEntity = KakaoUserEntity(
                     id = user.id.toString(),
@@ -96,7 +94,7 @@ class KakaoAuthRepositoryImpl @Inject constructor(
                 )
                 continuation.resume(kakaoUserEntity)
             } else {
-                continuation.resume(throw Exception("사용자 정보가 null"))
+                Timber.d("## [카카오 레포 impl] 사용자 정보가 null")
             }
         }
     }
