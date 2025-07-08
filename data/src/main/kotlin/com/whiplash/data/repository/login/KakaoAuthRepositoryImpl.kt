@@ -96,7 +96,7 @@ class KakaoAuthRepositoryImpl @Inject constructor(
             if (error != null) {
                 Timber.e("## [카카오 레포 impl] 사용자 정보 요청 실패 : $error")
             } else if (user != null) {
-                Timber.d("## [카카오 레포 impl] 사용자 정보 요청 성공: $user")
+                Timber.d("## [카카오 레포 impl] 사용자 정보 요청 성공 : $user")
 
                 val kakaoUserEntity = KakaoUserEntity(
                     id = user.id.toString(),
