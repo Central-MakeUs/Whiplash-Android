@@ -1,7 +1,7 @@
-package login
+package login.google
 
 import com.whiplash.domain.repository.login.GoogleAuthRepository
-import com.whiplash.domain.usecase.login.SignOutUseCase
+import com.whiplash.domain.usecase.login.google.SignOutUseCase
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test

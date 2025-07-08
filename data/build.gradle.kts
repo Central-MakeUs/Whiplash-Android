@@ -66,10 +66,16 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.play.services.auth)
 
+    // 카카오 로그인
+    implementation(libs.kakao.v2.user)
+
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
 
     implementation(libs.datastore)
 
     implementation(libs.kotlinx.serialization.json)
+
+    // log
+    implementation(libs.timber)
 }
