@@ -1,4 +1,4 @@
-package login
+package login.google
 
 import com.whiplash.domain.entity.GoogleUserEntity
 import com.whiplash.domain.repository.login.GoogleAuthRepository

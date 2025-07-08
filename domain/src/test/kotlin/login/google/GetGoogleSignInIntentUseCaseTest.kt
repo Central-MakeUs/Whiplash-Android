@@ -1,4 +1,4 @@
-package login
+package login.google
 
 import com.whiplash.domain.repository.login.GoogleAuthRepository
 import com.whiplash.domain.usecase.login.google.GetGoogleSignInIntentUseCase
