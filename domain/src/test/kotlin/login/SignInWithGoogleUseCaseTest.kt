@@ -1,6 +1,6 @@
 package login
 
-import com.whiplash.domain.entity.UserEntity
+import com.whiplash.domain.entity.GoogleUserEntity
 import com.whiplash.domain.repository.login.GoogleAuthRepository
 import com.whiplash.domain.usecase.login.google.SignInWithGoogleUseCase
 import kotlinx.coroutines.test.runTest
@@ -16,7 +16,7 @@ class SignInWithGoogleUseCaseTest {
     private val repository = mockk<GoogleAuthRepository>()
     private lateinit var useCase: SignInWithGoogleUseCase
 
-    private val mockedUser = UserEntity(
+    private val mockedUser = GoogleUserEntity(
         id = "testId",
         email = "test@test.com",
         displayName = "테스트 유저",

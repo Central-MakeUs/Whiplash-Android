@@ -3,7 +3,7 @@ package com.whiplash.presentation.login
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.whiplash.domain.entity.UserEntity
+import com.whiplash.domain.entity.GoogleUserEntity
 import com.whiplash.domain.usecase.login.google.GetCurrentUserUseCase
 import com.whiplash.domain.usecase.login.google.GetGoogleSignInIntentUseCase
 import com.whiplash.domain.usecase.login.google.HandleGoogleSignInResultUseCase
@@ -175,7 +175,7 @@ class GoogleLoginViewModel @Inject constructor(
         val isLoading: Boolean = false,
 
         // 구글 로그인 후 받는 유저 정보(idToken 제외)
-        val user: UserEntity? = null,
+        val user: GoogleUserEntity? = null,
 
         // 로그인 됐는가?
         val isSignIn: Boolean = false,

@@ -1,6 +1,6 @@
 package com.whiplash.domain.entity
 
-data class UserEntity(
+data class GoogleUserEntity(
     val id: String,
     val email: String?,
     val displayName: String?,

@@ -3,7 +3,6 @@ package com.whiplash.presentation.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiplash.domain.entity.KakaoUserEntity
-import com.whiplash.domain.entity.UserEntity
 import com.whiplash.domain.usecase.login.kakao.GetCurrentKakaoUserUseCase
 import com.whiplash.domain.usecase.login.kakao.SignInWithKakaoUseCase
 import com.whiplash.domain.usecase.login.kakao.SignOutKakaoUseCase
