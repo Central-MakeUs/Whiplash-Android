@@ -14,4 +14,10 @@
         <attr name="isPassword" format="boolean" />
         <attr name="hasError" format="boolean" />
     </declare-styleable>
+
+    <!-- 공통 searchBar -->
+    <declare-styleable name="WhiplashSearchBar">
+        <attr name="android:hint" />
+        <attr name="android:text" />
+    </declare-styleable>
 </resources>

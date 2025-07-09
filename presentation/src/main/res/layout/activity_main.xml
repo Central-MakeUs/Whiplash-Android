@@ -3,17 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:fitsSystemWindows="true"
-    android:scrollbars="none"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:gravity="center"
     android:orientation="vertical"
+    android:scrollbars="none"
     tools:context="com.whiplash.presentation.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
         <com.whiplash.presentation.component.button.WhiplashCommonButton
@@ -170,6 +171,40 @@
             android:layout_marginTop="8dp"
             app:buttonBackgroundColor="@color/lemon_400"
             app:buttonText="입력 내용 확인" />
+
+        <com.whiplash.presentation.component.edittext.WhiplashSearchBar
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="검색어를 입력하세요" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <com.whiplash.presentation.component.button.WhiplashCommonButton
+                android:id="@+id/btnSearch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                app:buttonBackgroundColor="@color/lemon_400"
+                app:buttonText="검색" />
+
+            <com.whiplash.presentation.component.button.WhiplashCommonButton
+                android:id="@+id/btnClearSearch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                app:buttonBackgroundColor="@color/grey_700"
+                app:buttonText="초기화"
+                app:buttonTextColor="@color/white" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

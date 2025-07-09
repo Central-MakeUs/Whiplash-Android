@@ -7,7 +7,7 @@
     android:padding="10dp">
 
     <EditText
-        android:id="@+id/et_input"
+        android:id="@+id/etInput"
         style="@style/body1_m_16"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -16,14 +16,14 @@
         android:paddingEnd="12dp"
         android:textColor="@color/white"
         android:textColorHint="@color/grey_500"
-        app:layout_constraintEnd_toStartOf="@id/iv_toggle"
+        app:layout_constraintEnd_toStartOf="@id/ivToggle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:hint="테스트"
         tools:text="" />
 
     <ImageView
-        android:id="@+id/iv_toggle"
+        android:id="@+id/ivToggle"
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_marginEnd="12dp"
