@@ -46,23 +46,29 @@ class MainActivity : AppCompatActivity() {
         }
 
         with(binding) {
-            btnKakaoLogin.setOnClickListener {
-                kakaoLoginViewModel.startKakaoLogin()
-                lifecycleScope.launch {
-                    KakaoLoginManager.login(this@MainActivity)
-                        .onSuccess { token ->
-                            kakaoLoginViewModel.handleKakaoLoginSuccess(token.accessToken)
-                        }
-                        .onFailure { e ->
-                            kakaoLoginViewModel.handleKakaoLoginFailure(
-                                e.message ?: "카카오 로그인에 실패했습니다"
-                            )
-                        }
-                }
+            activateButton.setText("테스트")
+            activateButton.setOnClickListener {
+                // 선택 상태 토글은 내부에서 자동 처리됨
+                val isSelected = activateButton.isSelected
+                Timber.d("버튼 선택 상태: $isSelected")
             }
 
-            btnKakaoLogout.setOnClickListener {
-                kakaoLoginViewModel.signOut()
+            // 요일 버튼들 설정
+            btnMon.setText("월")
+            btnTue.setText("화")
+            btnWed.setText("수")
+
+            // 각 버튼 클릭 리스너 설정
+            btnMon.setOnClickListener {
+                Timber.d("월요일 선택: ${btnMon.isSelected}")
+            }
+
+            btnTue.setOnClickListener {
+                Timber.d("화요일 선택: ${btnTue.isSelected}")
+            }
+
+            btnWed.setOnClickListener {
+                Timber.d("수요일 선택: ${btnWed.isSelected}")
             }
         }
     }

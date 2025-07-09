@@ -3,24 +3,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.whiplash.presentation.MainActivity">
 
-    <com.whiplash.presentation.component.button.WhiplashCommonButton
-        android:id="@+id/btnKakaoLogin"
-        android:layout_width="match_parent"
+    <com.whiplash.presentation.component.button.WhiplashActivateButton
+        android:id="@+id/activateButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:buttonBackgroundColor="@color/lemon_400"
-        app:buttonText="카카오 로그인"/>
+        android:layout_marginTop="16dp" />
 
-    <com.whiplash.presentation.component.button.WhiplashCommonButton
-        android:id="@+id/btnKakaoLogout"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:buttonBackgroundColor="@color/grey_700"
-        app:buttonText="카카오 로그아웃"/>
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
 
+        <com.whiplash.presentation.component.button.WhiplashActivateButton
+            android:id="@+id/btnMon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp" />
+
+        <com.whiplash.presentation.component.button.WhiplashActivateButton
+            android:id="@+id/btnTue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp" />
+
+        <com.whiplash.presentation.component.button.WhiplashActivateButton
+            android:id="@+id/btnWed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 </LinearLayout>
