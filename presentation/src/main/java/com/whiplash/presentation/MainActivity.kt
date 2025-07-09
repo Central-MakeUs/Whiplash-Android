@@ -70,6 +70,27 @@ class MainActivity : AppCompatActivity() {
             btnWed.setOnClickListener {
                 Timber.d("수요일 선택: ${btnWed.isSelected}")
             }
+
+            // 라디오 버튼
+            rbOption1.setOnCheckedChangeListener { _, isChecked ->
+                Timber.d("옵션 1 선택: $isChecked")
+            }
+
+            rbOption2.setOnCheckedChangeListener { _, isChecked ->
+                Timber.d("옵션 2 선택: $isChecked")
+            }
+
+            rbOption3.setOnCheckedChangeListener { _, isChecked ->
+                Timber.d("옵션 3 선택: $isChecked")
+            }
+
+            radioGroup.setOnCheckedChangeListener { _, checkedId ->
+                when (checkedId) {
+                    R.id.rbOption1 -> Timber.d("라디오 그룹: 옵션 1 선택됨")
+                    R.id.rbOption2 -> Timber.d("라디오 그룹: 옵션 2 선택됨")
+                    R.id.rbOption3 -> Timber.d("라디오 그룹: 옵션 3 선택됨")
+                }
+            }
         }
     }
 
