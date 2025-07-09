@@ -35,14 +35,14 @@ class KakaoAuthRepositoryImpl @Inject constructor(
             suspendCancellableCoroutine { continuation ->
                 // logout 사용 시 재로그인하면 팝업이 표시되지 않음
                 // unlink를 써야 로그아웃 후 재로그인 시 팝업 표시됨
-                UserApiClient.instance.unlink { error ->
+                UserApiClient.instance.logout { error ->
                     if (error != null) {
-                        Timber.e("## [카카오 레포 impl] 카카오 연결 해제 실패 : $error")
+                        Timber.e("## [카카오 레포 impl] 카카오 로그아웃 실패 : $error")
                         // 토큰이 이미 만료된 경우에도 로컬 토큰 삭제
                         TokenManagerProvider.instance.manager.clear()
                         continuation.resume(Unit)
                     } else {
-                        Timber.d("## [카카오 레포 impl] 카카오 연결 해제 성공")
+                        Timber.d("## [카카오 레포 impl] 카카오 로그아웃 성공")
                         TokenManagerProvider.instance.manager.clear()
                         continuation.resume(Unit)
                     }
