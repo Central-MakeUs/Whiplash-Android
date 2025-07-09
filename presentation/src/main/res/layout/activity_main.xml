@@ -17,6 +17,16 @@
         android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
+        <com.whiplash.presentation.component.header.WhiplashHeader
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:headerTitle="메인 화면"
+            app:showLeftIcon="true"
+            app:showRightIcon="true"
+            app:leftIconType="back"
+            app:rightIconType="close" />
+
         <com.whiplash.presentation.component.button.WhiplashCommonButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

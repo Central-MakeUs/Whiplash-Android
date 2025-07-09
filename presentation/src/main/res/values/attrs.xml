@@ -20,4 +20,17 @@
         <attr name="android:hint" />
         <attr name="android:text" />
     </declare-styleable>
+
+    <!-- 공통 header -->
+    <declare-styleable name="WhiplashHeader">
+        <attr name="headerTitle" format="string" />
+        <attr name="showLeftIcon" format="boolean" />
+        <attr name="showRightIcon" format="boolean" />
+        <attr name="leftIconType" format="enum">
+            <enum name="back" value="0" />
+        </attr>
+        <attr name="rightIconType" format="enum">
+            <enum name="close" value="0" />
+        </attr>
+    </declare-styleable>
 </resources>
