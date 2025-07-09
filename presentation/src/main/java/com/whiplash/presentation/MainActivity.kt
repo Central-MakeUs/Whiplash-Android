@@ -46,23 +46,76 @@ class MainActivity : AppCompatActivity() {
         }
 
         with(binding) {
-            btnKakaoLogin.setOnClickListener {
-                kakaoLoginViewModel.startKakaoLogin()
-                lifecycleScope.launch {
-                    KakaoLoginManager.login(this@MainActivity)
-                        .onSuccess { token ->
-                            kakaoLoginViewModel.handleKakaoLoginSuccess(token.accessToken)
-                        }
-                        .onFailure { e ->
-                            kakaoLoginViewModel.handleKakaoLoginFailure(
-                                e.message ?: "카카오 로그인에 실패했습니다"
-                            )
-                        }
+            activateButton.setText("테스트")
+            activateButton.setOnClickListener {
+                // 선택 상태 토글은 내부에서 자동 처리됨
+                val isSelected = activateButton.isSelected
+                Timber.d("버튼 선택 상태: $isSelected")
+            }
+
+            // 요일 버튼들 설정
+            btnMon.setText("월")
+            btnTue.setText("화")
+            btnWed.setText("수")
+
+            // 각 버튼 클릭 리스너 설정
+            btnMon.setOnClickListener {
+                Timber.d("월요일 선택: ${btnMon.isSelected}")
+            }
+
+            btnTue.setOnClickListener {
+                Timber.d("화요일 선택: ${btnTue.isSelected}")
+            }
+
+            btnWed.setOnClickListener {
+                Timber.d("수요일 선택: ${btnWed.isSelected}")
+            }
+
+            // 라디오 버튼
+            rbOption1.setOnCheckedChangeListener { _, isChecked ->
+                Timber.d("옵션 1 선택: $isChecked")
+            }
+
+            rbOption2.setOnCheckedChangeListener { _, isChecked ->
+                Timber.d("옵션 2 선택: $isChecked")
+            }
+
+            rbOption3.setOnCheckedChangeListener { _, isChecked ->
+                Timber.d("옵션 3 선택: $isChecked")
+            }
+
+            radioGroup.setOnCheckedChangeListener { _, checkedId ->
+                when (checkedId) {
+                    R.id.rbOption1 -> Timber.d("라디오 그룹: 옵션 1 선택됨")
+                    R.id.rbOption2 -> Timber.d("라디오 그룹: 옵션 2 선택됨")
+                    R.id.rbOption3 -> Timber.d("라디오 그룹: 옵션 3 선택됨")
                 }
             }
 
-            btnKakaoLogout.setOnClickListener {
-                kakaoLoginViewModel.signOut()
+            etEmail.setHint("이메일을 입력하세요")
+            etPassword.setHint("비밀번호를 입력하세요")
+            etNormal.setHint("일반 텍스트")
+
+            // 이메일 검증
+            btnEmailValidate.setOnClickListener {
+                val email = etEmail.getText()
+                val isValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                etEmail.setError(!isValid)
+                Timber.d("## [공통 editText] 이메일: $email, 유효성: $isValid")
+            }
+
+            // 비밀번호 확인 버튼
+            btnPasswordCheck.setOnClickListener {
+                val password = etPassword.getText()
+                val hasError = password.length < 8
+                etPassword.setError(hasError)
+                Timber.d("## [공통 editText]비밀번호: $password, 길이: ${password.length}")
+            }
+
+            // 일반 텍스트 입력 확인
+            btnNormalCheck.setOnClickListener {
+                val text = etNormal.getText()
+                Timber.d("## [공통 editText]일반 텍스트: $text")
             }
         }
     }
