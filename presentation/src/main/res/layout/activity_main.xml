@@ -1,108 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:fitsSystemWindows="true"
+    android:scrollbars="none"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
     tools:context="com.whiplash.presentation.MainActivity">
 
-    <com.whiplash.presentation.component.button.WhiplashCommonButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:buttonBackgroundColor="@color/lemon_400"
-        app:buttonText="확인"/>
-
-    <com.whiplash.presentation.component.button.WhiplashCommonButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        app:buttonBackgroundColor="@color/grey_700"
-        app:buttonTextColor="@color/white"
-        app:buttonText="확인"/>
-
-    <com.whiplash.presentation.component.button.WhiplashActivateButton
-        android:id="@+id/activateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
+
+        <com.whiplash.presentation.component.button.WhiplashCommonButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:buttonBackgroundColor="@color/lemon_400"
+            app:buttonText="확인" />
+
+        <com.whiplash.presentation.component.button.WhiplashCommonButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:buttonBackgroundColor="@color/grey_700"
+            app:buttonText="확인"
+            app:buttonTextColor="@color/white" />
 
         <com.whiplash.presentation.component.button.WhiplashActivateButton
-            android:id="@+id/btnMon"
+            android:id="@+id/activateButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginTop="16dp" />
 
-        <com.whiplash.presentation.component.button.WhiplashActivateButton
-            android:id="@+id/btnTue"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
-        <com.whiplash.presentation.component.button.WhiplashActivateButton
-            android:id="@+id/btnWed"
+            <com.whiplash.presentation.component.button.WhiplashActivateButton
+                android:id="@+id/btnMon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp" />
+
+            <com.whiplash.presentation.component.button.WhiplashActivateButton
+                android:id="@+id/btnTue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp" />
+
+            <com.whiplash.presentation.component.button.WhiplashActivateButton
+                android:id="@+id/btnWed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <com.whiplash.presentation.component.toggle.WhiplashToggle
+            android:id="@+id/tgCommon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="라디오 버튼 테스트"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical">
+
+            <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+                android:id="@+id/rbOption1"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:paddingStart="10dp"
+                android:text="옵션 1"
+                android:textColor="@color/white" />
+
+            <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+                android:id="@+id/rbOption2"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:text="옵션 2"
+                android:textColor="@color/white" />
+
+            <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+                android:id="@+id/rbOption3"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:enabled="false"
+                android:gravity="center_vertical"
+                android:text="옵션 3(비활성화)"
+                android:textColor="@color/white" />
+
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="EditText 테스트"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+        <com.whiplash.presentation.component.edittext.WhiplashEditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="이메일을 입력하세요"
+            app:hasError="false"
+            app:isPassword="false" />
+
+        <com.whiplash.presentation.component.button.WhiplashCommonButton
+            android:id="@+id/btnEmailValidate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:buttonBackgroundColor="@color/lemon_400"
+            app:buttonText="이메일 유효성 검증" />
+
+        <com.whiplash.presentation.component.edittext.WhiplashEditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="비밀번호를 입력하세요"
+            app:hasError="false"
+            app:isPassword="true" />
+
+        <com.whiplash.presentation.component.button.WhiplashCommonButton
+            android:id="@+id/btnPasswordCheck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:buttonBackgroundColor="@color/lemon_400"
+            app:buttonText="비밀번호 확인 (8자 이상)" />
+
+        <com.whiplash.presentation.component.edittext.WhiplashEditText
+            android:id="@+id/etNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="일반 텍스트"
+            app:hasError="false"
+            app:isPassword="false" />
+
+        <com.whiplash.presentation.component.button.WhiplashCommonButton
+            android:id="@+id/btnNormalCheck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:buttonBackgroundColor="@color/lemon_400"
+            app:buttonText="입력 내용 확인" />
 
     </LinearLayout>
 
-    <com.whiplash.presentation.component.toggle.WhiplashToggle
-        android:id="@+id/tgCommon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="라디오 버튼 테스트"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
-
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="vertical">
-
-        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
-            android:id="@+id/rbOption1"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="옵션 1"
-            android:paddingStart="10dp"
-            android:textColor="@color/white"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp" />
-
-        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
-            android:id="@+id/rbOption2"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="옵션 2"
-            android:textColor="@color/white"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp" />
-
-        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
-            android:id="@+id/rbOption3"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:text="옵션 3(비활성화)"
-            android:textColor="@color/white"
-            android:gravity="center_vertical"
-            android:enabled="false" />
-
-    </RadioGroup>
-
-</LinearLayout>
+</ScrollView>

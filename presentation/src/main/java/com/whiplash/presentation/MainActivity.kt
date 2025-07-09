@@ -91,6 +91,32 @@ class MainActivity : AppCompatActivity() {
                     R.id.rbOption3 -> Timber.d("라디오 그룹: 옵션 3 선택됨")
                 }
             }
+
+            etEmail.setHint("이메일을 입력하세요")
+            etPassword.setHint("비밀번호를 입력하세요")
+            etNormal.setHint("일반 텍스트")
+
+            // 이메일 검증
+            btnEmailValidate.setOnClickListener {
+                val email = etEmail.getText()
+                val isValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                etEmail.setError(!isValid)
+                Timber.d("## [공통 editText] 이메일: $email, 유효성: $isValid")
+            }
+
+            // 비밀번호 확인 버튼
+            btnPasswordCheck.setOnClickListener {
+                val password = etPassword.getText()
+                val hasError = password.length < 8
+                etPassword.setError(hasError)
+                Timber.d("## [공통 editText]비밀번호: $password, 길이: ${password.length}")
+            }
+
+            // 일반 텍스트 입력 확인
+            btnNormalCheck.setOnClickListener {
+                val text = etNormal.getText()
+                Timber.d("## [공통 editText]일반 텍스트: $text")
+            }
         }
     }
 

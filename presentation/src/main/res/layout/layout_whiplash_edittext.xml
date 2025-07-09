@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:padding="10dp">
+
+    <EditText
+        android:id="@+id/et_input"
+        style="@style/body1_m_16"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="@null"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/grey_500"
+        app:layout_constraintEnd_toStartOf="@id/iv_toggle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:hint="테스트"
+        tools:text="" />
+
+    <ImageView
+        android:id="@+id/iv_toggle"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="12dp"
+        android:src="@drawable/ic_show_black_22"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
