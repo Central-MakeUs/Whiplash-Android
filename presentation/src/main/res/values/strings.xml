@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Akuma</string>
     <string name="kakao_app_key">11db5cdde596e50ac23ebf26b9c10e27</string>
+
+    <!-- MainActivity - 상단 팝업 -->
+    <string name="home_alert_first_text">예정 시간 1시간 전부터 인증 가능해요!</string>
+    <string name="home_alert_second_text">‘알람 끄기’는 알람별로 3회까지 가능해요!</string>
 </resources>
