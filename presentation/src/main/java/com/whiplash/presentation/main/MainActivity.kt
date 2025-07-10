@@ -27,5 +27,16 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        with(binding) {
+            setHomeAlertPopupTexts()
+        }
+    }
+
+    private fun setHomeAlertPopupTexts() {
+        binding.homeAlert.setAlertTexts(
+            firstText = getString(R.string.home_alert_first_text),
+            secondText = getString(R.string.home_alert_second_text),
+        )
     }
 }

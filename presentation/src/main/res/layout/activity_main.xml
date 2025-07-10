@@ -5,6 +5,37 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey_900"
     tools:context=".main.MainActivity">
+
+    <com.whiplash.presentation.dialog.HomeAlertPopup
+        android:id="@+id/homeAlert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvHomeAlarmList"
+        style="@style/subtitle5_b_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="32dp"
+        android:text="알람 목록"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homeAlert" />
+
+    <ImageView
+        android:id="@+id/ivAddAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="18dp"
+        android:src="@drawable/ic_plus_28"
+        app:layout_constraintBottom_toBottomOf="@+id/tvHomeAlarmList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvHomeAlarmList"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
