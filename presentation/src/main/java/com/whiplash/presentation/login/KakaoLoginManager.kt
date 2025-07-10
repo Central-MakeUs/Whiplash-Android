@@ -37,13 +37,13 @@ class KakaoLoginManager @Inject constructor(
             loginWithKakao(context)
                 .fold(
                     onSuccess = { token ->
-                        Timber.d("## [KakaoLoginManager] 카카오 로그인 성공. accessToken: ${token.accessToken}")
+                        Timber.d("## [KakaoLoginManager] 카카오 로그인 성공. accessToken : ${token.accessToken}")
 
                         // 2. 토큰으로 사용자 정보 조회
                         signInWithKakaoUseCase(token.accessToken)
                             .fold(
                                 onSuccess = { loginResult ->
-                                    Timber.d("## [KakaoLoginManager] 사용자 정보 조회 성공: ${loginResult.user}")
+                                    Timber.d("## [KakaoLoginManager] 사용자 정보 조회 성공 : ${loginResult.user}")
                                     Result.success(loginResult.user)
                                 },
                                 onFailure = { e ->
@@ -53,12 +53,12 @@ class KakaoLoginManager @Inject constructor(
                             )
                     },
                     onFailure = { e ->
-                        Timber.e("## [KakaoLoginManager] 카카오 로그인 실패: ${e.message}")
+                        Timber.e("## [KakaoLoginManager] 카카오 로그인 실패 : ${e.message}")
                         Result.failure(e)
                     }
                 )
         } catch (e: Exception) {
-            Timber.e("## [KakaoLoginManager] 카카오 로그인 에러: ${e.message}")
+            Timber.e("## [KakaoLoginManager] 카카오 로그인 에러 : ${e.message}")
             Result.failure(e)
         }
     }
@@ -73,11 +73,11 @@ class KakaoLoginManager @Inject constructor(
                     if (result.isSuccess) {
                         Timber.d("## [KakaoLoginManager] 카카오 로그아웃 성공")
                     } else {
-                        Timber.e("## [KakaoLoginManager] 카카오 로그아웃 실패: ${result.exceptionOrNull()?.message}")
+                        Timber.e("## [KakaoLoginManager] 카카오 로그아웃 실패 : ${result.exceptionOrNull()?.message}")
                     }
                 }
         } catch (e: Exception) {
-            Timber.e("## [KakaoLoginManager] 카카오 로그아웃 에러: ${e.message}")
+            Timber.e("## [KakaoLoginManager] 카카오 로그아웃 에러 : ${e.message}")
             Result.failure(e)
         }
     }

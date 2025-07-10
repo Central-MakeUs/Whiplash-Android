@@ -38,26 +38,26 @@ class GoogleLoginManager @Inject constructor(
             handleGoogleSignInResultUseCase.invoke(data)
                 .fold(
                     onSuccess = { idToken ->
-                        Timber.d("## [GoogleLoginManager] 구글 로그인 성공. idToken: $idToken")
+                        Timber.d("## [GoogleLoginManager] 구글 로그인 성공. idToken : $idToken")
                         signInWithGoogleUseCase.invoke(idToken)
                             .fold(
                                 onSuccess = { user ->
-                                    Timber.d("## [GoogleLoginManager] Firebase 인증 성공. 사용자: $user")
+                                    Timber.d("## [GoogleLoginManager] Firebase 인증 성공. 사용자 정보 : $user")
                                     Result.success(user)
                                 },
                                 onFailure = { e ->
-                                    Timber.e("## [GoogleLoginManager] Firebase 인증 실패: ${e.message}")
+                                    Timber.e("## [GoogleLoginManager] Firebase 인증 실패 : ${e.message}")
                                     Result.failure(e)
                                 }
                             )
                     },
                     onFailure = { e ->
-                        Timber.e("## [GoogleLoginManager] 구글 로그인 결과 처리 실패: ${e.message}")
+                        Timber.e("## [GoogleLoginManager] 구글 로그인 결과 처리 실패 : ${e.message}")
                         Result.failure(e)
                     }
                 )
         } catch (e: Exception) {
-            Timber.e("## [GoogleLoginManager] 구글 로그인 에러: ${e.message}")
+            Timber.e("## [GoogleLoginManager] 구글 로그인 에러 : ${e.message}")
             Result.failure(e)
         }
     }
@@ -72,11 +72,11 @@ class GoogleLoginManager @Inject constructor(
                     if (result.isSuccess) {
                         Timber.d("## [GoogleLoginManager] 구글 로그아웃 성공")
                     } else {
-                        Timber.e("## [GoogleLoginManager] 구글 로그아웃 실패: ${result.exceptionOrNull()?.message}")
+                        Timber.e("## [GoogleLoginManager] 구글 로그아웃 실패 : ${result.exceptionOrNull()?.message}")
                     }
                 }
         } catch (e: Exception) {
-            Timber.e("## [GoogleLoginManager] 구글 로그아웃 에러: ${e.message}")
+            Timber.e("## [GoogleLoginManager] 구글 로그아웃 에러 : ${e.message}")
             Result.failure(e)
         }
     }
