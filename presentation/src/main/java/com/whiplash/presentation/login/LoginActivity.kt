@@ -1,4 +1,4 @@
-package com.whiplash.presentation
+package com.whiplash.presentation.login
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -7,9 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityLoginBinding
-import com.whiplash.presentation.login.GoogleLoginManager
-import com.whiplash.presentation.login.KakaoLoginManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
