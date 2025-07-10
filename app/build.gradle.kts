@@ -30,6 +30,7 @@ android {
         }
 
         buildConfigField("String", "KAKAO_NATIVE_KEY", "\"${localProperties.getProperty("KAKAO_NATIVE_KEY", "")}\"")
+        buildConfigField("String", "NAVER_MAP_CLIENT_ID", "\"${localProperties.getProperty("NAVER_MAP_CLIENT_ID", "")}\"")
     }
     buildTypes {
         release {
@@ -95,4 +96,7 @@ dependencies {
 
     // log
     implementation(libs.timber)
+
+    // 네이버 지도
+    implementation(libs.naver.map.sdk)
 }

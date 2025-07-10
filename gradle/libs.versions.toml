@@ -6,6 +6,7 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+naverMapSdk = "3.22.0"
 material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
@@ -81,6 +82,9 @@ play-services-auth = { module = "com.google.android.gms:play-services-auth", ver
 
 # 카카오 로그인
 kakao-v2-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoV2User" }
+
+# 네이버 지도
+naver-map-sdk = { module = "com.naver.maps:map-sdk", version.ref = "naverMapSdk" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

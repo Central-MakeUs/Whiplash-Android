@@ -27,6 +27,8 @@
         <activity
             android:name=".login.LoginActivity"
             android:exported="true" />
+        <activity android:name=".map.NaverMapTestActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

@@ -78,4 +78,7 @@ dependencies {
 
     // 카카오 로그인
     implementation(libs.kakao.v2.user)
+
+    // 네이버 지도
+    implementation(libs.naver.map.sdk)
 }
