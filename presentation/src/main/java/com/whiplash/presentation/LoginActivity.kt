@@ -5,34 +5,35 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
-import com.whiplash.presentation.databinding.ActivitySplashBinding
-import com.whiplash.presentation.util.ActivityUtils.navigateTo
+import com.whiplash.presentation.databinding.ActivityLoginBinding
+import com.whiplash.presentation.login.GoogleLoginManager
+import com.whiplash.presentation.login.KakaoLoginManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class SplashActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivitySplashBinding
+    private lateinit var binding: ActivityLoginBinding
+
+    @Inject
+    lateinit var googleLoginManager: GoogleLoginManager
+
+    @Inject
+    lateinit var kakaoLoginManager: KakaoLoginManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivitySplashBinding.inflate(layoutInflater)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.splash_main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.login_main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        lifecycleScope.launch {
-            delay(1000)
-            navigateTo<LoginActivity> {
-                finishCurrentActivity()
-            }
+        with(binding) {
         }
     }
 }
