@@ -65,7 +65,14 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
+        setupView()
         setupLoginButtons()
+    }
+
+    private fun setupView() {
+        with(binding) {
+            whLogin.setTitle("로그인")
+        }
     }
 
     private fun setupLoginButtons() {

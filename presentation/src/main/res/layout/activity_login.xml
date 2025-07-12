@@ -8,24 +8,44 @@
     android:background="@color/grey_900"
     tools:context="com.whiplash.presentation.login.LoginActivity">
 
+    <com.whiplash.presentation.component.header.WhiplashHeader
+        android:id="@+id/whLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/bg_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/whLogin" />
+
     <ImageView
         android:id="@+id/ivKakaoLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="144dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/btn_kakao"
-        app:layout_constraintBottom_toTopOf="@+id/ivGoogleLogin"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivLogin" />
 
     <ImageView
         android:id="@+id/ivGoogleLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="94dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/btn_google"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivKakaoLogin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
