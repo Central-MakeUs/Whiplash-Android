@@ -20,13 +20,16 @@ class MainViewModel @Inject constructor(
 
     data class MainUiState(
         val isLoading: Boolean = false,
+        val errorMessage: String? = null,
+
+        // 알람 목록 조회 api 결과
         val alarmList: List<GetAlarmEntity> = emptyList(),
-        val errorMessage: String? = null
     )
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
+    // 알람 목록 조회
     fun getAlarms() = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
 
