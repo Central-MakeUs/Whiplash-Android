@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grey_900">
+
+    <ImageView
+        android:id="@+id/ivEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_empty_120"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvEmptyTitle"
+        style="@style/subtitle3_b_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:minHeight="28dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/ivEmpty"
+        app:layout_constraintStart_toStartOf="@+id/ivEmpty"
+        app:layout_constraintTop_toBottomOf="@+id/ivEmpty"
+        tools:text="아직 알람이 없어요" />
+
+    <TextView
+        android:id="@+id/tvEmptyMessage"
+        style="@style/subtitle6_b_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:minHeight="22dp"
+        android:textColor="@color/grey_500"
+        app:layout_constraintEnd_toEndOf="@+id/tvEmptyTitle"
+        app:layout_constraintStart_toStartOf="@+id/tvEmptyTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvEmptyTitle"
+        tools:text="아직 알람이 없어요" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
