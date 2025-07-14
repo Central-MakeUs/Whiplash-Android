@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="24dp"
+    tools:background="@color/grey_900">
+
+    <TextView
+        android:id="@+id/tvHomeAlarmTopText"
+        style="@style/subtitle6_b_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="22dp"
+        android:text="눈 떠!"
+        android:textColor="@color/grey_300"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAmPm"
+        style="@style/subtitle2_m_20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:minHeight="26dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/tvHomeAlarmTopText"
+        app:layout_constraintTop_toBottomOf="@+id/tvHomeAlarmTopText"
+        tools:text="오전" />
+
+    <TextView
+        android:id="@+id/tvAlarmTime"
+        style="@style/number1_b_28"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAmPm"
+        app:layout_constraintStart_toEndOf="@+id/tvAmPm"
+        app:layout_constraintTop_toTopOf="@+id/tvAmPm"
+        tools:text="00:00" />
+
+    <ImageView
+        android:id="@+id/ivDay"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="6dp"
+        android:src="@drawable/ic_week_16"
+        app:layout_constraintStart_toStartOf="@+id/tvAmPm"
+        app:layout_constraintTop_toBottomOf="@+id/tvAmPm" />
+
+    <TextView
+        android:id="@+id/tvRepeatDays"
+        style="@style/body5_m_11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:minHeight="18dp"
+        android:textColor="@color/grey_500"
+        app:layout_constraintBottom_toBottomOf="@+id/ivDay"
+        app:layout_constraintStart_toEndOf="@+id/ivDay"
+        app:layout_constraintTop_toTopOf="@+id/ivDay"
+        tools:text="월, 수, 금" />
+
+    <ImageView
+        android:id="@+id/ivMapPin"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_map_pin_gray_16"
+        app:layout_constraintBottom_toBottomOf="@+id/tvRepeatDays"
+        app:layout_constraintStart_toEndOf="@+id/tvRepeatDays"
+        app:layout_constraintTop_toTopOf="@+id/tvRepeatDays" />
+
+    <TextView
+        android:id="@+id/tvAddress"
+        style="@style/body5_m_11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:minHeight="18dp"
+        android:textColor="@color/grey_500"
+        app:layout_constraintBottom_toBottomOf="@+id/ivMapPin"
+        app:layout_constraintStart_toEndOf="@+id/ivMapPin"
+        app:layout_constraintTop_toTopOf="@+id/ivMapPin"
+        tools:text="위치명" />
+
+    <com.whiplash.presentation.component.toggle.WhiplashToggle
+        android:id="@+id/wtAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAlarmTime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvAlarmTime" />
+
+    <com.whiplash.presentation.component.button.WhiplashCommonButton
+        android:id="@+id/btnArrivedConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:buttonBackgroundColor="@color/grey_800"
+        app:buttonText="도착 인증!"
+        app:buttonTextColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAddress" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
