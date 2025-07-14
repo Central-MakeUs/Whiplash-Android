@@ -53,4 +53,16 @@
         tools:itemCount="10"
         tools:listitem="@layout/item_home_alarm" />
 
+    <com.whiplash.presentation.component.empty.WhiplashEmptyView
+        android:id="@+id/wevHome"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:emptyMessage="아직 알람이 없어요"
+        app:emptyTitle="아직 알람이 없어요"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvHomeAlarmList" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,4 +33,11 @@
             <enum name="close" value="0" />
         </attr>
     </declare-styleable>
+
+    <!-- 공통 empty view -->
+    <declare-styleable name="WhiplashEmptyView">
+        <attr name="emptyTitle" format="string" />
+        <attr name="emptyMessage" format="string" />
+    </declare-styleable>
+
 </resources>

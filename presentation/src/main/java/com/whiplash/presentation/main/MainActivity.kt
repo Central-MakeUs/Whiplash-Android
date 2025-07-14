@@ -1,6 +1,7 @@
 package com.whiplash.presentation.main
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -58,10 +59,19 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     mainViewModel.uiState.collect { state ->
-                        // 알람 목록 조회(현재는 mock data)
-                        val alarmList = state.alarmList
-                        Timber.d("## [알람 목록 조회] 액티비티에서 확인 : $state")
-                        alarmListAdapter.submitList(alarmList)
+                        with(binding) {
+                            // 알람 목록 조회(현재는 mock data)
+                            val alarmList = state.alarmList
+                            Timber.d("## [알람 목록 조회] 액티비티에서 확인 : $state")
+                            if (alarmList.isEmpty()) {
+                                rvHomeAlarm.visibility = View.GONE
+                                wevHome.visibility = View.VISIBLE
+                            } else {
+                                rvHomeAlarm.visibility = View.VISIBLE
+                                alarmListAdapter.submitList(alarmList)
+                                wevHome.visibility = View.GONE
+                            }
+                        }
                     }
                 }
             }
