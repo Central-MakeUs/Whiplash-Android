@@ -56,14 +56,6 @@
             app:layout_constraintTop_toTopOf="@+id/ivSecondAlert"
             tools:text="‘알람 끄기’는 알람별로 3회까지 가능해요!" />
 
-        <ImageView
-            android:id="@+id/ivCloseHomeAlertPopup"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_circle_dismiss_22"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
