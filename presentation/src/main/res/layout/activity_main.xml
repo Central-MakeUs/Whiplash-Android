@@ -8,7 +8,7 @@
     android:background="@color/grey_900"
     tools:context=".main.MainActivity">
 
-    <com.whiplash.presentation.dialog.AlarmAlertPopup
+    <com.whiplash.presentation.dialog.AlarmAlertView
         android:id="@+id/homeAlert"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
