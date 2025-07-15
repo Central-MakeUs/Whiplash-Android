@@ -12,9 +12,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityMainBinding
+import com.whiplash.presentation.dialog.DisableAlarmPopup
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * 알람 리사이클러뷰 표시 및 알람 등록 버튼, 상단에 알림 관련 문구 표시 등이 표시되는 메인 화면
@@ -23,6 +25,9 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    @Inject
+    lateinit var disableAlarmPopup: DisableAlarmPopup
 
     private lateinit var alarmListAdapter: AlarmListAdapter
 
