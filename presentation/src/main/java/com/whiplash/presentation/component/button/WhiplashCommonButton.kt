@@ -46,7 +46,7 @@ class WhiplashCommonButton @JvmOverloads constructor(
         }
     }
 
-    private fun setText(text: String) {
+    fun setText(text: String) {
         binding.btnWhiplash.text = text
     }
 

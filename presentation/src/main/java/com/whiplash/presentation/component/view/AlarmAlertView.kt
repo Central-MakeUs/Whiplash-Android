@@ -1,4 +1,4 @@
-package com.whiplash.presentation.dialog
+package com.whiplash.presentation.component.view
 
 import android.content.Context
 import android.util.AttributeSet

@@ -2,7 +2,16 @@
     <string name="app_name">Akuma</string>
     <string name="kakao_app_key">11db5cdde596e50ac23ebf26b9c10e27</string>
 
-    <!-- MainActivity - 상단 팝업 -->
+    <string name="ok_string">확인</string>
+    <string name="disable_alarm">알람 끄기</string>
+
+    <!-- MainActivity - 상단 UI -->
     <string name="home_alert_first_text">예정 시간 1시간 전부터 인증 가능해요!</string>
     <string name="home_alert_second_text">‘알람 끄기’는 알람별로 3회까지 가능해요!</string>
+
+    <!-- 알람 끄기 경고 팝업 -->
+    <string name="disable_popup_title">경고</string>
+    <string name="disable_popup_content">알림 끄기는 3회만 가능하니\n신중하게 선택하세요!</string>
+    <string name="disable_alarm_remain_count">알림끄기 남은 횟수</string>
+    <string name="cannot_disable_alarm">이제 알람을 끌 수 없어요.\n지정한 장소로 이동해 알람 끄기를 도전하세요.</string>
 </resources>
