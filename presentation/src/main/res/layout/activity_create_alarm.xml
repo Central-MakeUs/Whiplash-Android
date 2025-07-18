@@ -116,23 +116,51 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvAlarmTime">
 
-                <NumberPicker
+                <com.shawnlin.numberpicker.NumberPicker
                     android:id="@+id/npAmPm"
                     android:layout_width="wrap_content"
                     android:layout_height="150dp"
-                    android:selectionDividerHeight="0dp" />
+                    android:layout_marginEnd="24dp"
+                    app:np_dividerColor="@android:color/transparent"
+                    app:np_max="1"
+                    app:np_min="0"
+                    app:np_selectedTextColor="@color/white"
+                    app:np_selectedTextSize="28dp"
+                    app:np_selectedTypeface="@font/pretendard_bold"
+                    app:np_textColor="@color/white"
+                    app:np_textSize="28dp"
+                    app:np_typeface="@font/paperlogy_bold"
+                    app:values="@array/am_pm_values" />
 
-                <NumberPicker
+                <com.shawnlin.numberpicker.NumberPicker
                     android:id="@+id/npHours"
                     android:layout_width="wrap_content"
                     android:layout_height="150dp"
-                    android:selectionDividerHeight="0dp" />
+                    android:layout_marginEnd="24dp"
+                    app:np_dividerColor="@android:color/transparent"
+                    app:np_max="12"
+                    app:np_min="1"
+                    app:np_selectedTextColor="@color/white"
+                    app:np_selectedTextSize="28dp"
+                    app:np_selectedTypeface="@font/paperlogy_bold"
+                    app:np_textColor="@color/white"
+                    app:np_textSize="28dp"
+                    app:np_typeface="@font/paperlogy_bold" />
 
-                <NumberPicker
+                <com.shawnlin.numberpicker.NumberPicker
                     android:id="@+id/npMinutes"
                     android:layout_width="wrap_content"
                     android:layout_height="150dp"
-                    android:selectionDividerHeight="0dp" />
+                    app:np_dividerColor="@android:color/transparent"
+                    app:np_formatter="%02d"
+                    app:np_max="59"
+                    app:np_min="0"
+                    app:np_selectedTextColor="@color/white"
+                    app:np_selectedTextSize="28dp"
+                    app:np_selectedTypeface="@font/paperlogy_bold"
+                    app:np_textColor="@color/white"
+                    app:np_textSize="28dp"
+                    app:np_typeface="@font/paperlogy_bold" />
 
             </LinearLayout>
             <!-- 오전 / 오후, 시, 분 선택 -->
@@ -206,7 +234,7 @@
                 style="@style/body2_m_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="42dp"
                 android:text="알람 소리"
                 android:textColor="@color/grey_300"
                 app:layout_constraintStart_toStartOf="parent"
@@ -242,7 +270,7 @@
                 style="@style/body2_m_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="52dp"
                 android:text="푸시 알림 여부"
                 android:textColor="@color/grey_300"
                 app:layout_constraintStart_toStartOf="parent"
@@ -273,7 +301,7 @@
                 style="@style/body2_m_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="52dp"
                 android:text="주의 사항"
                 android:textColor="@color/grey_300"
                 app:layout_constraintStart_toStartOf="parent"

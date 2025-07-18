@@ -81,4 +81,6 @@ dependencies {
 
     // 네이버 지도
     implementation(libs.naver.map.sdk)
+
+    implementation("io.github.ShawnLin013:number-picker:2.4.13")
 }

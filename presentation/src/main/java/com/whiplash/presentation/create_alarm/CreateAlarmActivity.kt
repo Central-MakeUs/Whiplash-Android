@@ -3,6 +3,7 @@ package com.whiplash.presentation.create_alarm
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.whiplash.presentation.R
@@ -41,6 +42,7 @@ class CreateAlarmActivity : AppCompatActivity() {
 
             // 토글은 기본적으로 체크 상태
             tgPushAlarm.setChecked(true)
+            whCreateAlarm.setTitle(getString(R.string.create_alarm_header))
 
             setCreateAlarmAlertTexts()
             setTimePickers()
@@ -49,19 +51,24 @@ class CreateAlarmActivity : AppCompatActivity() {
 
     private fun setTimePickers() {
         with(binding) {
+            val pretendardTypeFace = ResourcesCompat.getFont(this@CreateAlarmActivity, R.font.pretendard_bold)
+            val paperlogyTypeFace = ResourcesCompat.getFont(this@CreateAlarmActivity, R.font.paperlogy_bold)
+
             // 오전 / 오후 설정
             npAmPm.apply {
-                displayedValues = arrayOf("오전", "오후")
+                displayedValues = resources.getStringArray(R.array.am_pm_values)
                 minValue = 0
                 maxValue = 1
-                value = 0 // 오전이 기본값
+                value = 0
+                setSelectedTypeface(pretendardTypeFace)
             }
 
             // 시간 설정
             npHours.apply {
                 minValue = 1
                 maxValue = 12
-                value = 0
+                value = 1
+                setSelectedTypeface(paperlogyTypeFace)
             }
 
             // 분 설정
@@ -69,7 +76,7 @@ class CreateAlarmActivity : AppCompatActivity() {
                 minValue = 0
                 maxValue = 59
                 value = 0
-                setFormatter { value -> String.format("%02d", value)}
+                setSelectedTypeface(paperlogyTypeFace)
             }
         }
 
@@ -99,7 +106,7 @@ class CreateAlarmActivity : AppCompatActivity() {
      * 현재 선택된 시간 가져옴
      */
     private fun getSelectedTime(): Triple<String, Int, Int> {
-        val amPm = if (binding.npAmPm.value == 0) "오전" else "오후"
+        val amPm = if (binding.npAmPm.value == 0) getString(R.string.time_am) else getString(R.string.time_pm)
         val hour = binding.npHours.value
         val minute = binding.npMinutes.value
 
@@ -108,8 +115,8 @@ class CreateAlarmActivity : AppCompatActivity() {
 
     private fun setCreateAlarmAlertTexts() {
         binding.createAlarmAlert.setAlertTexts(
-            firstText = "지금 설정한 알람은 삭제할 수 없어요!",
-            secondText = "소리가 매우 자극적일 수 있어요!"
+            firstText = getString(R.string.create_alarm_bottom_alert_first_text),
+            secondText = getString(R.string.create_alarm_bottom_alert_second_text)
         )
     }
 
