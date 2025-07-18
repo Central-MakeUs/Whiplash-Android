@@ -42,6 +42,7 @@ class CreateAlarmActivity : AppCompatActivity() {
             // 토글은 기본적으로 체크 상태
             tgPushAlarm.setChecked(true)
 
+            setCreateAlarmAlertTexts()
             setTimePickers()
         }
     }
