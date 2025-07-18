@@ -81,6 +81,7 @@ dependencies {
 
     // 네이버 지도
     implementation(libs.naver.map.sdk)
+    implementation(libs.play.services.location)
 
     // 알람 설정 화면에서 사용하는 NumberPicker 라이브러리
     implementation(libs.number.picker)
