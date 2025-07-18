@@ -68,25 +68,16 @@ class CreateAlarmActivity : AppCompatActivity() {
             // 오전 / 오후 설정
             npAmPm.apply {
                 displayedValues = resources.getStringArray(R.array.am_pm_values)
-                minValue = 0
-                maxValue = 1
-                value = 0
                 setSelectedTypeface(pretendardTypeFace)
             }
 
             // 시간 설정
             npHours.apply {
-                minValue = 1
-                maxValue = 12
-                value = 1
                 setSelectedTypeface(paperlogyTypeFace)
             }
 
             // 분 설정
             npMinutes.apply {
-                minValue = 0
-                maxValue = 59
-                value = 0
                 setSelectedTypeface(paperlogyTypeFace)
             }
         }
