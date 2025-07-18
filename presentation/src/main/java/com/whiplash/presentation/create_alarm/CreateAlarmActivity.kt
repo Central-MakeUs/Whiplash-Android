@@ -8,6 +8,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityCreateAlarmBinding
+import com.whiplash.presentation.map.SelectPlaceActivity
+import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.Calendar
@@ -45,6 +47,11 @@ class CreateAlarmActivity : AppCompatActivity() {
             // 토글은 기본적으로 체크 상태
             tgPushAlarm.setChecked(true)
             whCreateAlarm.setTitle(getString(R.string.create_alarm_header))
+
+            // 지도에서 찾기
+            clSearchInMapContainer.setOnClickListener {
+                navigateTo<SelectPlaceActivity> {}
+            }
 
             btnSaveAlarm.setOnClickListener {
                 val time = getSelectedTime()
