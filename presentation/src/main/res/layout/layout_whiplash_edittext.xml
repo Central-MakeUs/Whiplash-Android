@@ -12,8 +12,6 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:background="@null"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
         android:textColor="@color/white"
         android:textColorHint="@color/grey_500"
         app:layout_constraintEnd_toStartOf="@id/ivToggle"

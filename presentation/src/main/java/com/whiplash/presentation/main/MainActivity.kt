@@ -11,8 +11,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.whiplash.presentation.R
+import com.whiplash.presentation.create_alarm.CreateAlarmActivity
 import com.whiplash.presentation.databinding.ActivityMainBinding
 import com.whiplash.presentation.dialog.DisableAlarmPopup
+import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -49,6 +51,10 @@ class MainActivity : AppCompatActivity() {
 
         with(binding) {
             setHomeAlertPopupTexts()
+
+            ivAddAlarm.setOnClickListener {
+                navigateTo<CreateAlarmActivity>{}
+            }
         }
 
         mainViewModel.getAlarms()
