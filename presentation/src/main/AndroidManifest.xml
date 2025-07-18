@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Akuma"
         tools:targetApi="31">
         <activity
+            android:name=".create_alarm.CreateAlarmActivity"
+            android:exported="false" />
+        <activity
             android:name=".main.MainActivity"
             android:exported="false" />
         <activity
@@ -27,7 +30,8 @@
         <activity
             android:name=".login.LoginActivity"
             android:exported="true" />
-        <activity android:name=".map.NaverMapTestActivity"
+        <activity
+            android:name=".map.NaverMapTestActivity"
             android:exported="true" />
     </application>
 

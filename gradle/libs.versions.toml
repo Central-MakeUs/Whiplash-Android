@@ -37,6 +37,9 @@ mockk = "1.13.8"
 # 카카오 로그인
 kakaoV2User = "2.3.0"
 
+# 알람 설정 화면에서 사용하는 NumberPicker 라이브러리
+numberPicker = "2.4.13"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -85,6 +88,9 @@ kakao-v2-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoV2User" 
 
 # 네이버 지도
 naver-map-sdk = { module = "com.naver.maps:map-sdk", version.ref = "naverMapSdk" }
+
+# 알람 설정 화면에서 사용하는 NumberPicker 라이브러리
+number-picker = { module = "io.github.ShawnLin013:number-picker", version.ref = "numberPicker" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

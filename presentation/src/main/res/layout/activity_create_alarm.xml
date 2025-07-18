@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/create_alarm_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_900"
+    tools:context=".create_alarm.CreateAlarmActivity">
+
+    <com.whiplash.presentation.component.header.WhiplashHeader
+        android:id="@+id/whCreateAlarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:showLeftIcon="true" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="18dp"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/whCreateAlarm">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvSelectPlace"
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="장소 선택"
+                android:textColor="@color/grey_300"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/clSelectPriceContainer"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_whiplash_searchbar_normal"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSelectPlace">
+
+                <ImageView
+                    android:id="@+id/ivSearch"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_search_gray_22"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/etSearch"
+                    style="@style/body1_m_16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
+                    android:text="도착 목표 장소는?"
+                    android:textColor="@color/grey_500"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ivSearch"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_map_black_22"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSearchInMap"
+                app:layout_constraintEnd_toStartOf="@+id/tvSearchInMap"
+                app:layout_constraintTop_toTopOf="@+id/tvSearchInMap" />
+
+            <TextView
+                android:id="@+id/tvSearchInMap"
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="지도에서 찾기"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/clSelectPriceContainer" />
+
+            <TextView
+                android:id="@+id/tvAlarmPurpose"
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="54dp"
+                android:text="알람 목적"
+                android:textColor="@color/grey_300"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/clSelectPriceContainer" />
+
+            <com.whiplash.presentation.component.edittext.WhiplashEditText
+                android:id="@+id/etAlarmPurpose"
+                style="@style/body1_m_16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="눈 떠!"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAlarmPurpose" />
+
+            <TextView
+                android:id="@+id/tvAlarmTime"
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="알람 시간"
+                android:textColor="@color/grey_300"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/etAlarmPurpose" />
+
+            <!-- 오전 / 오후, 시, 분 선택 -->
+            <LinearLayout
+                android:id="@+id/llAlarmTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAlarmTime">
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/npAmPm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="150dp"
+                    android:layout_marginEnd="24dp"
+                    app:np_dividerColor="@android:color/transparent"
+                    app:np_max="1"
+                    app:np_min="0"
+                    app:np_selectedTextColor="@color/white"
+                    app:np_selectedTextSize="28dp"
+                    app:np_selectedTypeface="@font/pretendard_bold"
+                    app:np_textColor="@color/white"
+                    app:np_textSize="28dp"
+                    app:np_typeface="@font/paperlogy_bold"
+                    app:values="@array/am_pm_values" />
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/npHours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="150dp"
+                    android:layout_marginEnd="24dp"
+                    app:np_dividerColor="@android:color/transparent"
+                    app:np_max="12"
+                    app:np_min="1"
+                    app:np_selectedTextColor="@color/white"
+                    app:np_selectedTextSize="28dp"
+                    app:np_selectedTypeface="@font/paperlogy_bold"
+                    app:np_textColor="@color/white"
+                    app:np_textSize="28dp"
+                    app:np_typeface="@font/paperlogy_bold" />
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/npMinutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="150dp"
+                    app:np_dividerColor="@android:color/transparent"
+                    app:np_formatter="%02d"
+                    app:np_max="59"
+                    app:np_min="0"
+                    app:np_selectedTextColor="@color/white"
+                    app:np_selectedTextSize="28dp"
+                    app:np_selectedTypeface="@font/paperlogy_bold"
+                    app:np_textColor="@color/white"
+                    app:np_textSize="28dp"
+                    app:np_typeface="@font/paperlogy_bold" />
+
+            </LinearLayout>
+            <!-- 오전 / 오후, 시, 분 선택 -->
+
+            <TextView
+                android:id="@+id/tvRepeatDay"
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="반복 여부"
+                android:textColor="@color/grey_300"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/llAlarmTime" />
+
+            <LinearLayout
+                android:id="@+id/llRepeatDay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvRepeatDay">
+
+                <com.whiplash.presentation.component.button.WhiplashActivateButton
+                    android:id="@+id/btnMon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp" />
+
+                <com.whiplash.presentation.component.button.WhiplashActivateButton
+                    android:id="@+id/btnTue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp" />
+
+                <com.whiplash.presentation.component.button.WhiplashActivateButton
+                    android:id="@+id/btnWed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp" />
+
+                <com.whiplash.presentation.component.button.WhiplashActivateButton
+                    android:id="@+id/btnThur"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp" />
+
+                <com.whiplash.presentation.component.button.WhiplashActivateButton
+                    android:id="@+id/btnFri"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp" />
+
+                <com.whiplash.presentation.component.button.WhiplashActivateButton
+                    android:id="@+id/btnSat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp" />
+
+                <com.whiplash.presentation.component.button.WhiplashActivateButton
+                    android:id="@+id/btnSun"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvAlarmSound"
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="42dp"
+                android:text="알람 소리"
+                android:textColor="@color/grey_300"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/llRepeatDay" />
+
+            <LinearLayout
+                android:id="@+id/llAlarmSound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/tvAlarmSound"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvAlarmSound">
+
+                <TextView
+                    style="@style/body4_m_12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="알람 소리1"
+                    android:textColor="@color/grey_500" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_right_arrow_white_22" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvSendPush"
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="52dp"
+                android:text="푸시 알림 여부"
+                android:textColor="@color/grey_300"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAlarmSound" />
+
+            <TextView
+                android:id="@+id/tvSendPushTimeAgo"
+                style="@style/body4_m_12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="1시간 전"
+                android:textColor="@color/grey_500"
+                app:layout_constraintBottom_toBottomOf="@+id/tgPushAlarm"
+                app:layout_constraintEnd_toStartOf="@+id/tgPushAlarm"
+                app:layout_constraintTop_toTopOf="@+id/tgPushAlarm" />
+
+            <com.whiplash.presentation.component.toggle.WhiplashToggle
+                android:id="@+id/tgPushAlarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/tvSendPush"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvSendPush" />
+
+            <TextView
+                android:id="@+id/tvCreateAlarmAlert"
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="52dp"
+                android:text="주의 사항"
+                android:textColor="@color/grey_300"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSendPush" />
+
+            <com.whiplash.presentation.component.view.AlarmAlertView
+                android:id="@+id/createAlarmAlert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvCreateAlarmAlert" />
+
+            <com.whiplash.presentation.component.button.WhiplashCommonButton
+                android:id="@+id/btnSaveAlarm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                app:buttonBackgroundColor="@color/grey_50"
+                app:buttonText="저장하기"
+                app:buttonTextColor="@color/grey_900"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/createAlarmAlert"
+                app:layout_constraintVertical_bias="0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

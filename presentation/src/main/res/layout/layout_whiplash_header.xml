@@ -27,8 +27,8 @@
         android:gravity="center"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/iv_right"
-        app:layout_constraintStart_toEndOf="@id/iv_left"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="헤더 텍스트" />
 
