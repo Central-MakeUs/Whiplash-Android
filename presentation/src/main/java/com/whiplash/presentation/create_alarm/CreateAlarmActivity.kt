@@ -11,6 +11,11 @@ import com.whiplash.presentation.databinding.ActivityCreateAlarmBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 
+/**
+ * [com.whiplash.presentation.main.MainActivity]에서 상단 오른쪽 흰색 + 클릭 후 이동하는 알람 설정 화면
+ *
+ * 장소 선택, 알람 목적, 휠을 돌려서 알람 시간 설정, 반복 여부(월~일), 푸시 알림 여부를 설정
+ */
 @AndroidEntryPoint
 class CreateAlarmActivity : AppCompatActivity() {
 
