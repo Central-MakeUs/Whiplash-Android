@@ -44,15 +44,39 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.whiplash.presentation.component.edittext.WhiplashSearchBar
-                android:id="@+id/etSelectPlace"
-                style="@style/body1_m_16"
+            <LinearLayout
+                android:id="@+id/clSelectPriceContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="44dp"
                 android:layout_marginTop="8dp"
-                android:hint="도착 목표 장소는?"
+                android:background="@drawable/bg_whiplash_searchbar_normal"
+                android:orientation="horizontal"
+                android:padding="10dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSelectPlace" />
+                app:layout_constraintTop_toBottomOf="@+id/tvSelectPlace">
+
+                <ImageView
+                    android:id="@+id/ivSearch"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_search_gray_22"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/etSearch"
+                    style="@style/body1_m_16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
+                    android:text="도착 목표 장소는?"
+                    android:textColor="@color/grey_500"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ivSearch"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </LinearLayout>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -72,7 +96,7 @@
                 android:text="지도에서 찾기"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etSelectPlace" />
+                app:layout_constraintTop_toBottomOf="@+id/clSelectPriceContainer" />
 
             <TextView
                 android:id="@+id/tvAlarmPurpose"
@@ -83,7 +107,7 @@
                 android:text="알람 목적"
                 android:textColor="@color/grey_300"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etSelectPlace" />
+                app:layout_constraintTop_toBottomOf="@+id/clSelectPriceContainer" />
 
             <com.whiplash.presentation.component.edittext.WhiplashEditText
                 android:id="@+id/etAlarmPurpose"
