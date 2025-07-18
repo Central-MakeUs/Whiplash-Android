@@ -17,7 +17,6 @@ hilt = "2.52"
 dataStore = "1.1.5"
 coil = "2.6.0"
 coroutines-core = "1.7.3"
-numberPicker = "2.4.13"
 okhttp = "4.12.0"
 okhttpUrlconnection = "4.9.2"
 retrofit = "3.0.0"
@@ -37,6 +36,9 @@ mockk = "1.13.8"
 
 # 카카오 로그인
 kakaoV2User = "2.3.0"
+
+# 알람 설정 화면에서 사용하는 NumberPicker 라이브러리
+numberPicker = "2.4.13"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
