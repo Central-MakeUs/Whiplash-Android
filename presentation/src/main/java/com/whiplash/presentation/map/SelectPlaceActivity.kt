@@ -6,27 +6,35 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.whiplash.presentation.R
-import com.whiplash.presentation.databinding.ActivityMainBinding
-import com.whiplash.presentation.databinding.ActivityNaverMapTestBinding
+import com.whiplash.presentation.databinding.ActivitySelectPlaceBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
- * 네이버 지도 테스트용
+ * 장소 선택 화면
  */
 @AndroidEntryPoint
-class NaverMapTestActivity : AppCompatActivity() {
+class SelectPlaceActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityNaverMapTestBinding
+    private lateinit var binding: ActivitySelectPlaceBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityNaverMapTestBinding.inflate(layoutInflater)
+        binding = ActivitySelectPlaceBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.naver_map_main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        setupView()
     }
+
+    private fun setupView() {
+        with(binding) {
+            whSelectPlace.setTitle(getString(R.string.select_place_header))
+        }
+    }
+
 }

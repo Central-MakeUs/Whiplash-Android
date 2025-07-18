@@ -31,7 +31,7 @@
             android:name=".login.LoginActivity"
             android:exported="true" />
         <activity
-            android:name=".map.NaverMapTestActivity"
+            android:name=".map.SelectPlaceActivity"
             android:exported="true" />
     </application>
 

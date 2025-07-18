@@ -34,4 +34,7 @@
     <!-- 알람 설정 화면 하단 경고 UI -->
     <string name="create_alarm_bottom_alert_first_text">지금 설정한 알람은 삭제할 수 없어요!</string>
     <string name="create_alarm_bottom_alert_second_text">소리가 매우 자극적일 수 있어요!</string>
+
+    <!-- 장소 선택 화면(지도에서 찾기 클릭 시 이동) -->
+    <string name="select_place_header">장소 선택</string>
 </resources>
