@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityCreateAlarmBinding
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.util.Calendar
 
 /**
@@ -44,6 +45,11 @@ class CreateAlarmActivity : AppCompatActivity() {
             // 토글은 기본적으로 체크 상태
             tgPushAlarm.setChecked(true)
             whCreateAlarm.setTitle(getString(R.string.create_alarm_header))
+
+            btnSaveAlarm.setOnClickListener {
+                val time = getSelectedTime()
+                Timber.d("## [시간] 오전 / 오후 : ${time.first}, 시 : ${time.second}, 분 : ${time.third}")
+            }
         }
     }
 

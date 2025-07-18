@@ -340,7 +340,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvCreateAlarmAlert" />
 
             <com.whiplash.presentation.component.button.WhiplashCommonButton
-                android:id="@+id/saveAlarm"
+                android:id="@+id/btnSaveAlarm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
