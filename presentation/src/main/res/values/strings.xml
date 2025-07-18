@@ -8,6 +8,16 @@
     <string name="time_am">오전</string>
     <string name="time_pm">오후</string>
 
+    <string-array name="day_names_korean">
+        <item>월</item>
+        <item>화</item>
+        <item>수</item>
+        <item>목</item>
+        <item>금</item>
+        <item>토</item>
+        <item>일</item>
+    </string-array>
+
     <!-- MainActivity - 상단 UI -->
     <string name="home_alert_first_text">예정 시간 1시간 전부터 인증 가능해요!</string>
     <string name="home_alert_second_text">‘알람 끄기’는 알람별로 3회까지 가능해요!</string>

@@ -32,20 +32,26 @@ class CreateAlarmActivity : AppCompatActivity() {
 
     private fun setupView() {
         with(binding) {
-            btnMon.setText("월")
-            btnTue.setText("화")
-            btnWed.setText("수")
-            btnThur.setText("목")
-            btnFri.setText("금")
-            btnSat.setText("토")
-            btnSun.setText("일")
+            setRepeatDay()
+            setCreateAlarmAlertTexts()
+            setTimePickers()
 
             // 토글은 기본적으로 체크 상태
             tgPushAlarm.setChecked(true)
             whCreateAlarm.setTitle(getString(R.string.create_alarm_header))
+        }
+    }
 
-            setCreateAlarmAlertTexts()
-            setTimePickers()
+    private fun setRepeatDay() {
+        // 월~일
+        val dayButtons = arrayOf(
+            binding.btnMon, binding.btnTue, binding.btnWed, binding.btnThur,
+            binding.btnFri, binding.btnSat, binding.btnSun
+        )
+        val dayNames = resources.getStringArray(R.array.day_names_korean)
+
+        dayButtons.forEachIndexed { index, button ->
+            button.setText(dayNames[index])
         }
     }
 
