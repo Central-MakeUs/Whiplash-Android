@@ -3,8 +3,11 @@ package com.whiplash.presentation.map
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
+import android.widget.LinearLayout
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresPermission
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -16,6 +19,8 @@ import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.naver.maps.geometry.LatLng
 import com.whiplash.presentation.R
@@ -44,6 +49,10 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
+    // 마커 표시할 위경도
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -63,7 +72,19 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
             PermissionUtils.requestLocationPermissions(this)
         }
 
+        getDataFromIntent()
         setupView()
+    }
+
+    private fun getDataFromIntent() {
+        // FIXME : 테스트 때문에 임시값 사용. 실제 값 받게 되면 그걸 사용한다
+        latitude = 37.498095
+        longitude = 127.027610
+
+        // 인텐트에서 받아온 데이터
+        // placeAddress = intent.getStringExtra("address")
+        // placeLatitude = intent.getDoubleExtra("latitude", 0.0)
+        // placeLongitude = intent.getDoubleExtra("longitude", 0.0)
     }
 
     private fun setupUserLocationSource() {
@@ -92,34 +113,95 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
         naverMap.apply {
             locationSource = locationSource
             uiSettings.isLocationButtonEnabled = true
-            locationOverlay.isVisible = true
         }
 
-        // 네이버 지도를 사용하면 내가 만든 권한 요청 함수 대신 아래 코드를 사용하라는 컴파일 에러가 표시되어 아래 로직 사용
-        // 앱 실행에 오류는 없지만 이 로직을 사용하기로 함
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
+        // 전달받은 위치에 마커 + "여기서 알람 끄기!" 표시하면서 카메라 이동
+        if (latitude != 0.0 && longitude != 0.0) {
+            val targetLocation = LatLng(latitude, longitude)
+            naverMap.moveCamera(CameraUpdate.scrollTo(targetLocation))
 
-        // 마지막으로 알려진 위치
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            location?.let {
-                // 위치 값을 받아오면 내 위치에 마커 표시
-                val latLng = LatLng(it.latitude, it.longitude)
-                naverMap.apply {
-                    moveCamera(CameraUpdate.scrollTo(latLng))
-                    locationOverlay.position = latLng
-                    locationOverlay.isVisible = true
+            createCustomMarker(targetLocation, getString(R.string.disable_alarm_here))
+        } else {
+            // 네이버 지도를 사용하면 내가 만든 권한 요청 함수 대신 아래 코드를 사용하라는 컴파일 에러가 표시되어 아래 로직 사용
+            // 앱 실행에 오류는 없지만 이 로직을 사용하기로 함
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+
+            // 마지막으로 알려진 위치
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                location?.let {
+                    // 위치 값을 받아오면 내 위치에 마커 표시
+                    val latLng = LatLng(it.latitude, it.longitude)
+                    naverMap.apply {
+                        moveCamera(CameraUpdate.scrollTo(latLng))
+                        locationOverlay.position = latLng
+                        locationOverlay.isVisible = true
+                    }
                 }
             }
         }
+    }
+
+    // 커스텀 마커 뷰 생성 (텍스트뷰 + 마커 이미지를 세로로 배치)
+    private fun createCustomMarker(position: LatLng, address: String) {
+        val marker = Marker()
+        marker.position = position
+
+        // LinearLayout에 텍스트뷰 + 이미지뷰를 세로로 배치
+        val linearLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = android.view.Gravity.CENTER_HORIZONTAL
+        }
+
+        // 텍스트뷰 동적 생성
+        val textView = createMarkerTextView(address)
+        linearLayout.addView(textView)
+
+        // 마커 이미지뷰 생성
+        val imageView = ImageView(this).apply {
+            setImageResource(R.drawable.ic_place_marker_48)
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+        }
+        linearLayout.addView(imageView)
+
+        marker.icon = OverlayImage.fromView(linearLayout)
+        marker.map = naverMap
+    }
+
+    // 마커 위에 표시할 텍스트뷰 동적 생성
+    private fun createMarkerTextView(text: String): TextView {
+        val textView = TextView(this)
+        textView.apply {
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            layoutParams = params
+            this.text = text
+            textSize = 14f
+            setTextColor(android.graphics.Color.WHITE)
+            setBackgroundResource(R.drawable.bg_marker_text)
+            setPadding(
+                resources.getDimensionPixelSize(R.dimen.dp_10),
+                resources.getDimensionPixelSize(R.dimen.dp_4),
+                resources.getDimensionPixelSize(R.dimen.dp_10),
+                resources.getDimensionPixelSize(R.dimen.dp_4)
+            )
+            gravity = android.view.Gravity.CENTER
+        }
+
+        return textView
     }
 
     override fun onRequestPermissionsResult(
