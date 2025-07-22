@@ -1,7 +1,11 @@
 package com.whiplash.presentation.main
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.PopupWindow
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -57,6 +61,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             ivDotMenu.setOnClickListener {
+                showThreeDotMenu()
             }
         }
 
@@ -98,4 +103,48 @@ class MainActivity : AppCompatActivity() {
             secondText = getString(R.string.home_alert_second_text),
         )
     }
+
+    private fun showThreeDotMenu() {
+        val popupView = LayoutInflater.from(this).inflate(R.layout.menu_home_popup, null)
+        val popupWindow = PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        // popupWindow는 뷰 바인딩 대상이 아니라 findViewById()로 내부 뷰에 접근
+        val tvRemoveAlarm = popupView.findViewById<TextView>(R.id.tvRemoveAlarm)
+        val tvManageUserInfo = popupView.findViewById<TextView>(R.id.tvManageUserInfo)
+
+        tvRemoveAlarm.setOnClickListener {
+            popupWindow.dismiss()
+            Timber.d("## [팝업] 알람 삭제 클릭")
+        }
+
+        tvManageUserInfo.setOnClickListener {
+            popupWindow.dismiss()
+            Timber.d("## [팝업] 회원 정보 관리 클릭")
+        }
+
+        // 화면의 전체 width 조회
+        val screenWidth = resources.displayMetrics.widthPixels
+        popupView.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        val popupWidth = popupView.measuredWidth
+
+        // 화면에서 ivDotMenu의 위치
+        val location = IntArray(2)
+        binding.ivDotMenu.getLocationOnScreen(location)
+        val anchorLeft = location[0]
+
+        // xOffset을 계산해서 오른쪽에서 20dp 떨어진 곳에 popupWindow 표시
+        val xOffset =
+            screenWidth - (anchorLeft + popupWidth) - (20 * resources.displayMetrics.density).toInt()
+
+        popupWindow.showAsDropDown(binding.ivDotMenu, xOffset, 0)
+    }
+
 }
