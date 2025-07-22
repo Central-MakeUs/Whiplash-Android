@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet_16_radius"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
+
+    <TextView
+        android:id="@+id/tvPlaceAddress"
+        style="@style/subtitle3_b_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:minHeight="28dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="구리시 갈매동" />
+
+    <TextView
+        android:id="@+id/tvPlaceDetailAddress"
+        style="@style/body2_m_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:minHeight="20dp"
+        android:textColor="@color/grey_500"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPlaceAddress"
+        tools:text="경기 구리시 갈매동" />
+
+    <com.whiplash.presentation.component.button.WhiplashCommonButton
+        android:id="@+id/btnCancelRegisterAddress"
+        android:layout_width="98dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginBottom="68dp"
+        app:buttonBackgroundColor="@color/grey_800"
+        app:buttonText="@string/cancel_string"
+        app:buttonTextColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPlaceDetailAddress"
+        app:layout_constraintVertical_bias="0" />
+
+    <com.whiplash.presentation.component.button.WhiplashCommonButton
+        android:id="@+id/btnRegisterAddress"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        app:buttonBackgroundColor="@color/white"
+        app:buttonText="@string/register_target_address"
+        app:buttonTextColor="@color/grey_900"
+        app:layout_constraintBottom_toBottomOf="@+id/btnCancelRegisterAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnCancelRegisterAddress"
+        app:layout_constraintTop_toTopOf="@+id/btnCancelRegisterAddress" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

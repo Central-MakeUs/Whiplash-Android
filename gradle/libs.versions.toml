@@ -6,7 +6,6 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
-naverMapSdk = "3.22.0"
 material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
@@ -39,6 +38,10 @@ kakaoV2User = "2.3.0"
 
 # 알람 설정 화면에서 사용하는 NumberPicker 라이브러리
 numberPicker = "2.4.13"
+
+# 네이버 지도
+naverMapSdk = "3.22.0"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -88,6 +91,7 @@ kakao-v2-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoV2User" 
 
 # 네이버 지도
 naver-map-sdk = { module = "com.naver.maps:map-sdk", version.ref = "naverMapSdk" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 
 # 알람 설정 화면에서 사용하는 NumberPicker 라이브러리
 number-picker = { module = "io.github.ShawnLin013:number-picker", version.ref = "numberPicker" }
