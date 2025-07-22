@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/user_info_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_900"
+    android:orientation="vertical"
+    tools:context=".user_info.UserInfoActivity">
+
+    <com.whiplash.presentation.component.header.WhiplashHeader
+        android:id="@+id/whUserInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:showLeftIcon="true" />
+
+    <TextView
+        style="@style/body2_m_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="22dp"
+        android:text="@string/version_info_title"
+        android:textColor="@color/grey5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/whUserInfo" />
+
+    <!-- 현재 버전 -->
+    <com.whiplash.presentation.component.view.UserInfoView
+        android:id="@+id/uivCurrentVersion"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        style="@style/body2_m_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="22dp"
+        android:text="@string/policy_title"
+        android:textColor="@color/grey5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/whUserInfo" />
+
+    <!-- 이용약관 -->
+    <com.whiplash.presentation.component.view.UserInfoView
+        android:id="@+id/uivTermsAndConditions"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"/>
+
+    <!-- 개인정보처리방침 -->
+    <com.whiplash.presentation.component.view.UserInfoView
+        android:id="@+id/uivPolicyPersonalInfo"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"/>
+
+    <!-- 정보동의 설정 -->
+    <com.whiplash.presentation.component.view.UserInfoView
+        android:id="@+id/uivSettingAgreements"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        style="@style/body2_m_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="22dp"
+        android:text="@string/service_setting_title"
+        android:textColor="@color/grey5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/whUserInfo" />
+
+    <!-- 문의하기 -->
+    <com.whiplash.presentation.component.view.UserInfoView
+        android:id="@+id/uivInquiry"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        style="@style/body2_m_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="22dp"
+        android:text="@string/logout_withdrawal_title"
+        android:textColor="@color/grey5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/whUserInfo" />
+
+    <!-- 로그아웃하기 -->
+    <com.whiplash.presentation.component.view.UserInfoView
+        android:id="@+id/uivLogout"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"/>
+
+    <!-- 회원탈퇴 -->
+    <com.whiplash.presentation.component.view.UserInfoView
+        android:id="@+id/uivWithdrawal"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>

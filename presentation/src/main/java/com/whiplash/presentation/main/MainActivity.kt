@@ -18,6 +18,7 @@ import com.whiplash.presentation.R
 import com.whiplash.presentation.create_alarm.CreateAlarmActivity
 import com.whiplash.presentation.databinding.ActivityMainBinding
 import com.whiplash.presentation.dialog.DisableAlarmPopup
+import com.whiplash.presentation.user_info.UserInfoActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -125,6 +126,7 @@ class MainActivity : AppCompatActivity() {
         tvManageUserInfo.setOnClickListener {
             popupWindow.dismiss()
             Timber.d("## [팝업] 회원 정보 관리 클릭")
+            navigateTo<UserInfoActivity> {}
         }
 
         // 화면의 전체 width 조회
