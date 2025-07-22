@@ -148,6 +148,17 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
+
+        showPlaceBottomSheet()
+    }
+
+    private fun showPlaceBottomSheet() {
+        // FIXME : 테스트 값 대신 실제값 사용하게 수정
+        val bottomSheetFragment = PlaceBottomSheetFragment.newInstance(
+            address = "구리시 갈매동",
+            detailAddress = "경기 구리시 갈매동"
+        )
+        bottomSheetFragment.show(supportFragmentManager, "PlaceBottomSheetFragment")
     }
 
     // 커스텀 마커 뷰 생성 (텍스트뷰 + 마커 이미지를 세로로 배치)
