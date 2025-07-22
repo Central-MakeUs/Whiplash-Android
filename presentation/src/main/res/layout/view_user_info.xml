@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grey_900"
+    android:gravity="start|center"
+    android:paddingHorizontal="18dp">
+
+    <ImageView
+        android:id="@+id/ivUserView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_profile_go_onboarding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvUserView"
+        style="@style/body1_m_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:minHeight="24dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/ivUserView"
+        app:layout_constraintStart_toEndOf="@+id/ivUserView"
+        app:layout_constraintTop_toTopOf="@+id/ivUserView"
+        tools:text="현재 버전" />
+
+    <TextView
+        android:id="@+id/tvAppVersion"
+        style="@style/body2_m_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey4"
+        app:layout_constraintBottom_toBottomOf="@+id/tvUserView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvUserView"
+        tools:text="최신버전" />
+
+    <ImageView
+        android:id="@+id/ivUserInfoRightArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_right_arrow_white_22"
+        app:layout_constraintBottom_toBottomOf="@+id/tvUserView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvUserView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
