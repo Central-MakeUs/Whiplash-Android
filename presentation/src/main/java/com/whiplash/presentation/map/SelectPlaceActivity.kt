@@ -42,6 +42,8 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
     // FusedLocationProviderClient와 지자기, 가속도 센서를 활용해 유저 위치를 리턴하는 구현체
     private lateinit var locationSource: FusedLocationSource
 
+    private var bottomSheetFragment: PlaceBottomSheetFragment? = null
+
     companion object {
         /**
          * @see onRequestPermissionsResult
@@ -153,6 +155,11 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun showPlaceBottomSheet() {
+        // 이미 바텀 시트가 표시되고 있으면 중복 표시하지 않는다
+        if (bottomSheetFragment?.isVisible == true) {
+            return
+        }
+
         // FIXME : 테스트 값 대신 실제값 사용하게 수정
         val bottomSheetFragment = PlaceBottomSheetFragment.newInstance(
             address = "구리시 갈매동",

@@ -59,13 +59,7 @@ class PlaceBottomSheetFragment : BottomSheetDialogFragment() {
 
         setupBottomSheetBehavior()
         setupViews()
-    }
-
-    private fun setupViews() {
-        with(binding) {
-            tvPlaceAddress.text = address
-            tvPlaceDetailAddress.text = detailAddress
-        }
+        setupListeners()
     }
 
     private fun setupBottomSheetBehavior() {
@@ -76,6 +70,25 @@ class PlaceBottomSheetFragment : BottomSheetDialogFragment() {
                 val behavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(sheet)
                 behavior.state = com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
                 behavior.isDraggable = false
+            }
+        }
+    }
+
+    private fun setupViews() {
+        with(binding) {
+            tvPlaceAddress.text = address
+            tvPlaceDetailAddress.text = detailAddress
+        }
+    }
+
+    private fun setupListeners() {
+        with(binding) {
+            btnCancelRegisterAddress.setOnClickListener {
+                dismiss()
+                requireActivity().finish()
+            }
+
+            btnRegisterAddress.setOnClickListener {
             }
         }
     }
