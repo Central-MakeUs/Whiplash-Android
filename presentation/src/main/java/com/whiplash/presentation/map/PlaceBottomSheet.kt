@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.whiplash.presentation.databinding.FragmentPlaceBottomSheetBinding
 
+/**
+ * 네이버 지도를 띄우는 액티비티에 표시되는 바텀 시트
+ */
 class PlaceBottomSheetFragment : BottomSheetDialogFragment() {
 
     private var _binding: FragmentPlaceBottomSheetBinding? = null
@@ -34,6 +37,8 @@ class PlaceBottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 바텀 시트 바깥 영역을 눌러도 사라지지 않게
+        isCancelable = false
         arguments?.let {
             address = it.getString(ARG_ADDRESS)
             detailAddress = it.getString(ARG_DETAIL_ADDRESS)
