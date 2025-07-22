@@ -33,8 +33,18 @@
         android:id="@+id/ivAddAlarm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="18dp"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/ic_plus_28"
+        app:layout_constraintBottom_toBottomOf="@+id/tvHomeAlarmList"
+        app:layout_constraintEnd_toStartOf="@+id/ivDotMenu"
+        app:layout_constraintTop_toTopOf="@+id/tvHomeAlarmList" />
+
+    <ImageView
+        android:id="@+id/ivDotMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="18dp"
+        android:src="@drawable/ic_dot_28"
         app:layout_constraintBottom_toBottomOf="@+id/tvHomeAlarmList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvHomeAlarmList" />

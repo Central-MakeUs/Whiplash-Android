@@ -55,6 +55,9 @@ class MainActivity : AppCompatActivity() {
             ivAddAlarm.setOnClickListener {
                 navigateTo<CreateAlarmActivity>{}
             }
+
+            ivDotMenu.setOnClickListener {
+            }
         }
 
         mainViewModel.getAlarms()
