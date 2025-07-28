@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
 
+    // dataStore
     implementation(libs.datastore)
 
     implementation(libs.kotlinx.serialization.json)
