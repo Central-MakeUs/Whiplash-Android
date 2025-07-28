@@ -2,11 +2,11 @@ package com.whiplash.presentation.map
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.PointF
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
-import android.widget.LinearLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
@@ -15,14 +15,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.CircleOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
-import com.naver.maps.geometry.LatLng
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivitySelectPlaceBinding
 import com.whiplash.presentation.util.PermissionUtils
@@ -189,12 +190,33 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+            ).apply {
+                // 텍스트뷰 높이만큼 마진을 먹여서 마커 아이콘 위치를 위경도에 정확히 맞춤
+                topMargin = -textView.layoutParams.height - resources.getDimensionPixelSize(R.dimen.dp_8)
+            }
         }
         linearLayout.addView(imageView)
 
         marker.icon = OverlayImage.fromView(linearLayout)
+        // 마커가 해당 위경도에 정확히 표시되기 위한 anchor 설정
+        marker.anchor = PointF(0.5f, 0.8f)
         marker.map = naverMap
+
+        // 마커 기준 100m 반경 원형 오버레이 추가
+        createCircleOverlay(position)
+    }
+
+    // 마커 기준으로 100m 반경 원형 표시
+    private fun createCircleOverlay(position: LatLng) {
+        val circle = CircleOverlay()
+        circle.apply {
+            center = position
+            radius = 100.0 // 100미터
+            color = resources.getColor(R.color.pink_10, null)
+            outlineColor = resources.getColor(R.color.pink_400, null) // 테두리
+            outlineWidth = resources.getDimensionPixelSize(R.dimen.dp_1) // 테두리 두께
+            map = naverMap
+        }
     }
 
     // 마커 위에 표시할 텍스트뷰 동적 생성
