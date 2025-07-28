@@ -1,6 +1,7 @@
 package com.whiplash.presentation.create_alarm
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -40,11 +41,10 @@ class CreateAlarmActivity : AppCompatActivity() {
 
     private fun setupView() {
         with(binding) {
+            setupExpandableView()
             setRepeatDay()
             setTimePickers()
 
-            // 토글은 기본적으로 체크 상태
-            tgPushAlarm.setChecked(true)
             whCreateAlarm.setTitle(getString(R.string.create_alarm_header))
 
             // 지도에서 찾기
@@ -55,6 +55,22 @@ class CreateAlarmActivity : AppCompatActivity() {
             btnSaveAlarm.setOnClickListener {
                 val time = getSelectedTime()
                 Timber.d("## [시간] 오전 / 오후 : ${time.first}, 시 : ${time.second}, 분 : ${time.third}")
+            }
+        }
+    }
+
+    private fun setupExpandableView() {
+        var isExpanded = false
+
+        binding.llExpandableHeader.setOnClickListener {
+            isExpanded = !isExpanded
+
+            if (isExpanded) {
+                binding.llExpandableContent.visibility = View.VISIBLE
+                binding.ivExpandArrow.setImageResource(R.drawable.ic_up_arrow_white_22)
+            } else {
+                binding.llExpandableContent.visibility = View.GONE
+                binding.ivExpandArrow.setImageResource(R.drawable.ic_down_arrow_white_22)
             }
         }
     }

@@ -18,6 +18,115 @@
         app:layout_constraintTop_toTopOf="parent"
         app:showLeftIcon="true" />
 
+    <LinearLayout
+        android:id="@+id/llExpandableHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:background="@color/grey_800"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="11dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/whCreateAlarm">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_alarm_caution_start"
+                android:textColor="@color/lemon_400" />
+
+            <TextView
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_alarm_caution_end"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivExpandArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_down_arrow_white_22" />
+
+    </LinearLayout>
+
+    <!-- 펼쳐지는 컨텐츠 UI -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/llExpandableContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_800"
+        android:elevation="1dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="18dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llExpandableHeader"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/ivHomeCertification"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_warning_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvHomeCertificationContent"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/create_alarm_alert_first"
+            android:textColor="@color/grey_400"
+            app:layout_constraintBottom_toBottomOf="@+id/ivHomeCertification"
+            app:layout_constraintStart_toEndOf="@+id/ivHomeCertification"
+            app:layout_constraintTop_toTopOf="@+id/ivHomeCertification" />
+
+        <ImageView
+            android:id="@+id/ivHomeCertification2"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_warning_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivHomeCertification" />
+
+        <TextView
+            android:id="@+id/tvHomeCertificationContent2"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/create_alarm_alert_second"
+            android:textColor="@color/grey_400"
+            app:layout_constraintBottom_toBottomOf="@+id/ivHomeCertification2"
+            app:layout_constraintStart_toEndOf="@+id/ivHomeCertification2"
+            app:layout_constraintTop_toTopOf="@+id/ivHomeCertification2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -27,7 +136,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/whCreateAlarm">
+        app:layout_constraintTop_toBottomOf="@+id/llExpandableHeader">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -39,7 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="장소 선택"
+                android:text="@string/select_place"
                 android:textColor="@color/grey_300"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -70,7 +179,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="4dp"
-                    android:text="도착 목표 장소는?"
+                    android:text="@string/arrive_target_place_hint"
                     android:textColor="@color/grey_500"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/ivSearch"
@@ -100,7 +209,7 @@
                     style="@style/body2_m_14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="지도에서 찾기"
+                    android:text="@string/find_in_map"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -113,7 +222,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="54dp"
-                android:text="알람 목적"
+                android:text="@string/alarm_purpose"
                 android:textColor="@color/grey_300"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/clSelectPlaceContainer" />
@@ -124,7 +233,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="눈 떠!"
+                android:hint="@string/alarm_purpose_hint"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvAlarmPurpose" />
 
@@ -134,7 +243,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="알람 시간"
+                android:text="@string/alarm_time"
                 android:textColor="@color/grey_300"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etAlarmPurpose" />
@@ -204,7 +313,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="반복 여부"
+                android:text="@string/is_repeatable"
                 android:textColor="@color/grey_300"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/llAlarmTime" />
@@ -268,7 +377,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="42dp"
-                android:text="알람 소리"
+                android:text="@string/alarm_sound"
                 android:textColor="@color/grey_300"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/llRepeatDay" />
@@ -284,6 +393,7 @@
                 app:layout_constraintTop_toTopOf="@+id/tvAlarmSound">
 
                 <TextView
+                    android:id="@+id/tvAlarmSoundDetail"
                     style="@style/body4_m_12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -298,59 +408,19 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvSendPush"
-                style="@style/body2_m_14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="52dp"
-                android:text="푸시 알림 여부"
-                android:textColor="@color/grey_300"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvAlarmSound" />
-
-            <TextView
-                android:id="@+id/tvSendPushTimeAgo"
-                style="@style/body4_m_12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="1시간 전"
-                android:textColor="@color/grey_500"
-                app:layout_constraintBottom_toBottomOf="@+id/tgPushAlarm"
-                app:layout_constraintEnd_toStartOf="@+id/tgPushAlarm"
-                app:layout_constraintTop_toTopOf="@+id/tgPushAlarm" />
-
-            <com.whiplash.presentation.component.toggle.WhiplashToggle
-                android:id="@+id/tgPushAlarm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@+id/tvSendPush"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvSendPush" />
-
-            <TextView
-                android:id="@+id/tvCreateAlarmAlert"
-                style="@style/body2_m_14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="52dp"
-                android:text="주의 사항"
-                android:textColor="@color/grey_300"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSendPush" />
-
             <com.whiplash.presentation.component.button.WhiplashCommonButton
                 android:id="@+id/btnSaveAlarm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="54dp"
                 android:layout_marginBottom="60dp"
                 app:buttonBackgroundColor="@color/grey_50"
-                app:buttonText="저장하기"
+                app:buttonText="@string/create_alarm"
                 app:buttonTextColor="@color/grey_900"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvAlarmSound"
                 app:layout_constraintVertical_bias="0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
