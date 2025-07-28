@@ -114,6 +114,8 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(map: NaverMap) {
         naverMap = map
         naverMap.apply {
+            isNightModeEnabled = true
+            mapType = NaverMap.MapType.Navi // Navi 유형만 다크모드를 지원해서 Navi 타입으로 설정해야 함
             locationSource = locationSource
             uiSettings.isLocationButtonEnabled = true
         }
