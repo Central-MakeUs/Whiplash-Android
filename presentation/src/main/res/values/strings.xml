@@ -21,9 +21,19 @@
         <item>일</item>
     </string-array>
 
-    <!-- MainActivity - 상단 UI -->
-    <string name="home_alert_first_text">예정 시간 1시간 전부터 인증 가능해요!</string>
-    <string name="home_alert_second_text">‘알람 끄기’는 알람별로 3회까지 가능해요!</string>
+    <!-- MainActivity - 상단 접고 펼치는 UI -->
+    <string name="home_alarm_caution_start">알람 유의사항</string>
+    <string name="home_alarm_caution_end">을 반드시 숙지하세요!</string>
+    <string name="home_arrived_certification">도착 인증</string>
+    <string name="home_arrived_certification_content">도착인증은 알람시간 1시간 전부터 가능해요</string>
+    <string name="home_turn_off_alarm">알람 끄기</string>
+    <string name="home_turn_off_alarm_content">인증하지 않고 알람끄기는 알람별 2회까지 가능해요</string>
+    <string name="home_update_alarm">알람 수정</string>
+    <string name="home_update_alarm_content">알람 당일은 시간과 장소 수정이 불가능해요</string>
+    <string name="home_remove_alarm">알람 삭제</string>
+    <string name="home_remove_alarm_content_first">알람 삭제는 주 2회 가능해요</string>
+    <string name="home_remove_alarm_content_second">알람 삭제는 알람 설정 시간의 24시간 전까지 가능해요</string>
+    <string name="home_empty_alarm">아직 알람이 없어요</string>
 
     <!-- 알람 끄기 경고 팝업 -->
     <string name="disable_popup_title">경고</string>

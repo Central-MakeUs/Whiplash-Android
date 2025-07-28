@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -51,12 +52,11 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        setupExpandableView()
         setupRecyclerView()
         observeMainViewModel()
 
         with(binding) {
-            setHomeAlertPopupTexts()
-
             ivAddAlarm.setOnClickListener {
                 navigateTo<CreateAlarmActivity>{}
             }
@@ -72,6 +72,22 @@ class MainActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         alarmListAdapter = AlarmListAdapter()
         binding.rvHomeAlarm.adapter = alarmListAdapter
+    }
+
+    private fun setupExpandableView() {
+        var isExpanded = false
+
+        binding.llExpandableHeader.setOnClickListener {
+            isExpanded = !isExpanded
+
+            if (isExpanded) {
+                binding.llExpandableContent.visibility = View.VISIBLE
+                binding.ivExpandArrow.setImageResource(R.drawable.ic_up_arrow_white_22)
+            } else {
+                binding.llExpandableContent.visibility = View.GONE
+                binding.ivExpandArrow.setImageResource(R.drawable.ic_down_arrow_white_22)
+            }
+        }
     }
 
     private fun observeMainViewModel() {
@@ -96,13 +112,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun setHomeAlertPopupTexts() {
-        binding.homeAlert.setAlertTexts(
-            firstText = getString(R.string.home_alert_first_text),
-            secondText = getString(R.string.home_alert_second_text),
-        )
     }
 
     private fun showThreeDotMenu() {

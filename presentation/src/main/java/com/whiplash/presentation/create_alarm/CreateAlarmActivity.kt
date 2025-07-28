@@ -41,7 +41,6 @@ class CreateAlarmActivity : AppCompatActivity() {
     private fun setupView() {
         with(binding) {
             setRepeatDay()
-            setCreateAlarmAlertTexts()
             setTimePickers()
 
             // 토글은 기본적으로 체크 상태
@@ -126,13 +125,6 @@ class CreateAlarmActivity : AppCompatActivity() {
         val minute = binding.npMinutes.value
 
         return Triple(amPm, hour, minute)
-    }
-
-    private fun setCreateAlarmAlertTexts() {
-        binding.createAlarmAlert.setAlertTexts(
-            firstText = getString(R.string.create_alarm_bottom_alert_first_text),
-            secondText = getString(R.string.create_alarm_bottom_alert_second_text)
-        )
     }
 
 }

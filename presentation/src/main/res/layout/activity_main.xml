@@ -8,26 +8,17 @@
     android:background="@color/grey_900"
     tools:context=".main.MainActivity">
 
-    <com.whiplash.presentation.component.view.AlarmAlertView
-        android:id="@+id/homeAlert"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/tvHomeAlarmList"
         style="@style/subtitle5_b_16"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="72dp"
         android:text="알람 목록"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/homeAlert" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/ivAddAlarm"
@@ -49,6 +40,225 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvHomeAlarmList" />
 
+    <LinearLayout
+        android:id="@+id/llExpandableHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:background="@color/grey_800"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="11dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvHomeAlarmList">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/home_alarm_caution_start"
+                android:textColor="@color/lemon_400" />
+
+            <TextView
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/home_alarm_caution_end"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivExpandArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_down_arrow_white_22" />
+
+    </LinearLayout>
+
+    <!-- 펼쳐지는 컨텐츠 UI -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/llExpandableContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_800"
+        android:elevation="1dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="18dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llExpandableHeader"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/tvHomeCertification"
+            style="@style/body5_m_11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="16dp"
+            android:text="@string/home_arrived_certification"
+            android:textColor="@color/grey_200"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivHomeCertification"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_warning_16"
+            app:layout_constraintStart_toStartOf="@+id/tvHomeCertification"
+            app:layout_constraintTop_toBottomOf="@+id/tvHomeCertification" />
+
+        <TextView
+            android:id="@+id/tvHomeCertificationContent"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/home_arrived_certification_content"
+            android:textColor="@color/grey_400"
+            app:layout_constraintBottom_toBottomOf="@+id/ivHomeCertification"
+            app:layout_constraintStart_toEndOf="@+id/ivHomeCertification"
+            app:layout_constraintTop_toTopOf="@+id/ivHomeCertification" />
+
+        <TextView
+            android:id="@+id/tvTurnOffAlarm"
+            style="@style/body5_m_11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="16dp"
+            android:text="@string/home_turn_off_alarm"
+            android:textColor="@color/grey_200"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivHomeCertification" />
+
+        <ImageView
+            android:id="@+id/ivTurnOffAlarm"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_warning_16"
+            app:layout_constraintStart_toStartOf="@+id/tvTurnOffAlarm"
+            app:layout_constraintTop_toBottomOf="@+id/tvTurnOffAlarm" />
+
+        <TextView
+            android:id="@+id/tvTurnOffAlarmContent"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/home_turn_off_alarm_content"
+            android:textColor="@color/grey_400"
+            app:layout_constraintBottom_toBottomOf="@+id/ivTurnOffAlarm"
+            app:layout_constraintStart_toEndOf="@+id/ivTurnOffAlarm"
+            app:layout_constraintTop_toTopOf="@+id/ivTurnOffAlarm" />
+
+        <TextView
+            android:id="@+id/tvUpdateAlarm"
+            style="@style/body5_m_11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="16dp"
+            android:text="@string/home_update_alarm"
+            android:textColor="@color/grey_200"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivTurnOffAlarm" />
+
+        <ImageView
+            android:id="@+id/ivUpdateAlarm"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_warning_16"
+            app:layout_constraintStart_toStartOf="@+id/tvUpdateAlarm"
+            app:layout_constraintTop_toBottomOf="@+id/tvUpdateAlarm" />
+
+        <TextView
+            android:id="@+id/tvUpdateAlarmContent"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/home_update_alarm_content"
+            android:textColor="@color/grey_400"
+            app:layout_constraintBottom_toBottomOf="@+id/ivUpdateAlarm"
+            app:layout_constraintStart_toEndOf="@+id/ivUpdateAlarm"
+            app:layout_constraintTop_toTopOf="@+id/ivUpdateAlarm" />
+
+        <TextView
+            android:id="@+id/tvRemoveAlarm"
+            style="@style/body5_m_11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:minHeight="16dp"
+            android:text="@string/home_remove_alarm"
+            android:textColor="@color/grey_200"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivUpdateAlarm" />
+
+        <ImageView
+            android:id="@+id/ivRemoveAlarm"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_warning_16"
+            app:layout_constraintStart_toStartOf="@+id/tvRemoveAlarm"
+            app:layout_constraintTop_toBottomOf="@+id/tvRemoveAlarm" />
+
+        <TextView
+            android:id="@+id/tvRemoveAlarmFirstContent"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/home_remove_alarm_content_first"
+            android:textColor="@color/grey_400"
+            app:layout_constraintBottom_toBottomOf="@+id/ivRemoveAlarm"
+            app:layout_constraintStart_toEndOf="@+id/ivRemoveAlarm"
+            app:layout_constraintTop_toTopOf="@+id/ivRemoveAlarm" />
+
+        <ImageView
+            android:id="@+id/ivRemoveAlarm2"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_warning_16"
+            app:layout_constraintStart_toStartOf="@+id/ivRemoveAlarm"
+            app:layout_constraintTop_toBottomOf="@+id/ivRemoveAlarm" />
+
+        <TextView
+            android:id="@+id/tvRemoveAlarmFirstContent2"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/home_remove_alarm_content_second"
+            android:textColor="@color/grey_400"
+            app:layout_constraintBottom_toBottomOf="@+id/ivRemoveAlarm2"
+            app:layout_constraintStart_toEndOf="@+id/ivRemoveAlarm2"
+            app:layout_constraintTop_toTopOf="@+id/ivRemoveAlarm2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvHomeAlarm"
         android:layout_width="match_parent"
@@ -60,7 +270,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHomeAlarmList"
+        app:layout_constraintTop_toBottomOf="@+id/llExpandableHeader"
         tools:itemCount="10"
         tools:listitem="@layout/item_home_alarm" />
 
@@ -69,8 +279,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:emptyMessage="아직 알람이 없어요"
-        app:emptyTitle="아직 알람이 없어요"
+        app:emptyMessage="@string/home_empty_alarm"
+        app:emptyTitle="@string/home_empty_alarm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

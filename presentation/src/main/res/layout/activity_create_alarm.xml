@@ -340,26 +340,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvSendPush" />
 
-            <com.whiplash.presentation.component.view.AlarmAlertView
-                android:id="@+id/createAlarmAlert"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvCreateAlarmAlert" />
-
             <com.whiplash.presentation.component.button.WhiplashCommonButton
                 android:id="@+id/btnSaveAlarm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginBottom="60dp"
                 app:buttonBackgroundColor="@color/grey_50"
                 app:buttonText="저장하기"
                 app:buttonTextColor="@color/grey_900"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/createAlarmAlert"
                 app:layout_constraintVertical_bias="0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
