@@ -43,10 +43,21 @@
 
     <!-- 알람 설정 화면 -->
     <string name="create_alarm_header">알람 설정</string>
+    <string name="create_alarm">저장하기</string>
+    <string name="alarm_sound">알람 소리</string>
+    <string name="is_repeatable">반복 여부</string>
+    <string name="alarm_time">알람 시간</string>
+    <string name="alarm_purpose">알람 목적</string>
+    <string name="alarm_purpose_hint">눈 떠!</string>
+    <string name="find_in_map">지도에서 찾기</string>
+    <string name="arrive_target_place_hint">도착 목표 장소는?</string>
+    <string name="select_place">장소 선택</string>
 
     <!-- 알람 설정 화면 하단 경고 UI -->
-    <string name="create_alarm_bottom_alert_first_text">지금 설정한 알람은 삭제할 수 없어요!</string>
-    <string name="create_alarm_bottom_alert_second_text">소리가 매우 자극적일 수 있어요!</string>
+    <string name="create_alarm_caution_start">알람 설정 유의사항</string>
+    <string name="create_alarm_caution_end">을 반드시 숙지하세요!</string>
+    <string name="create_alarm_alert_first">소리가 매우 자극적일 수 있어요!</string>
+    <string name="create_alarm_alert_second">소리 선택을 하지 않으면 진동모드로 제공돼요</string>
 
     <!-- 장소 선택 화면(지도에서 찾기 클릭 시 이동) -->
     <string name="select_place_header">장소 선택</string>
