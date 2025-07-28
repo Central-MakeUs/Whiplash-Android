@@ -19,6 +19,7 @@ coroutines-core = "1.7.3"
 okhttp = "4.12.0"
 okhttpUrlconnection = "4.9.2"
 retrofit = "3.0.0"
+kotlinxSerialization = "1.0.0"
 timber = "5.0.1"
 jetbrainsKotlinJvm = "2.0.21"
 
@@ -70,6 +71,7 @@ okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
+converter-kotlinx-serialization = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "kotlinxSerialization" }
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 

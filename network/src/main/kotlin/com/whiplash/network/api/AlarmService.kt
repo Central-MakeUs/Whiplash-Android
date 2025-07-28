@@ -1,6 +1,6 @@
 package com.whiplash.network.api
 
-import com.whiplash.network.dto.ResponseGetAlarmList
+import com.whiplash.network.dto.response.ResponseGetAlarmList
 import retrofit2.http.GET
 
 interface AlarmService {
