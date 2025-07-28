@@ -55,8 +55,6 @@ class MainActivity : AppCompatActivity() {
         observeMainViewModel()
 
         with(binding) {
-            setHomeAlertPopupTexts()
-
             ivAddAlarm.setOnClickListener {
                 navigateTo<CreateAlarmActivity>{}
             }
@@ -96,13 +94,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun setHomeAlertPopupTexts() {
-        binding.homeAlert.setAlertTexts(
-            firstText = getString(R.string.home_alert_first_text),
-            secondText = getString(R.string.home_alert_second_text),
-        )
     }
 
     private fun showThreeDotMenu() {
