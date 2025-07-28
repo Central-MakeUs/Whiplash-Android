@@ -19,6 +19,7 @@ class TokenDataStore @Inject constructor(
     companion object {
         private val KEY_ACCESS_TOKEN = stringPreferencesKey("access_token")
         private val KEY_REFRESH_TOKEN = stringPreferencesKey("refresh_token")
+        private val KEY_DEVICE_ID = stringPreferencesKey("device_id")
     }
 
     val accessToken: Flow<String?> = context.dataStore.data
@@ -27,10 +28,19 @@ class TokenDataStore @Inject constructor(
     val refreshToken: Flow<String?> = context.dataStore.data
         .map { it[KEY_REFRESH_TOKEN] }
 
+    val deviceId: Flow<String?> = context.dataStore.data
+        .map { it[KEY_DEVICE_ID] }
+
     suspend fun saveTokens(accessToken: String, refreshToken: String) {
         context.dataStore.edit { prefs ->
             prefs[KEY_ACCESS_TOKEN] = accessToken
             prefs[KEY_REFRESH_TOKEN] = refreshToken
+        }
+    }
+
+    suspend fun saveDeviceId(deviceId: String) {
+        context.dataStore.edit { prefs ->
+            prefs[KEY_DEVICE_ID] = deviceId
         }
     }
 

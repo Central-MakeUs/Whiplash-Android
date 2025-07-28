@@ -1,4 +1,4 @@
-package com.whiplash.network.dto
+package com.whiplash.network.dto.response
 
 import kotlinx.serialization.Serializable
 

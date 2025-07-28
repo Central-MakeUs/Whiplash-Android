@@ -43,6 +43,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.retrofit)
+    implementation(libs.converter.kotlinx.serialization)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
     implementation(libs.hilt)
