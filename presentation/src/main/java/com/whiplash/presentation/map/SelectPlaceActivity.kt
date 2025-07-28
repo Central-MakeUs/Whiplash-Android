@@ -2,6 +2,7 @@ package com.whiplash.presentation.map
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.PointF
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -189,11 +190,16 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+            ).apply {
+                // 텍스트뷰 높이만큼 마진을 먹여서 마커 아이콘 위치를 위경도에 정확히 맞춤
+                topMargin = -textView.layoutParams.height - resources.getDimensionPixelSize(R.dimen.dp_8)
+            }
         }
         linearLayout.addView(imageView)
 
         marker.icon = OverlayImage.fromView(linearLayout)
+        // 마커가 해당 위경도에 정확히 표시되기 위한 anchor 설정
+        marker.anchor = PointF(0.5f, 0.8f)
         marker.map = naverMap
 
         // 마커 기준 100m 반경 원형 오버레이 추가
