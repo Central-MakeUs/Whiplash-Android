@@ -1,7 +1,7 @@
 package com.whiplash.presentation.login
 
 import android.content.Intent
-import com.whiplash.domain.entity.GoogleUserEntity
+import com.whiplash.domain.entity.auth.GoogleUserEntity
 import com.whiplash.domain.usecase.login.google.GetGoogleSignInIntentUseCase
 import com.whiplash.domain.usecase.login.google.HandleGoogleSignInResultUseCase
 import com.whiplash.domain.usecase.login.google.SignInWithGoogleUseCase

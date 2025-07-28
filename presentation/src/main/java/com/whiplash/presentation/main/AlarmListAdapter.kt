@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.whiplash.domain.entity.GetAlarmEntity
+import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.presentation.databinding.ItemHomeAlarmBinding
 import com.whiplash.presentation.util.DateUtils
 

@@ -1,4 +1,4 @@
-package com.whiplash.domain.entity
+package com.whiplash.domain.entity.auth
 
 data class KakaoLoginResult(
     val accessToken: String,

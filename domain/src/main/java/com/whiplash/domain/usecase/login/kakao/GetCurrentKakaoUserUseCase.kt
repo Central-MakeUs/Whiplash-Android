@@ -1,6 +1,6 @@
 package com.whiplash.domain.usecase.login.kakao
 
-import com.whiplash.domain.entity.KakaoUserEntity
+import com.whiplash.domain.entity.auth.KakaoUserEntity
 import com.whiplash.domain.repository.login.KakaoAuthRepository
 
 class GetCurrentKakaoUserUseCase(

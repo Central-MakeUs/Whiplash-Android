@@ -1,8 +1,12 @@
 package com.whiplash.domain.repository.alarm
 
-import com.whiplash.domain.entity.GetAlarmEntity
+import com.whiplash.domain.entity.alarm.request.AddAlarmRequest
+import com.whiplash.domain.entity.alarm.response.CreateAlarmOccurrenceEntity
+import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import kotlinx.coroutines.flow.Flow
 
 interface AlarmRepository {
     suspend fun getAlarmList(): Flow<Result<List<GetAlarmEntity>>>
+    suspend fun addAlarm(request: AddAlarmRequest): Flow<Result<Unit>>
+    suspend fun createAlarmOccurrence(alarmId: Long): Flow<Result<CreateAlarmOccurrenceEntity>>
 }

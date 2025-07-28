@@ -6,7 +6,7 @@ import com.kakao.sdk.auth.TokenManagerProvider
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
-import com.whiplash.domain.entity.KakaoUserEntity
+import com.whiplash.domain.entity.auth.KakaoUserEntity
 import com.whiplash.domain.usecase.login.kakao.GetCurrentKakaoUserUseCase
 import com.whiplash.domain.usecase.login.kakao.SignInWithKakaoUseCase
 import com.whiplash.domain.usecase.login.kakao.SignOutKakaoUseCase

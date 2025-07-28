@@ -1,11 +1,6 @@
-package com.whiplash.network.dto.response
+package com.whiplash.domain.entity.alarm.response
 
-import kotlinx.serialization.Serializable
-
-typealias ResponseGetAlarmList = BaseResponse<List<AlarmDto>>
-
-@Serializable
-data class AlarmDto(
+data class GetAlarmEntity(
     val alarmId: Long,
     val alarmPurpose: String,
     val repeatDays: List<String>,
