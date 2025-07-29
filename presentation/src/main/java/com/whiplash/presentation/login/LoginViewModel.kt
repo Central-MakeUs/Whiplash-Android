@@ -48,7 +48,7 @@ class LoginViewModel @Inject constructor(
             googleLoginManager.handleGoogleSignIn(data)
                 .fold(
                     onSuccess = { result ->
-                        loginWithServer("GOOGLE", result.idToken, deviceId)
+                        invokeLogin("GOOGLE", result.idToken, deviceId)
                     },
                     onFailure = { e ->
                         Timber.e("## 구글 로그인 실패: ${e.message}")
@@ -80,7 +80,7 @@ class LoginViewModel @Inject constructor(
             kakaoLoginManager.signIn(context)
                 .fold(
                     onSuccess = { result ->
-                        loginWithServer("KAKAO", result.accessToken, deviceId)
+                        invokeLogin("KAKAO", result.accessToken, deviceId)
                     },
                     onFailure = { e ->
                         Timber.e("## 카카오 로그인 실패: ${e.message}")
@@ -103,7 +103,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loginWithServer(socialType: String, token: String, deviceId: String) {
+    private suspend fun invokeLogin(socialType: String, token: String, deviceId: String) {
         try {
             val request = LoginRequestEntity(
                 socialType = socialType,
