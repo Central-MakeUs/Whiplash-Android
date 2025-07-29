@@ -4,6 +4,8 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.whiplash.domain.provider.TokenProvider
 import com.whiplash.network.api.AlarmService
 import com.whiplash.network.api.AuthService
+import com.whiplash.network.api.MemberService
+import com.whiplash.network.api.PlaceService
 import com.whiplash.network.interceptor.AuthInterceptor
 import dagger.Module
 import dagger.Provides
@@ -114,4 +116,14 @@ object RetrofitModule {
     @Singleton
     fun provideAlarmService(retrofit: Retrofit): AlarmService =
         retrofit.create(AlarmService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideMemberService(retrofit: Retrofit): MemberService =
+        retrofit.create(MemberService::class.java)
+
+    @Provides
+    @Singleton
+    fun providePlaceService(retrofit: Retrofit): PlaceService =
+        retrofit.create(PlaceService::class.java)
 }
