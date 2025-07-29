@@ -26,6 +26,7 @@ annotation class TokenReissueClient
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
 
+    // ====== JSON ======
     @Provides
     @Singleton
     fun provideJson(): Json {
@@ -36,7 +37,7 @@ object RetrofitModule {
         }
     }
 
-    // 토큰 재발급용 OkHttpClient (AuthInterceptor 없음)
+    // ====== 토큰 재발급용 ======
     @Provides
     @Singleton
     @TokenReissueClient
@@ -44,7 +45,6 @@ object RetrofitModule {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -53,24 +53,27 @@ object RetrofitModule {
             .build()
     }
 
-    // 토큰 재발급용 Retrofit
     @Provides
     @Singleton
     @TokenReissueClient
-    fun provideTokenReissueRetrofit(@TokenReissueClient okHttpClient: OkHttpClient, json: Json): Retrofit =
+    fun provideTokenReissueRetrofit(
+        @TokenReissueClient okHttpClient: OkHttpClient,
+        json: Json
+    ): Retrofit =
         Retrofit.Builder()
             .baseUrl("http://3.34.221.212:8080/api/")
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
 
-    // 토큰 재발급용 AuthService
     @Provides
     @Singleton
     @TokenReissueClient
-    fun provideTokenReissueAuthService(@TokenReissueClient retrofit: Retrofit): AuthService =
-        retrofit.create(AuthService::class.java)
+    fun provideTokenReissueAuthService(
+        @TokenReissueClient retrofit: Retrofit
+    ): AuthService = retrofit.create(AuthService::class.java)
 
+    // ====== 일반용 ======
     @Provides
     @Singleton
     fun provideAuthInterceptor(
@@ -78,14 +81,12 @@ object RetrofitModule {
         @TokenReissueClient authService: AuthService
     ): AuthInterceptor = AuthInterceptor(tokenProvider, authService)
 
-    // 일반 OkHttpClient (AuthInterceptor 포함)
     @Provides
     @Singleton
     fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .addInterceptor(authInterceptor)
@@ -95,7 +96,6 @@ object RetrofitModule {
             .build()
     }
 
-    // 일반 Retrofit
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit =
@@ -105,7 +105,6 @@ object RetrofitModule {
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
 
-    // 일반 AuthService
     @Provides
     @Singleton
     fun provideAuthService(retrofit: Retrofit): AuthService =
