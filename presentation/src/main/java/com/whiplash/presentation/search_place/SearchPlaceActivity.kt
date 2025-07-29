@@ -51,11 +51,16 @@ class SearchPlaceActivity : AppCompatActivity() {
         searchPlaceAdapter = SearchPlaceAdapter {
             val latitude = it.latitude
             val longitude = it.longitude
+            val simpleAddress = it.name
+            val detailAddress = it.address
 
             Timber.d("## [장소 선택] 위도 : $latitude, 경도 : $longitude")
+            Timber.d("## [장소 선택] 간단한 주소 : $simpleAddress, 상세 주소 : $detailAddress")
             navigateTo<SelectPlaceActivity> {
                 putExtra("latitude", latitude)
                 putExtra("longitude", longitude)
+                putExtra("simpleAddress", simpleAddress)
+                putExtra("detailAddress", detailAddress)
             }
         }
 
