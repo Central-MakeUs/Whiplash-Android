@@ -5,6 +5,8 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiplash.domain.entity.auth.request.LoginRequestEntity
+import com.whiplash.domain.entity.auth.request.LogoutRequestEntity
+import com.whiplash.domain.provider.TokenProvider
 import com.whiplash.domain.usecase.auth.SocialLoginUseCase
 import com.whiplash.domain.usecase.auth.SocialLogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,14 +24,13 @@ class LoginViewModel @Inject constructor(
     private val kakaoLoginManager: KakaoLoginManager,
     private val socialLoginUseCase: SocialLoginUseCase,
     private val socialLogoutUseCase: SocialLogoutUseCase,
+    private val tokenProvider: TokenProvider
 ) : ViewModel() {
 
     data class LoginUiState(
         val isLoading: Boolean = false,
         val errorMessage: String? = null,
-        val isLoginSuccess: Boolean = false,
-        val accessToken: String? = null,
-        val refreshToken: String? = null
+        val isLoginSuccess: Boolean = false
     )
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -41,6 +42,8 @@ class LoginViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
         try {
+            tokenProvider.saveDeviceId(deviceId)
+
             googleLoginManager.handleGoogleSignIn(data)
                 .fold(
                     onSuccess = { result ->
@@ -71,6 +74,8 @@ class LoginViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
         try {
+            tokenProvider.saveDeviceId(deviceId)
+
             kakaoLoginManager.signIn(context)
                 .fold(
                     onSuccess = { result ->
@@ -106,12 +111,15 @@ class LoginViewModel @Inject constructor(
             )
             socialLoginUseCase(request).collect { result ->
                 result.onSuccess { loginResponse ->
+                    tokenProvider.saveTokens(
+                        loginResponse.accessToken,
+                        loginResponse.refreshToken
+                    )
+
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             isLoginSuccess = true,
-                            accessToken = loginResponse.accessToken,
-                            refreshToken = loginResponse.refreshToken,
                             errorMessage = null
                         )
                     }
@@ -136,15 +144,40 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun signOut() = viewModelScope.launch {
+    fun signOut(deviceId: String) = viewModelScope.launch {
         try {
+            val logoutRequest = LogoutRequestEntity(deviceId = deviceId)
+            socialLogoutUseCase(logoutRequest).collect { result ->
+                result.onSuccess {
+                    Timber.d("## [로그아웃] 성공")
+                    googleLoginManager.signOut()
+                    kakaoLoginManager.signOut()
+                    tokenProvider.clearTokens()
+
+                    _uiState.update {
+                        LoginUiState()
+                    }
+                }.onFailure { e ->
+                    Timber.e("## [로그아웃] 실패: ${e.message}")
+                    googleLoginManager.signOut()
+                    kakaoLoginManager.signOut()
+                    tokenProvider.clearTokens()
+
+                    _uiState.update {
+                        LoginUiState()
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e("## [로그아웃] 에러: ${e.message}")
             googleLoginManager.signOut()
             kakaoLoginManager.signOut()
+            tokenProvider.clearTokens()
+
             _uiState.update {
                 LoginUiState()
             }
-        } catch (e: Exception) {
-            Timber.e("## 로그아웃 에러: ${e.message}")
         }
     }
+
 }
