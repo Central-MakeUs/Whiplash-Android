@@ -24,7 +24,7 @@ annotation class TokenReissueClient
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
+object RetrofitModule {
 
     @Provides
     @Singleton
