@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+// TODO : api 수정되면 MOCK 대신 GOOGLE, KAKAO 넘기게 수정
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val googleLoginManager: GoogleLoginManager,
@@ -48,7 +49,7 @@ class LoginViewModel @Inject constructor(
             googleLoginManager.handleGoogleSignIn(data)
                 .fold(
                     onSuccess = { result ->
-                        invokeLogin("GOOGLE", result.idToken, deviceId)
+                        invokeLogin("MOCK", result.idToken, deviceId)
                     },
                     onFailure = { e ->
                         Timber.e("## 구글 로그인 실패: ${e.message}")
@@ -80,7 +81,7 @@ class LoginViewModel @Inject constructor(
             kakaoLoginManager.signIn(context)
                 .fold(
                     onSuccess = { result ->
-                        invokeLogin("KAKAO", result.accessToken, deviceId)
+                        invokeLogin("MOCK", result.accessToken, deviceId)
                     },
                     onFailure = { e ->
                         Timber.e("## 카카오 로그인 실패: ${e.message}")
