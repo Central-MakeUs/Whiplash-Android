@@ -80,14 +80,8 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun getDataFromIntent() {
-        // FIXME : 테스트 때문에 임시값 사용. 실제 값 받게 되면 그걸 사용한다
-        latitude = 37.498095
-        longitude = 127.027610
-
-        // 인텐트에서 받아온 데이터
-        // placeAddress = intent.getStringExtra("address")
-        // placeLatitude = intent.getDoubleExtra("latitude", 0.0)
-        // placeLongitude = intent.getDoubleExtra("longitude", 0.0)
+        latitude = intent.getDoubleExtra("latitude", 0.0)
+        longitude = intent.getDoubleExtra("longitude", 0.0)
     }
 
     private fun setupUserLocationSource() {
