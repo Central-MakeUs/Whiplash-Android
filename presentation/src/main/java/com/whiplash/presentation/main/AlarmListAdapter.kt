@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.whiplash.domain.entity.GetAlarmEntity
+import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.presentation.databinding.ItemHomeAlarmBinding
 import com.whiplash.presentation.util.DateUtils
 
@@ -24,7 +24,7 @@ class AlarmListAdapter : ListAdapter<GetAlarmEntity, AlarmListAdapter.AlarmViewH
         fun bind(alarm: GetAlarmEntity) {
             with(binding) {
                 // 알람명
-                tvHomeAlarmTopText.text = alarm.alarmName
+                tvHomeAlarmTopText.text = alarm.alarmPurpose
 
                 // 09:00, 15:00 형태로 오는 시간을 오전 / 오후로 나눠 표시
                 val (amPm, time) = formatTime(alarm.time)
@@ -35,7 +35,7 @@ class AlarmListAdapter : ListAdapter<GetAlarmEntity, AlarmListAdapter.AlarmViewH
                 tvRepeatDays.text = DateUtils.convertDaysToKorean(alarm.repeatDays)
 
                 // 장소명
-                tvAddress.text = alarm.placeName
+                tvAddress.text = alarm.address
 
                 wtAlarm.setChecked(true)
             }

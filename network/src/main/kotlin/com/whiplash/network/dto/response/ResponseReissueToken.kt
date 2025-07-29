@@ -2,13 +2,7 @@ package com.whiplash.network.dto.response
 
 import kotlinx.serialization.Serializable
 
-@Serializable
-data class ResponseReissueToken(
-    val isSuccess: Boolean,
-    val code: String,
-    val message: String,
-    val result: TokenResult
-)
+typealias ResponseReissueToken = BaseResponse<TokenResult>
 
 @Serializable
 data class TokenResult(
