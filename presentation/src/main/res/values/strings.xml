@@ -63,6 +63,7 @@
     <string name="select_place_header">장소 선택</string>
     <string name="disable_alarm_here">여기서 알람 끄기!</string>
     <string name="register_target_address">목표 장소 등록하기</string>
+    <string name="search_result">검색 결과</string>
 
     <!-- 회원 정보 화면 -->
     <string name="current_version">현재 버전</string>

@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Akuma"
         tools:targetApi="31">
         <activity
+            android:name=".search_place.SearchPlaceActivity"
+            android:exported="false" />
+        <activity
             android:name=".user_info.UserInfoActivity"
             android:exported="false" />
         <activity

@@ -52,9 +52,13 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
-    // 마커 표시할 위경도
+    // 마커를 표시할 위경도
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
+
+    // 바텀시트에 표시할 간단한 주소, 자세한 주소
+    private var simpleAddress: String = ""
+    private var detailAddress: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,14 +84,10 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun getDataFromIntent() {
-        // FIXME : 테스트 때문에 임시값 사용. 실제 값 받게 되면 그걸 사용한다
-        latitude = 37.498095
-        longitude = 127.027610
-
-        // 인텐트에서 받아온 데이터
-        // placeAddress = intent.getStringExtra("address")
-        // placeLatitude = intent.getDoubleExtra("latitude", 0.0)
-        // placeLongitude = intent.getDoubleExtra("longitude", 0.0)
+        latitude = intent.getDoubleExtra("latitude", 0.0)
+        longitude = intent.getDoubleExtra("longitude", 0.0)
+        simpleAddress = intent.getStringExtra("simpleAddress") ?: ""
+        detailAddress = intent.getStringExtra("detailAddress") ?: ""
     }
 
     private fun setupUserLocationSource() {
@@ -163,10 +163,9 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
 
-        // FIXME : 테스트 값 대신 실제값 사용하게 수정
         val bottomSheetFragment = PlaceBottomSheetFragment.newInstance(
-            address = "구리시 갈매동",
-            detailAddress = "경기 구리시 갈매동"
+            address = simpleAddress.ifEmpty { "" },
+            detailAddress = detailAddress.ifEmpty { "" }
         )
         bottomSheetFragment.show(supportFragmentManager, "PlaceBottomSheetFragment")
     }

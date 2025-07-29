@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grey_900"
+    android:paddingHorizontal="18dp"
+    android:paddingVertical="12dp">
+
+    <TextView
+        android:id="@+id/tvSimpleAddress"
+        style="@style/body1_m_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="구리시 갈매동" />
+
+    <TextView
+        android:id="@+id/tvDetailAddress"
+        style="@style/body2_m_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/grey_500"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSimpleAddress"
+        tools:text="경기 구리시 갈매동" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

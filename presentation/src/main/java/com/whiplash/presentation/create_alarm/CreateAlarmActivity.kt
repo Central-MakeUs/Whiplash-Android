@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityCreateAlarmBinding
 import com.whiplash.presentation.map.SelectPlaceActivity
+import com.whiplash.presentation.search_place.SearchPlaceActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -46,6 +47,11 @@ class CreateAlarmActivity : AppCompatActivity() {
             setTimePickers()
 
             whCreateAlarm.setTitle(getString(R.string.create_alarm_header))
+
+            // 도착 목표 장소는?
+            clSelectPlaceContainer.setOnClickListener {
+                navigateTo<SearchPlaceActivity> {}
+            }
 
             // 지도에서 찾기
             clSearchInMapContainer.setOnClickListener {
