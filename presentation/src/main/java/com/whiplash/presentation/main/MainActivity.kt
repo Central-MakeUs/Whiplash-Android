@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -16,12 +15,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.whiplash.presentation.R
+import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
 import com.whiplash.presentation.create_alarm.CreateAlarmActivity
 import com.whiplash.presentation.databinding.ActivityMainBinding
 import com.whiplash.presentation.dialog.DisableAlarmPopup
 import com.whiplash.presentation.user_info.UserInfoActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -33,6 +34,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var loadingScreen: WhiplashLoadingScreen
 
     @Inject
     lateinit var disableAlarmPopup: DisableAlarmPopup
@@ -51,6 +53,8 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        loadingScreen = WhiplashLoadingScreen(this)
 
         setupExpandableView()
         setupRecyclerView()

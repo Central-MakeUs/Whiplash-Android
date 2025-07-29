@@ -2,7 +2,7 @@
 <resources>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
-    <color name="dim">#00000080</color>
+    <color name="dim_80">#CC000000</color>
 
     <!-- Grey -->
     <color name="grey_50">#F6F8FA</color>
