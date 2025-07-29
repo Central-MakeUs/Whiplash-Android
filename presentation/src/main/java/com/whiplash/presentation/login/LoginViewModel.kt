@@ -30,7 +30,8 @@ class LoginViewModel @Inject constructor(
     data class LoginUiState(
         val isLoading: Boolean = false,
         val errorMessage: String? = null,
-        val isLoginSuccess: Boolean = false
+        val isLoginSuccess: Boolean = false,
+        val isLogoutSuccess: Boolean = false,
     )
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -155,7 +156,7 @@ class LoginViewModel @Inject constructor(
                     tokenProvider.clearTokens()
 
                     _uiState.update {
-                        LoginUiState()
+                        it.copy(isLogoutSuccess = true)
                     }
                 }.onFailure { e ->
                     Timber.e("## [로그아웃] 실패: ${e.message}")
@@ -164,7 +165,7 @@ class LoginViewModel @Inject constructor(
                     tokenProvider.clearTokens()
 
                     _uiState.update {
-                        LoginUiState()
+                        it.copy(isLogoutSuccess = true)
                     }
                 }
             }
@@ -175,9 +176,11 @@ class LoginViewModel @Inject constructor(
             tokenProvider.clearTokens()
 
             _uiState.update {
-                LoginUiState()
+                it.copy(isLogoutSuccess = true)
             }
         }
     }
+
+    fun resetLogoutState() = _uiState.update { it.copy(isLogoutSuccess = false) }
 
 }
