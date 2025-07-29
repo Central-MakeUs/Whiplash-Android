@@ -16,24 +16,21 @@ class AuthRepositoryImpl @Inject constructor(
     private val authService: AuthService,
     private val authMapper: AuthMapper,
 ): AuthRepository {
-    override suspend fun socialLogin(request: LoginRequestEntity): Flow<Result<LoginResponseEntity>> {
-        return safeApiCallWithTransform(
+    override suspend fun socialLogin(request: LoginRequestEntity): Flow<Result<LoginResponseEntity>> =
+        safeApiCallWithTransform(
             apiCall = { authService.invokeSocialLogin(authMapper.toSocialLoginRequest(request)) },
             transform = { response -> authMapper.toLoginResponseEntity(response.result) }
         )
-    }
 
-    override suspend fun reissueToken(request: TokenReissueRequestEntity): Flow<Result<TokenReissueResponseEntity>> {
-        return safeApiCallWithTransform(
+    override suspend fun reissueToken(request: TokenReissueRequestEntity): Flow<Result<TokenReissueResponseEntity>> =
+        safeApiCallWithTransform(
             apiCall = { authService.reissueToken(authMapper.toTokenReissueRequest(request)) },
             transform = { response -> authMapper.toTokenReissueResponseEntity(response.result) }
         )
-    }
 
-    override suspend fun socialLogout(request: LogoutRequestEntity): Flow<Result<Unit>> {
-        return safeApiCallWithTransform(
+    override suspend fun socialLogout(request: LogoutRequestEntity): Flow<Result<Unit>> =
+        safeApiCallWithTransform(
             apiCall = { authService.invokeSocialLogout(authMapper.toSocialLogoutRequest(request)) },
             transform = { Unit }
         )
-    }
 }

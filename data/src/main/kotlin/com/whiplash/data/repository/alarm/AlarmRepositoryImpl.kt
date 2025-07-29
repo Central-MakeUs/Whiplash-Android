@@ -16,24 +16,21 @@ class AlarmRepositoryImpl @Inject constructor(
     private val alarmMapper: AlarmMapper
 ) : AlarmRepository {
 
-    override suspend fun getAlarmList(): Flow<Result<List<GetAlarmEntity>>> {
-        return safeApiCallWithTransform(
+    override suspend fun getAlarmList(): Flow<Result<List<GetAlarmEntity>>> =
+        safeApiCallWithTransform(
             apiCall = { alarmService.getAlarms() },
             transform = { response -> response.result.map { alarmMapper.toEntity(it) } }
         )
-    }
 
-    override suspend fun addAlarm(request: AddAlarmRequest): Flow<Result<Unit>> {
-        return safeApiCallWithTransform(
+    override suspend fun addAlarm(request: AddAlarmRequest): Flow<Result<Unit>> =
+        safeApiCallWithTransform(
             apiCall = { alarmService.addAlarm(alarmMapper.toNetworkRequest(request)) },
             transform = {}
         )
-    }
 
-    override suspend fun createAlarmOccurrence(alarmId: Long): Flow<Result<CreateAlarmOccurrenceEntity>> {
-        return safeApiCallWithTransform(
+    override suspend fun createAlarmOccurrence(alarmId: Long): Flow<Result<CreateAlarmOccurrenceEntity>> =
+        safeApiCallWithTransform(
             apiCall = { alarmService.createAlarmOccurrence(alarmId) },
             transform = { response -> alarmMapper.toCreateOccurrenceEntity(response.result) }
         )
-    }
 }
