@@ -19,19 +19,38 @@ class AuthInterceptor @Inject constructor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
+        val url = originalRequest.url.encodedPath
 
-        // 토큰 재발급 api는 제외
-        if (originalRequest.url.encodedPath.contains("auth/reissue")) {
+        // 소셜로그인 api는 헤더 없이 처리
+        if (url.contains("auth/social-login")) {
             return chain.proceed(originalRequest)
         }
 
+        // 토큰 재발급 api는 리프레시 토큰 사용
+        if (url.contains("auth/reissue")) {
+            val refreshToken = runBlocking {
+                tokenProvider.refreshToken.firstOrNull()
+            }
+
+            val requestWithRefreshToken = if (refreshToken != null) {
+                originalRequest.newBuilder()
+                    .addHeader("Authorization", refreshToken)
+                    .build()
+            } else {
+                originalRequest
+            }
+
+            return chain.proceed(requestWithRefreshToken)
+        }
+
+        // 그 외 API들은 access token 사용
         val accessToken = runBlocking {
             tokenProvider.accessToken.firstOrNull()
         }
 
         val requestWithToken = if (accessToken != null) {
             originalRequest.newBuilder()
-                .addHeader("Authorization", "Bearer $accessToken")
+                .addHeader("Authorization", "$accessToken")
                 .build()
         } else {
             originalRequest
@@ -39,8 +58,8 @@ class AuthInterceptor @Inject constructor(
 
         val response = chain.proceed(requestWithToken)
 
-        // 401 에러 시 토큰 재발급 시도
-        if (response.code == 401 && accessToken != null) {
+        // 401 에러 시 토큰 재발급 시도 (reissue API 제외)
+        if (response.code == 401 && accessToken != null && !url.contains("auth/reissue")) {
             response.close()
 
             val deviceId = runBlocking {
@@ -64,7 +83,7 @@ class AuthInterceptor @Inject constructor(
                         }
 
                         val newRequest = originalRequest.newBuilder()
-                            .header("Authorization", "Bearer ${tokenResult.accessToken}")
+                            .header("Authorization", tokenResult.accessToken)
                             .build()
 
                         return chain.proceed(newRequest)
