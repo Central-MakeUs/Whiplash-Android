@@ -25,6 +25,7 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.whiplash.presentation.R
+import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
 import com.whiplash.presentation.databinding.ActivitySelectPlaceBinding
 import com.whiplash.presentation.util.PermissionUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,6 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivitySelectPlaceBinding
+    private lateinit var loadingScreen: WhiplashLoadingScreen
 
     private lateinit var naverMap: NaverMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -71,6 +73,7 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
             insets
         }
 
+        loadingScreen = WhiplashLoadingScreen(this)
         setupUserLocationSource()
 
         if (PermissionUtils.hasLocationPermission(this)) {

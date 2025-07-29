@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.whiplash.domain.entity.auth.response.SearchPlaceEntity
 import com.whiplash.presentation.R
+import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
 import com.whiplash.presentation.databinding.ActivitySearchPlaceBinding
 import com.whiplash.presentation.map.SelectPlaceActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
@@ -22,6 +23,7 @@ import timber.log.Timber
 class SearchPlaceActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchPlaceBinding
+    private lateinit var loadingScreen: WhiplashLoadingScreen
 
     private lateinit var searchPlaceAdapter: SearchPlaceAdapter
 
@@ -41,6 +43,7 @@ class SearchPlaceActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
+        loadingScreen = WhiplashLoadingScreen(this)
         with(binding) {
             whSearchPlace.setTitle(getString(R.string.select_place_header))
             setupRecyclerView()

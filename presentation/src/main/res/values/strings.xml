@@ -21,6 +21,10 @@
         <item>일</item>
     </string-array>
 
+    <!-- 로딩 화면 -->
+    <string name="loading_text_first">잠시만 기다려주세요</string>
+    <string name="loading_text_second">곧 눈떠를 사용할 수 있어요!</string>
+
     <!-- MainActivity - 상단 접고 펼치는 UI -->
     <string name="home_alarm_caution_start">알람 유의사항</string>
     <string name="home_alarm_caution_end">을 반드시 숙지하세요!</string>

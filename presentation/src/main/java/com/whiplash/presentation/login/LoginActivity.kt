@@ -10,6 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.whiplash.presentation.R
+import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
 import com.whiplash.presentation.databinding.ActivityLoginBinding
 import com.whiplash.presentation.main.MainActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
@@ -21,6 +22,8 @@ import timber.log.Timber
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var loadingScreen: WhiplashLoadingScreen
+
     private val loginViewModel: LoginViewModel by viewModels()
 
     private val googleSignInLauncher = registerForActivityResult(
@@ -54,6 +57,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
+        loadingScreen = WhiplashLoadingScreen(this)
         with(binding) {
             whLogin.setTitle("로그인")
         }
