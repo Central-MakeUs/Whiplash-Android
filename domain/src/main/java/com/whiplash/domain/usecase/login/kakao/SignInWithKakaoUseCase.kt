@@ -1,6 +1,6 @@
 package com.whiplash.domain.usecase.login.kakao
 
-import com.whiplash.domain.entity.auth.KakaoLoginResult
+import com.whiplash.domain.entity.auth.response.KakaoLoginResult
 import com.whiplash.domain.repository.login.KakaoAuthRepository
 
 class SignInWithKakaoUseCase(

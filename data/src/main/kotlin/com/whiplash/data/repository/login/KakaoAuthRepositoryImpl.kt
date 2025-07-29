@@ -2,7 +2,7 @@ package com.whiplash.data.repository.login
 
 import com.kakao.sdk.auth.TokenManagerProvider
 import com.kakao.sdk.user.UserApiClient
-import com.whiplash.domain.entity.auth.KakaoUserEntity
+import com.whiplash.domain.entity.auth.response.KakaoUserEntity
 import com.whiplash.domain.repository.login.KakaoAuthRepository
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber

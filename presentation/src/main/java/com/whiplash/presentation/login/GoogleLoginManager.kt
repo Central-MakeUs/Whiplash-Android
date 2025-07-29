@@ -1,7 +1,7 @@
 package com.whiplash.presentation.login
 
 import android.content.Intent
-import com.whiplash.domain.entity.auth.GoogleUserEntity
+import com.whiplash.domain.entity.auth.response.GoogleUserEntity
 import com.whiplash.domain.usecase.login.google.GetGoogleSignInIntentUseCase
 import com.whiplash.domain.usecase.login.google.HandleGoogleSignInResultUseCase
 import com.whiplash.domain.usecase.login.google.SignInWithGoogleUseCase
@@ -33,7 +33,7 @@ class GoogleLoginManager @Inject constructor(
     /**
      * 구글 로그인 전체 프로세스 처리 (Intent 결과 → Firebase 로그인)
      */
-    suspend fun handleGoogleSignIn(data: Intent?): Result<GoogleUserEntity> {
+    suspend fun handleGoogleSignIn(data: Intent?): Result<GoogleLoginResult> {
         return try {
             handleGoogleSignInResultUseCase.invoke(data)
                 .fold(
@@ -43,7 +43,7 @@ class GoogleLoginManager @Inject constructor(
                             .fold(
                                 onSuccess = { user ->
                                     Timber.d("## [GoogleLoginManager] Firebase 인증 성공. 사용자 정보 : $user")
-                                    Result.success(user)
+                                    Result.success(GoogleLoginResult(user, idToken))
                                 },
                                 onFailure = { e ->
                                     Timber.e("## [GoogleLoginManager] Firebase 인증 실패 : ${e.message}")
@@ -81,3 +81,8 @@ class GoogleLoginManager @Inject constructor(
         }
     }
 }
+
+data class GoogleLoginResult(
+    val user: GoogleUserEntity,
+    val idToken: String
+)

@@ -1,4 +1,4 @@
-package com.whiplash.domain.entity.auth
+package com.whiplash.domain.entity.auth.response
 
 data class GoogleUserEntity(
     val id: String,

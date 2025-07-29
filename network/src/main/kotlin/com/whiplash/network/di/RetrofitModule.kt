@@ -2,8 +2,8 @@ package com.whiplash.network.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.whiplash.domain.provider.TokenProvider
+import com.whiplash.network.api.AlarmService
 import com.whiplash.network.api.AuthService
-import com.whiplash.network.authenticator.TokenAuthenticator
 import com.whiplash.network.interceptor.AuthInterceptor
 import dagger.Module
 import dagger.Provides
@@ -15,7 +15,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
+import javax.inject.Qualifier
 import javax.inject.Singleton
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class TokenReissueClient
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -25,30 +30,58 @@ object NetworkModule {
     @Singleton
     fun provideJson(): Json {
         return Json {
-            ignoreUnknownKeys = true // data class에 정의하지 않은 값을 받으면 무시
-            coerceInputValues = true // null인 경우 기본값 설정
+            ignoreUnknownKeys = true
+            coerceInputValues = true
             prettyPrint = true
         }
     }
 
+    // 토큰 재발급용 OkHttpClient (AuthInterceptor 없음)
     @Provides
     @Singleton
-    fun provideAuthInterceptor(tokenProvider: TokenProvider): AuthInterceptor =
-        AuthInterceptor(tokenProvider)
+    @TokenReissueClient
+    fun provideTokenReissueOkHttpClient(): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+    }
+
+    // 토큰 재발급용 Retrofit
+    @Provides
+    @Singleton
+    @TokenReissueClient
+    fun provideTokenReissueRetrofit(@TokenReissueClient okHttpClient: OkHttpClient, json: Json): Retrofit =
+        Retrofit.Builder()
+            .baseUrl("http://3.34.221.212:8080/api/")
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+
+    // 토큰 재발급용 AuthService
+    @Provides
+    @Singleton
+    @TokenReissueClient
+    fun provideTokenReissueAuthService(@TokenReissueClient retrofit: Retrofit): AuthService =
+        retrofit.create(AuthService::class.java)
 
     @Provides
     @Singleton
-    fun provideTokenAuthenticator(
+    fun provideAuthInterceptor(
         tokenProvider: TokenProvider,
-        authService: AuthService
-    ): TokenAuthenticator = TokenAuthenticator(tokenProvider, authService)
+        @TokenReissueClient authService: AuthService
+    ): AuthInterceptor = AuthInterceptor(tokenProvider, authService)
 
+    // 일반 OkHttpClient (AuthInterceptor 포함)
     @Provides
     @Singleton
-    fun provideOkHttpClient(
-        authInterceptor: AuthInterceptor,
-        tokenAuthenticator: TokenAuthenticator
-    ): OkHttpClient {
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
@@ -56,14 +89,13 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .addInterceptor(authInterceptor)
-            .authenticator(tokenAuthenticator)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
     }
 
-
+    // 일반 Retrofit
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit =
@@ -73,8 +105,14 @@ object NetworkModule {
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
 
+    // 일반 AuthService
     @Provides
     @Singleton
     fun provideAuthService(retrofit: Retrofit): AuthService =
         retrofit.create(AuthService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAlarmService(retrofit: Retrofit): AlarmService =
+        retrofit.create(AlarmService::class.java)
 }

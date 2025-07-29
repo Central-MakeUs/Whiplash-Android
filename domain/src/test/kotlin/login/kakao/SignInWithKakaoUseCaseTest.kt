@@ -1,6 +1,6 @@
 package login.kakao
 
-import com.whiplash.domain.entity.auth.KakaoUserEntity
+import com.whiplash.domain.entity.auth.response.KakaoUserEntity
 import com.whiplash.domain.repository.login.KakaoAuthRepository
 import com.whiplash.domain.usecase.login.kakao.SignInWithKakaoUseCase
 import kotlinx.coroutines.test.runTest

@@ -6,7 +6,7 @@ import com.kakao.sdk.auth.TokenManagerProvider
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
-import com.whiplash.domain.entity.auth.KakaoUserEntity
+import com.whiplash.domain.entity.auth.response.KakaoUserEntity
 import com.whiplash.domain.usecase.login.kakao.GetCurrentKakaoUserUseCase
 import com.whiplash.domain.usecase.login.kakao.SignInWithKakaoUseCase
 import com.whiplash.domain.usecase.login.kakao.SignOutKakaoUseCase
@@ -31,34 +31,22 @@ class KakaoLoginManager @Inject constructor(
     /**
      * 카카오 로그인 전체 프로세스 처리 (카카오 로그인 → 사용자 정보 조회)
      */
-    suspend fun signIn(context: Context): Result<KakaoUserEntity> {
+    suspend fun signIn(context: Context): Result<KakaoLoginResult> {
         return try {
-            // 1. 카카오 로그인으로 토큰 받기
             loginWithKakao(context)
                 .fold(
                     onSuccess = { token ->
-                        Timber.d("## [KakaoLoginManager] 카카오 로그인 성공. accessToken : ${token.accessToken}")
-
-                        // 2. 토큰으로 사용자 정보 조회
                         signInWithKakaoUseCase(token.accessToken)
                             .fold(
                                 onSuccess = { loginResult ->
-                                    Timber.d("## [KakaoLoginManager] 사용자 정보 조회 성공 : ${loginResult.user}")
-                                    Result.success(loginResult.user)
+                                    Result.success(KakaoLoginResult(loginResult.user, token.accessToken))
                                 },
-                                onFailure = { e ->
-                                    Timber.e("## [KakaoLoginManager] 사용자 정보 조회 실패: ${e.message}")
-                                    Result.failure(e)
-                                }
+                                onFailure = { e -> Result.failure(e) }
                             )
                     },
-                    onFailure = { e ->
-                        Timber.e("## [KakaoLoginManager] 카카오 로그인 실패 : ${e.message}")
-                        Result.failure(e)
-                    }
+                    onFailure = { e -> Result.failure(e) }
                 )
         } catch (e: Exception) {
-            Timber.e("## [KakaoLoginManager] 카카오 로그인 에러 : ${e.message}")
             Result.failure(e)
         }
     }
@@ -118,3 +106,8 @@ class KakaoLoginManager @Inject constructor(
         }
     }
 }
+
+data class KakaoLoginResult(
+    val user: KakaoUserEntity,
+    val accessToken: String
+)
