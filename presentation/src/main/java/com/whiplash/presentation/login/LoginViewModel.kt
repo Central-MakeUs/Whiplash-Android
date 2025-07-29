@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiplash.domain.entity.auth.request.LoginRequestEntity
 import com.whiplash.domain.entity.auth.request.LogoutRequestEntity
+import com.whiplash.domain.provider.CrashlyticsProvider
 import com.whiplash.domain.provider.TokenProvider
 import com.whiplash.domain.usecase.auth.SocialLoginUseCase
 import com.whiplash.domain.usecase.auth.SocialLogoutUseCase
@@ -25,7 +26,8 @@ class LoginViewModel @Inject constructor(
     private val kakaoLoginManager: KakaoLoginManager,
     private val socialLoginUseCase: SocialLoginUseCase,
     private val socialLogoutUseCase: SocialLogoutUseCase,
-    private val tokenProvider: TokenProvider
+    private val tokenProvider: TokenProvider,
+    private val crashlyticsProvider: CrashlyticsProvider,
 ) : ViewModel() {
 
     data class LoginUiState(
@@ -52,6 +54,8 @@ class LoginViewModel @Inject constructor(
                         invokeLogin("MOCK", result.idToken, deviceId)
                     },
                     onFailure = { e ->
+                        crashlyticsProvider.recordError(e)
+                        crashlyticsProvider.logError("구글 로그인 실패 : ${e.message}")
                         Timber.e("## 구글 로그인 실패: ${e.message}")
                         _uiState.update {
                             it.copy(
@@ -62,6 +66,8 @@ class LoginViewModel @Inject constructor(
                     }
                 )
         } catch (e: Exception) {
+            crashlyticsProvider.recordError(e)
+            crashlyticsProvider.logError("구글 로그인 에러 : ${e.message}")
             Timber.e("## 구글 로그인 에러: ${e.message}")
             _uiState.update {
                 it.copy(
@@ -85,6 +91,8 @@ class LoginViewModel @Inject constructor(
                     },
                     onFailure = { e ->
                         Timber.e("## 카카오 로그인 실패: ${e.message}")
+                        crashlyticsProvider.recordError(e)
+                        crashlyticsProvider.logError("카카오 로그인 실패 : ${e.message}")
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
@@ -95,6 +103,8 @@ class LoginViewModel @Inject constructor(
                 )
         } catch (e: Exception) {
             Timber.e("## 카카오 로그인 에러: ${e.message}")
+            crashlyticsProvider.recordError(e)
+            crashlyticsProvider.logError("카카오 로그인 에러 : ${e.message}")
             _uiState.update {
                 it.copy(
                     isLoading = false,
@@ -126,6 +136,8 @@ class LoginViewModel @Inject constructor(
                         )
                     }
                 }.onFailure { e ->
+                    crashlyticsProvider.recordError(e)
+                    crashlyticsProvider.logError("로그인 api 실패 : ${e.message}")
                     Timber.e("## 서버 로그인 실패: ${e.message}")
                     _uiState.update {
                         it.copy(
@@ -136,6 +148,8 @@ class LoginViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
+            crashlyticsProvider.recordError(e)
+            crashlyticsProvider.logError("로그인 api 에러 : ${e.message}")
             Timber.e("## 서버 로그인 에러: ${e.message}")
             _uiState.update {
                 it.copy(
@@ -160,6 +174,8 @@ class LoginViewModel @Inject constructor(
                         it.copy(isLogoutSuccess = true)
                     }
                 }.onFailure { e ->
+                    crashlyticsProvider.recordError(e)
+                    crashlyticsProvider.logError("로그아웃 api 실패 : ${e.message}")
                     Timber.e("## [로그아웃] 실패: ${e.message}")
                     googleLoginManager.signOut()
                     kakaoLoginManager.signOut()
@@ -171,6 +187,8 @@ class LoginViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
+            crashlyticsProvider.recordError(e)
+            crashlyticsProvider.logError("로그아웃 api 에러 : ${e.message}")
             Timber.e("## [로그아웃] 에러: ${e.message}")
             googleLoginManager.signOut()
             kakaoLoginManager.signOut()
