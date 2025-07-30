@@ -33,10 +33,7 @@ class MainViewModel @Inject constructor(
         // 알람 목록 조회 api 결과
         val alarmList: List<GetAlarmEntity> = emptyList(),
 
-        val isAddAlarm: Boolean = false,
-
         // 알람 발생 내역 생성 결과
-        val isCreateAlarmOccurrence: Boolean = false,
         val createdOccurrence: CreateAlarmOccurrenceEntity? = null,
     )
 
@@ -84,7 +81,7 @@ class MainViewModel @Inject constructor(
 
     // 알람 등록
     fun addAlarm(request: AddAlarmRequest) = viewModelScope.launch {
-        _uiState.update { it.copy(isAddAlarm = true) }
+        _uiState.update { it.copy(isLoading = true) }
 
         try {
             addAlarmUseCase(request).collect { result ->
@@ -93,7 +90,6 @@ class MainViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            isAddAlarm = false,
                             errorMessage = null
                         )
                     }
@@ -105,7 +101,6 @@ class MainViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            isAddAlarm = false,
                             errorMessage = e.message
                         )
                     }
@@ -118,7 +113,6 @@ class MainViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    isAddAlarm = false,
                     errorMessage = e.message
                 )
             }
@@ -127,7 +121,7 @@ class MainViewModel @Inject constructor(
 
     // 알람 발생 내역 생성
     fun createAlarmOccurrence(alarmId: Long) = viewModelScope.launch {
-        _uiState.update { it.copy(isCreateAlarmOccurrence = true) }
+        _uiState.update { it.copy(isLoading = true) }
 
         try {
             createAlarmOccurrenceUseCase(alarmId).collect { result ->
@@ -135,7 +129,7 @@ class MainViewModel @Inject constructor(
                     Timber.d("## [알람 발생 내역 생성] 성공 : $occurrence")
                     _uiState.update {
                         it.copy(
-                            isCreateAlarmOccurrence = false,
+                            isLoading = false,
                             createdOccurrence = occurrence,
                             errorMessage = null
                         )
@@ -146,7 +140,7 @@ class MainViewModel @Inject constructor(
                     Timber.e("## [알람 발생 내역 생성] 실패 : $e")
                     _uiState.update {
                         it.copy(
-                            isCreateAlarmOccurrence = false,
+                            isLoading = false,
                             errorMessage = e.message
                         )
                     }
@@ -158,7 +152,7 @@ class MainViewModel @Inject constructor(
             Timber.e("## [알람 발생 내역 생성] 에러 : $e")
             _uiState.update {
                 it.copy(
-                    isCreateAlarmOccurrence = false,
+                    isLoading = false,
                     errorMessage = e.message
                 )
             }
