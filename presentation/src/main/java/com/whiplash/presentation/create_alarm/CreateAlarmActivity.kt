@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.whiplash.domain.entity.alarm.request.AddAlarmRequest
 import com.whiplash.presentation.R
+import com.whiplash.presentation.component.bottom_sheet.AlarmSoundBottomSheet
 import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
 import com.whiplash.presentation.databinding.ActivityCreateAlarmBinding
 import com.whiplash.presentation.main.MainViewModel
@@ -58,6 +59,11 @@ class CreateAlarmActivity : AppCompatActivity() {
             mainViewModel.setSelectedPlace(detailAddress, latitude, longitude)
         }
     }
+
+    private var alarmSoundBottomSheet: AlarmSoundBottomSheet? = null
+
+    // 알람 소리 바텀시트에서 선택한 알람. 기본값 "알람 소리1"
+    private var selectedAlarmSoundId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,6 +127,12 @@ class CreateAlarmActivity : AppCompatActivity() {
                 placeSelectionLauncher.launch(
                     Intent(this@CreateAlarmActivity, SelectPlaceActivity::class.java)
                 )
+            }
+
+            // 알람 소리 설정
+            llAlarmSound.setOnClickListener {
+                // 알람 소리 선택, 미리듣기 뷰가 있는 바텀 시트 프래그먼트 표시
+                showAlarmSoundBottomSheet()
             }
 
             // 저장하기
@@ -246,6 +258,19 @@ class CreateAlarmActivity : AppCompatActivity() {
         val minute = binding.npMinutes.value
 
         return Triple(amPm, hour, minute)
+    }
+
+    private fun showAlarmSoundBottomSheet() {
+        if (alarmSoundBottomSheet?.isVisible == true) return
+
+        val bottomSheetFragment = AlarmSoundBottomSheet.newInstance(
+            onAlarmSoundSelected = { selectedSound, selectedId ->
+                binding.tvAlarmSoundDetail.text = selectedSound
+                selectedAlarmSoundId = selectedId // ID 저장
+            },
+            selectedRadioButtonId = selectedAlarmSoundId
+        )
+        bottomSheetFragment.show(supportFragmentManager, "AlarmSoundBottomSheet")
     }
 
 }

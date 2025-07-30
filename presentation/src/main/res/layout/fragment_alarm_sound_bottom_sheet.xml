@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet_16_radius"
+    android:paddingHorizontal="18dp"
+    android:paddingVertical="32dp">
+
+    <TextView
+        android:id="@+id/tvAlarmSoundTitle"
+        style="@style/subtitle3_b_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="알람 소리"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/rgAlarmSound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="@+id/tvAlarmSoundTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvAlarmSoundTitle">
+
+        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+            android:id="@+id/rbNothing"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:text="@string/not_sound"
+            android:textColor="@color/white" />
+
+        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+            android:id="@+id/rbOption2"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:text="@string/sound_1"
+            android:textColor="@color/white" />
+
+        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+            android:id="@+id/rbOption3"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:text="@string/sound_2"
+            android:textColor="@color/white" />
+
+        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+            android:id="@+id/rbOption4"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:text="@string/sound_3"
+            android:textColor="@color/white" />
+
+        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+            android:id="@+id/rbOption5"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:text="@string/sound_4"
+            android:textColor="@color/white" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/tvAlarmPreListening"
+        style="@style/body2_m_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/sound_pre_listening"
+        android:textColor="@color/grey_300"
+        app:layout_constraintStart_toStartOf="@+id/rgAlarmSound"
+        app:layout_constraintTop_toBottomOf="@+id/rgAlarmSound" />
+
+    <ImageView
+        android:id="@+id/ivAlarmPreListening"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="18dp"
+        android:src="@drawable/ic_play_22"
+        app:layout_constraintBottom_toBottomOf="@+id/tvAlarmPreListening"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvAlarmPreListening" />
+
+    <com.whiplash.presentation.component.button.WhiplashCommonButton
+        android:id="@+id/btnPreListening"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="68dp"
+        app:buttonBackgroundColor="@color/grey_800"
+        app:buttonText="@string/complete_string"
+        app:buttonTextColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAlarmPreListening" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

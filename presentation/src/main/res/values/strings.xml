@@ -4,6 +4,7 @@
 
     <string name="ok_string">확인</string>
     <string name="cancel_string">취소</string>
+    <string name="complete_string">완료</string>
     <string name="disable_alarm">알람 끄기</string>
     <string name="remove_alarm">알람 삭제</string>
     <string name="manage_user_info">회원 정보 관리</string>
@@ -57,6 +58,13 @@
     <string name="arrive_target_place_hint">도착 목표 장소는?</string>
     <string name="select_place">장소 선택</string>
     <string name="alarm_created">알람이 추가되었어요</string>
+
+    <string name="not_sound">소리없음</string>
+    <string name="sound_1">알람 소리1</string>
+    <string name="sound_2">알람 소리2</string>
+    <string name="sound_3">알람 소리3</string>
+    <string name="sound_4">알람 소리4</string>
+    <string name="sound_pre_listening">미리듣기</string>
 
     <!-- 알람 설정 화면 하단 경고 UI -->
     <string name="create_alarm_caution_start">알람 설정 유의사항</string>
