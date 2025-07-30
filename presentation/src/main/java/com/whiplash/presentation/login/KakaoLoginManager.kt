@@ -4,6 +4,7 @@ import android.content.Context
 import com.kakao.sdk.auth.LoginClient
 import com.kakao.sdk.auth.TokenManagerProvider
 import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.AuthErrorCause
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.whiplash.domain.entity.auth.response.KakaoUserEntity
@@ -96,7 +97,6 @@ class KakaoLoginManager @Inject constructor(
                         callback(null, error)
                         return@loginWithKakaoTalk
                     }
-                    LoginClient.instance.loginWithKakaoAccount(context, callback = callback)
                 } else {
                     callback(token, null)
                 }
