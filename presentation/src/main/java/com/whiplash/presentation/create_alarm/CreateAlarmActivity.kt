@@ -64,6 +64,7 @@ class CreateAlarmActivity : AppCompatActivity() {
 
     // 알람 소리 바텀시트에서 선택한 알람. 기본값 "알람 소리1"
     private var selectedAlarmSoundId: Int = -1
+    private var selectedAlarmSoundText: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,6 +115,9 @@ class CreateAlarmActivity : AppCompatActivity() {
             setTimePickers()
 
             whCreateAlarm.setTitle(getString(R.string.create_alarm_header))
+            
+            selectedAlarmSoundText = getString(R.string.sound_1)
+            tvAlarmSoundDetail.text = selectedAlarmSoundText
 
             // 도착 목표 장소는?
             clSelectPlaceContainer.setOnClickListener {
@@ -152,7 +156,7 @@ class CreateAlarmActivity : AppCompatActivity() {
                         alarmPurpose = binding.etAlarmPurpose.getText(),
                         time = "${time.second}:${time.third}",
                         repeatDays = selectedDays,
-                        soundType = "알람 소리 1" // TODO : 바텀 시트에서 얻은 값으로 수정(알람 소리1~알람 소리4)
+                        soundType = selectedAlarmSoundText
                     )
                 )
             }
@@ -266,7 +270,8 @@ class CreateAlarmActivity : AppCompatActivity() {
         val bottomSheetFragment = AlarmSoundBottomSheet.newInstance(
             onAlarmSoundSelected = { selectedSound, selectedId ->
                 binding.tvAlarmSoundDetail.text = selectedSound
-                selectedAlarmSoundId = selectedId // ID 저장
+                selectedAlarmSoundId = selectedId
+                selectedAlarmSoundText = selectedSound // 선택된 텍스트 저장
             },
             selectedRadioButtonId = selectedAlarmSoundId
         )
