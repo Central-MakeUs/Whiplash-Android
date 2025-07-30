@@ -140,7 +140,7 @@ class CreateAlarmActivity : AppCompatActivity() {
                         alarmPurpose = binding.etAlarmPurpose.getText(),
                         time = "${time.second}:${time.third}",
                         repeatDays = selectedDays,
-                        soundType = "DEFAULT"
+                        soundType = "알람 소리 1" // TODO : 바텀 시트에서 얻은 값으로 수정(알람 소리1~알람 소리4)
                     )
                 )
             }
