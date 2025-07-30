@@ -168,7 +168,9 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val bottomSheetFragment = PlaceBottomSheetFragment.newInstance(
             address = simpleAddress.ifEmpty { "" },
-            detailAddress = detailAddress.ifEmpty { "" }
+            detailAddress = detailAddress.ifEmpty { "" },
+            latitude = latitude,
+            longitude = longitude
         )
         bottomSheetFragment.show(supportFragmentManager, "PlaceBottomSheetFragment")
     }

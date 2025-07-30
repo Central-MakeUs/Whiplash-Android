@@ -1,8 +1,10 @@
 package com.whiplash.presentation.search_place
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -36,6 +38,16 @@ class SearchPlaceActivity : AppCompatActivity() {
     private lateinit var searchPlaceAdapter: SearchPlaceAdapter
 
     private var searchJob: Job? = null
+
+    private val selectPlaceLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // SelectPlaceActivity에서 받은 결과를 CreateAlarmActivity로 전달
+            setResult(RESULT_OK, result.data)
+            finish()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,12 +108,15 @@ class SearchPlaceActivity : AppCompatActivity() {
 
             Timber.d("## [장소 선택] 위도 : $latitude, 경도 : $longitude")
             Timber.d("## [장소 선택] 간단한 주소 : $simpleAddress, 상세 주소 : $detailAddress")
-            navigateTo<SelectPlaceActivity> {
-                putExtra("latitude", latitude)
-                putExtra("longitude", longitude)
-                putExtra("simpleAddress", simpleAddress)
-                putExtra("detailAddress", detailAddress)
-            }
+
+            selectPlaceLauncher.launch(
+                Intent(this, SelectPlaceActivity::class.java).apply {
+                    putExtra("latitude", latitude)
+                    putExtra("longitude", longitude)
+                    putExtra("simpleAddress", simpleAddress)
+                    putExtra("detailAddress", detailAddress)
+                }
+            )
         }
 
         binding.rvSearchPlace.apply {

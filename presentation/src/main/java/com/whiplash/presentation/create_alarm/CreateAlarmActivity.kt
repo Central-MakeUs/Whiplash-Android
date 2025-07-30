@@ -1,14 +1,19 @@
 package com.whiplash.presentation.create_alarm
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityCreateAlarmBinding
+import com.whiplash.presentation.main.MainViewModel
 import com.whiplash.presentation.map.SelectPlaceActivity
 import com.whiplash.presentation.search_place.SearchPlaceActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
@@ -25,6 +30,25 @@ import java.util.Calendar
 class CreateAlarmActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateAlarmBinding
+
+    private val mainViewModel: MainViewModel by viewModels()
+
+    private val placeSelectionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val detailAddress = result.data?.getStringExtra("detailAddress") ?: ""
+            val latitude = result.data?.getDoubleExtra("latitude", 0.0) ?: 0.0
+            val longitude = result.data?.getDoubleExtra("longitude", 0.0) ?: 0.0
+
+            Timber.d("## [장소 선택 완료] 주소: $detailAddress, 위도: $latitude, 경도: $longitude")
+            if (detailAddress.isNotEmpty()) {
+                binding.tvSearch.text = detailAddress
+                binding.tvSearch.setTextColor(ContextCompat.getColor(this, R.color.grey_50))
+            }
+            mainViewModel.setSelectedPlace(detailAddress, latitude, longitude)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,12 +74,16 @@ class CreateAlarmActivity : AppCompatActivity() {
 
             // 도착 목표 장소는?
             clSelectPlaceContainer.setOnClickListener {
-                navigateTo<SearchPlaceActivity> {}
+                placeSelectionLauncher.launch(
+                    Intent(this@CreateAlarmActivity, SearchPlaceActivity::class.java)
+                )
             }
 
             // 지도에서 찾기
             clSearchInMapContainer.setOnClickListener {
-                navigateTo<SelectPlaceActivity> {}
+                placeSelectionLauncher.launch(
+                    Intent(this@CreateAlarmActivity, SelectPlaceActivity::class.java)
+                )
             }
 
             btnSaveAlarm.setOnClickListener {

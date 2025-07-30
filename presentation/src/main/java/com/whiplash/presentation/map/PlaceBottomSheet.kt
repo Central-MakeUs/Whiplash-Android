@@ -1,5 +1,7 @@
 package com.whiplash.presentation.map
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,17 +22,27 @@ class PlaceBottomSheetFragment : BottomSheetDialogFragment() {
     private var address: String? = null
     private var detailAddress: String? = null
 
+    // 위경도
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
+
     companion object {
         private const val ARG_ADDRESS = "address"
         private const val ARG_DETAIL_ADDRESS = "detailAddress"
+        private const val ARG_LATITUDE = "latitude"
+        private const val ARG_LONGITUDE = "longitude"
 
         fun newInstance(
             address: String,
             detailAddress: String,
+            latitude: Double,
+            longitude: Double
         ): PlaceBottomSheetFragment = PlaceBottomSheetFragment().apply {
             arguments = Bundle().apply {
                 putString(ARG_ADDRESS, address)
                 putString(ARG_DETAIL_ADDRESS, detailAddress)
+                putDouble(ARG_LATITUDE, latitude)
+                putDouble(ARG_LONGITUDE, longitude)
             }
         }
     }
@@ -42,6 +54,8 @@ class PlaceBottomSheetFragment : BottomSheetDialogFragment() {
         arguments?.let {
             address = it.getString(ARG_ADDRESS)
             detailAddress = it.getString(ARG_DETAIL_ADDRESS)
+            latitude = it.getDouble(ARG_LATITUDE, 0.0)
+            longitude = it.getDouble(ARG_LONGITUDE, 0.0)
         }
     }
 
@@ -89,6 +103,13 @@ class PlaceBottomSheetFragment : BottomSheetDialogFragment() {
             }
 
             btnRegisterAddress.setOnClickListener {
+                val intent = Intent().apply {
+                    putExtra("detailAddress", detailAddress)
+                    putExtra("latitude", latitude)
+                    putExtra("longitude", longitude)
+                }
+                requireActivity().setResult(RESULT_OK, intent)
+                requireActivity().finish()
             }
         }
     }

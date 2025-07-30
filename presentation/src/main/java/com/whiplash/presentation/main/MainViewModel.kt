@@ -35,10 +35,42 @@ class MainViewModel @Inject constructor(
 
         // 알람 발생 내역 생성 결과
         val createdOccurrence: CreateAlarmOccurrenceEntity? = null,
+
+        // 선택한 장소 위경도
+        val selectedPlace: SelectedPlace? = null,
+    )
+
+    data class SelectedPlace(
+        val detailAddress: String,
+        val latitude: Double,
+        val longitude: Double
     )
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+
+    fun setSelectedPlace(
+        detailAddress: String,
+        latitude: Double,
+        longitude: Double
+    ) {
+        _uiState.update {
+            it.copy(
+                selectedPlace = SelectedPlace(
+                    detailAddress = detailAddress,
+                    latitude = latitude,
+                    longitude = longitude
+                )
+            )
+        }
+        Timber.d("## [장소 저장] 주소: $detailAddress, 위도: $latitude, 경도: $longitude")
+    }
+
+    fun clearSelectedPlace() = _uiState.update {
+        it.copy(
+            selectedPlace = null
+        )
+    }
 
     // 알람 목록 조회
     fun getAlarms() = viewModelScope.launch {
