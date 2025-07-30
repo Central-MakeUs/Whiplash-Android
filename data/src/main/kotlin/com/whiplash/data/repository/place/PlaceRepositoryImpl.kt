@@ -7,8 +7,9 @@ import com.whiplash.domain.entity.auth.response.SearchPlaceEntity
 import com.whiplash.domain.repository.place.PlaceRepository
 import com.whiplash.network.api.PlaceService
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class PlaceRepositoryImpl(
+class PlaceRepositoryImpl @Inject constructor(
     private val placeService: PlaceService,
     private val placeMapper: PlaceMapper,
 ): PlaceRepository {
