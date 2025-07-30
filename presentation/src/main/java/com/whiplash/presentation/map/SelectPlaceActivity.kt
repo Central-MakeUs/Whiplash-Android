@@ -1,9 +1,11 @@
 package com.whiplash.presentation.map
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PointF
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -29,6 +31,7 @@ import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
 import com.whiplash.presentation.databinding.ActivitySelectPlaceBinding
 import com.whiplash.presentation.util.PermissionUtils
 import dagger.hilt.android.AndroidEntryPoint
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 /**
  * 장소 선택 화면
@@ -45,7 +48,7 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
     // FusedLocationProviderClient와 지자기, 가속도 센서를 활용해 유저 위치를 리턴하는 구현체
     private lateinit var locationSource: FusedLocationSource
 
-    private var bottomSheetFragment: PlaceBottomSheetFragment? = null
+    private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
     companion object {
         /**
@@ -84,6 +87,7 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
 
         getDataFromIntent()
         setupView()
+        setupBottomSheet()
     }
 
     private fun getDataFromIntent() {
@@ -156,23 +160,49 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
-
-        showPlaceBottomSheet()
     }
 
-    private fun showPlaceBottomSheet() {
-        // 이미 바텀 시트가 표시되고 있으면 중복 표시하지 않는다
-        if (bottomSheetFragment?.isVisible == true) {
-            return
+    private fun setupBottomSheet() {
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.addressBottomSheet)
+        bottomSheetBehavior?.apply {
+            isDraggable = false
+            isHideable = false
+            state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
-        val bottomSheetFragment = PlaceBottomSheetFragment.newInstance(
-            address = simpleAddress.ifEmpty { "" },
-            detailAddress = detailAddress.ifEmpty { "" },
-            latitude = latitude,
-            longitude = longitude
-        )
-        bottomSheetFragment.show(supportFragmentManager, "PlaceBottomSheetFragment")
+        setupBottomSheetViews()
+        setupBottomSheetListeners()
+    }
+
+    private fun setupBottomSheetViews() {
+        with(binding) {
+            tvPlaceAddress.text = simpleAddress.ifEmpty { "" }
+            tvPlaceDetailAddress.text = detailAddress.ifEmpty { "" }
+        }
+    }
+
+    private fun setupBottomSheetListeners() {
+        with(binding) {
+            btnCancelRegisterAddress.setOnClickListener {
+                finish()
+            }
+
+            btnRegisterAddress.setOnClickListener {
+                val intent = Intent().apply {
+                    putExtra("detailAddress", detailAddress)
+                    putExtra("latitude", latitude)
+                    putExtra("longitude", longitude)
+                }
+                setResult(RESULT_OK, intent)
+                finish()
+            }
+        }
+    }
+
+    fun updateBottomSheetAddress(address: String, detailAddress: String) {
+        this.simpleAddress = address
+        this.detailAddress = detailAddress
+        setupBottomSheetViews()
     }
 
     // 커스텀 마커 뷰 생성 (텍스트뷰 + 마커 이미지를 세로로 배치)
