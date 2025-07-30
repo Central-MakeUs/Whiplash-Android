@@ -30,6 +30,9 @@ class MainViewModel @Inject constructor(
         val isLoading: Boolean = false,
         val errorMessage: String? = null,
 
+        // 알람 생성 성공 여부
+        val isAlarmCreated: Boolean = false,
+
         // 알람 목록 조회 api 결과
         val alarmList: List<GetAlarmEntity> = emptyList(),
 
@@ -122,6 +125,7 @@ class MainViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
+                            isAlarmCreated = true,
                             errorMessage = null
                         )
                     }
@@ -133,6 +137,7 @@ class MainViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
+                            isAlarmCreated = false,
                             errorMessage = e.message
                         )
                     }
@@ -145,6 +150,7 @@ class MainViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     isLoading = false,
+                    isAlarmCreated = false,
                     errorMessage = e.message
                 )
             }

@@ -11,13 +11,21 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.whiplash.domain.entity.alarm.request.AddAlarmRequest
 import com.whiplash.presentation.R
+import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
 import com.whiplash.presentation.databinding.ActivityCreateAlarmBinding
 import com.whiplash.presentation.main.MainViewModel
 import com.whiplash.presentation.map.SelectPlaceActivity
 import com.whiplash.presentation.search_place.SearchPlaceActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
+import com.whiplash.presentation.util.WhiplashToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Calendar
 
@@ -30,6 +38,7 @@ import java.util.Calendar
 class CreateAlarmActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateAlarmBinding
+    private lateinit var loadingScreen: WhiplashLoadingScreen
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -61,10 +70,38 @@ class CreateAlarmActivity : AppCompatActivity() {
             insets
         }
 
+        observeMainViewModel()
         setupView()
     }
 
+    private fun observeMainViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    mainViewModel.uiState.collect { state ->
+                        if (state.isLoading) {
+                            loadingScreen.show()
+                        } else {
+                            loadingScreen.hide()
+                        }
+
+                        if (state.errorMessage?.isNotEmpty() == true) {
+                            WhiplashToast.showErrorToast(this@CreateAlarmActivity, state.errorMessage)
+                        }
+
+                        // 알람 생성 결과
+                        if (state.isAlarmCreated) {
+                            WhiplashToast.showSuccessToast(this@CreateAlarmActivity, getString(R.string.alarm_created))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupView() {
+        loadingScreen = WhiplashLoadingScreen(this)
+
         with(binding) {
             setupExpandableView()
             setRepeatDay()
@@ -86,9 +123,26 @@ class CreateAlarmActivity : AppCompatActivity() {
                 )
             }
 
+            // 저장하기
             btnSaveAlarm.setOnClickListener {
                 val time = getSelectedTime()
                 Timber.d("## [시간] 오전 / 오후 : ${time.first}, 시 : ${time.second}, 분 : ${time.third}")
+                val selectedDays = getSelectedDays()
+                val detailAddress = mainViewModel.uiState.value.selectedPlace?.detailAddress
+                val latitude = mainViewModel.uiState.value.selectedPlace?.latitude
+                val longitude = mainViewModel.uiState.value.selectedPlace?.longitude
+
+                mainViewModel.addAlarm(
+                    request = AddAlarmRequest(
+                        address = detailAddress ?: "",
+                        latitude = latitude ?: 0.0,
+                        longitude = longitude ?: 0.0,
+                        alarmPurpose = binding.etAlarmPurpose.getText(),
+                        time = "${time.second}:${time.third}",
+                        repeatDays = selectedDays,
+                        soundType = "DEFAULT"
+                    )
+                )
             }
         }
     }
@@ -120,6 +174,23 @@ class CreateAlarmActivity : AppCompatActivity() {
         dayButtons.forEachIndexed { index, button ->
             button.setText(dayNames[index])
         }
+    }
+
+    private fun getSelectedDays(): List<String> {
+        val selectedDays = mutableListOf<String>()
+        val dayButtons = arrayOf(
+            binding.btnMon, binding.btnTue, binding.btnWed, binding.btnThur,
+            binding.btnFri, binding.btnSat, binding.btnSun
+        )
+        val dayNames = resources.getStringArray(R.array.day_names_korean)
+
+        dayButtons.forEachIndexed { index, button ->
+            if (button.isSelected) {
+                selectedDays.add(dayNames[index])
+            }
+        }
+
+        return selectedDays
     }
 
     private fun setTimePickers() {

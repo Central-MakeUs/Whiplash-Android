@@ -56,6 +56,7 @@
     <string name="find_in_map">지도에서 찾기</string>
     <string name="arrive_target_place_hint">도착 목표 장소는?</string>
     <string name="select_place">장소 선택</string>
+    <string name="alarm_created">알람이 추가되었어요</string>
 
     <!-- 알람 설정 화면 하단 경고 UI -->
     <string name="create_alarm_caution_start">알람 설정 유의사항</string>
