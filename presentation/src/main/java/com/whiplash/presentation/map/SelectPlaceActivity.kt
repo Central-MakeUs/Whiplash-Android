@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
@@ -74,6 +75,11 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        onBackPressedDispatcher.addCallback(this) {
+            // 안드 13+ 대응
+            // 이 화면에선 뒤로가기 버튼을 눌러도 뒤로 이동하지 않음
         }
 
         loadingScreen = WhiplashLoadingScreen(this)
@@ -306,4 +312,11 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        // 안드 13 미만 버전 대응
+        // 이 화면에선 뒤로가기 버튼을 눌러도 뒤로 이동하지 않음
+    }
+
 }
