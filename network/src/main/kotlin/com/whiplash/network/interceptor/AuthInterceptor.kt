@@ -55,7 +55,7 @@ class AuthInterceptor @Inject constructor(
     }
 
     private fun shouldRefreshToken(response: Response, accessToken: String?): Boolean {
-        Log.d(TAG, "## [토큰 체크] accessToken: $accessToken, responseCode: ${response.code}")
+        Log.d(TAG, "## [토큰 체크] accessToken : $accessToken, responseCode : ${response.code}")
         
         // runBlocking 대신 동기적으로 확인
         val refreshToken = try {
@@ -63,31 +63,31 @@ class AuthInterceptor @Inject constructor(
                 tokenProvider.refreshToken.firstOrNull() 
             }
         } catch (e: Exception) {
-            Log.e(TAG, "## [토큰 체크] refreshToken 읽기 실패: ${e.message}")
+            Log.e(TAG, "## [토큰 체크] refreshToken 읽기 실패 : ${e.message}")
             null
         }
         
-        Log.d(TAG, "## [토큰 체크] refreshToken: ${refreshToken?.take(20)}...")
+        Log.d(TAG, "## [토큰 체크] refreshToken : $refreshToken")
         
         if (refreshToken == null) {
-            Log.d(TAG, "## [토큰 체크] refreshToken이 null이므로 재로그인 필요")
+            Log.d(TAG, "## [토큰 체크] refreshToken이 null -> 재로그인 필요")
             return false
         }
         
         // accessToken이 null이거나 401 응답인 경우 재발급 필요
         if (accessToken == null || response.code == 401) {
-            Log.d(TAG, "## [토큰 체크] accessToken null 또는 401 응답, 재발급 필요")
+            Log.d(TAG, "## [토큰 체크] accessToken null 또는 401, 재발급 필요")
             return true
         }
 
         return try {
             val responseBody = response.peekBody(Long.MAX_VALUE).string()
-            Log.d(TAG, "## [토큰 체크] 응답 본문: $responseBody")
+            Log.d(TAG, "## [토큰 체크] 응답 본문 : $responseBody")
             val needsRefresh = responseBody.contains("AUTH_102") || responseBody.contains("AUTH_103")
-            Log.d(TAG, "## [토큰 체크] AUTH_102/103 포함 여부: $needsRefresh")
+            Log.d(TAG, "## [토큰 체크] AUTH_102/103 포함 여부 : $needsRefresh")
             needsRefresh
         } catch (e: Exception) {
-            Log.e(TAG, "## [토큰 체크] 응답 본문 읽기 실패: ${e.message}")
+            Log.e(TAG, "## [토큰 체크] 응답 본문 읽기 실패 : ${e.message}")
             false
         }
     }
@@ -100,27 +100,27 @@ class AuthInterceptor @Inject constructor(
             val deviceId = try {
                 runBlocking { tokenProvider.deviceId.firstOrNull() }
             } catch (e: Exception) {
-                Log.e(TAG, "## [토큰 재발급] deviceId 읽기 실패: ${e.message}")
+                Log.e(TAG, "## [토큰 재발급] deviceId 읽기 실패 : ${e.message}")
                 null
             }
             
             val refreshToken = try {
                 runBlocking { tokenProvider.refreshToken.firstOrNull() }
             } catch (e: Exception) {
-                Log.e(TAG, "## [토큰 재발급] refreshToken 읽기 실패: ${e.message}")
+                Log.e(TAG, "## [토큰 재발급] refreshToken 읽기 실패 : ${e.message}")
                 null
             }
             
-            Log.d(TAG, "## [토큰 재발급] deviceId: $deviceId")
-            Log.d(TAG, "## [토큰 재발급] refreshToken: ${refreshToken?.take(20)}...")
+            Log.d(TAG, "## [토큰 재발급] deviceId : $deviceId")
+            Log.d(TAG, "## [토큰 재발급] refreshToken : $refreshToken")
             
             if (deviceId == null) {
-                Log.e(TAG, "## [토큰 재발급] deviceId가 null이므로 401 반환")
+                Log.e(TAG, "## [토큰 재발급] deviceId가 null -> 401 리턴")
                 return createUnauthorizedResponse(originalRequest)
             }
             
             if (refreshToken == null) {
-                Log.e(TAG, "## [토큰 재발급] refreshToken이 null이므로 401 반환")
+                Log.e(TAG, "## [토큰 재발급] refreshToken이 null -> 401 리턴")
                 return createUnauthorizedResponse(originalRequest)
             }
 
@@ -130,11 +130,11 @@ class AuthInterceptor @Inject constructor(
                     .post("""{"deviceId":"$deviceId"}""".toRequestBody("application/json".toMediaTypeOrNull()))
                     .addHeader("Authorization", refreshToken)
                     .build()
-                Log.d(TAG, "## [토큰 재발급] 재발급 요청 생성: ${reissueRequest.url}")
+                Log.d(TAG, "## [토큰 재발급] 재발급 요청 생성 : ${reissueRequest.url}")
 
                 val reissueResponse = chain.proceed(reissueRequest)
                 val responseBody = reissueResponse.body?.string()
-                Log.d(TAG, "## [토큰 재발급] 응답: ${reissueResponse.code}, 본문: $responseBody")
+                Log.d(TAG, "## [토큰 재발급] 응답 : ${reissueResponse.code}, 본문 : $responseBody")
                 reissueResponse.close()
 
                 if (reissueResponse.isSuccessful && responseBody?.contains("\"isSuccess\":true") == true) {

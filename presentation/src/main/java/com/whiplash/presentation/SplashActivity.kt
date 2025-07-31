@@ -2,6 +2,7 @@ package com.whiplash.presentation
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -10,7 +11,9 @@ import com.whiplash.presentation.databinding.ActivitySplashBinding
 import com.whiplash.presentation.login.GoogleLoginManager
 import com.whiplash.presentation.login.KakaoLoginManager
 import com.whiplash.presentation.login.LoginActivity
+import com.whiplash.presentation.login.LoginViewModel
 import com.whiplash.presentation.main.MainActivity
+import com.whiplash.presentation.util.ActivityUtils.getAndroidDeviceId
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -22,6 +25,8 @@ import javax.inject.Inject
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplashBinding
+
+    private val loginViewModel: LoginViewModel by viewModels()
 
     @Inject
     lateinit var googleLoginManager: GoogleLoginManager
@@ -40,6 +45,8 @@ class SplashActivity : AppCompatActivity() {
             insets
         }
 
+        observeLoginViewModel()
+
         lifecycleScope.launch {
             delay(1000)
             checkLoginStatusAndNavigate()
@@ -54,8 +61,8 @@ class SplashActivity : AppCompatActivity() {
             // 구글 로그인 상태 확인
             val googleUser = googleLoginManager.getCurrentUser()
             if (googleUser != null) {
-                Timber.d("## [스플래시] 구글 로그인 상태 확인됨. 이메일 : ${googleUser.email} -> 메인 액티비티 이동")
-                navigateToMain()
+                Timber.d("## [스플래시] 구글 로그인 상태 확인됨. 이메일 : ${googleUser.email}")
+                loginViewModel.handleGoogleSignIn(null, getAndroidDeviceId())
                 return
             }
 
@@ -63,8 +70,8 @@ class SplashActivity : AppCompatActivity() {
             kakaoLoginManager.getCurrentUser()
                 .onSuccess { kakaoUser ->
                     if (kakaoUser != null) {
-                        Timber.d("## [스플래시] 카카오 로그인 상태 확인됨. 이메일 : ${kakaoUser.email} -> 메인 액티비티 이동")
-                        navigateToMain()
+                        Timber.d("## [스플래시] 카카오 로그인 상태 확인됨. 이메일 : ${kakaoUser.email}")
+                        loginViewModel.handleKakaoSignIn(this@SplashActivity, getAndroidDeviceId())
                     } else {
                         Timber.d("## [스플래시] 카카오 로그인한 적 없음 - 로그인 화면으로 이동")
                         navigateToLogin()
@@ -78,6 +85,22 @@ class SplashActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Timber.e("## [스플래시] 로그인 상태 확인 중 에러 : ${e.message}")
             navigateToLogin()
+        }
+    }
+
+    private fun observeLoginViewModel() {
+        lifecycleScope.launch {
+            loginViewModel.uiState.collect { state ->
+                if (state.isLoginSuccess) {
+                    Timber.d("## [스플래시] 로그인 API 성공 -> 메인 액티비티 이동")
+                    navigateToMain()
+                    return@collect
+                } else if (state.errorMessage != null) {
+                    Timber.e("## [스플래시] 로그인 API 실패: ${state.errorMessage} -> 로그인 화면으로 이동")
+                    navigateToLogin()
+                    return@collect
+                }
+            }
         }
     }
 

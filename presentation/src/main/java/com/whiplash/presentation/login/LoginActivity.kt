@@ -13,6 +13,7 @@ import com.whiplash.presentation.R
 import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
 import com.whiplash.presentation.databinding.ActivityLoginBinding
 import com.whiplash.presentation.main.MainActivity
+import com.whiplash.presentation.util.ActivityUtils.getAndroidDeviceId
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -111,10 +112,6 @@ class LoginActivity : AppCompatActivity() {
     private fun startKakaoLogin() {
         val deviceId = getAndroidDeviceId()
         loginViewModel.handleKakaoSignIn(this, deviceId)
-    }
-
-    private fun getAndroidDeviceId(): String {
-        return Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID) ?: "unknown"
     }
 
     private fun handleLoginSuccess() {
