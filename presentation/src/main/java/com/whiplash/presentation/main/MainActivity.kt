@@ -69,8 +69,6 @@ class MainActivity : AppCompatActivity() {
                 showThreeDotMenu()
             }
         }
-
-        mainViewModel.getAlarms()
     }
 
     private fun setupRecyclerView() {
@@ -160,6 +158,11 @@ class MainActivity : AppCompatActivity() {
             screenWidth - (anchorLeft + popupWidth) - (20 * resources.displayMetrics.density).toInt()
 
         popupWindow.showAsDropDown(binding.ivDotMenu, xOffset, 0)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.getAlarms()
     }
 
 }
