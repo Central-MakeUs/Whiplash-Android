@@ -1,18 +1,32 @@
 package com.whiplash.presentation.create_alarm
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.whiplash.domain.entity.alarm.request.AddAlarmRequest
 import com.whiplash.presentation.R
+import com.whiplash.presentation.component.bottom_sheet.AlarmSoundBottomSheet
+import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
 import com.whiplash.presentation.databinding.ActivityCreateAlarmBinding
+import com.whiplash.presentation.main.MainViewModel
 import com.whiplash.presentation.map.SelectPlaceActivity
 import com.whiplash.presentation.search_place.SearchPlaceActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
+import com.whiplash.presentation.util.WhiplashToast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Calendar
 
@@ -25,6 +39,32 @@ import java.util.Calendar
 class CreateAlarmActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateAlarmBinding
+    private lateinit var loadingScreen: WhiplashLoadingScreen
+
+    private val mainViewModel: MainViewModel by viewModels()
+
+    private val placeSelectionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val detailAddress = result.data?.getStringExtra("detailAddress") ?: ""
+            val latitude = result.data?.getDoubleExtra("latitude", 0.0) ?: 0.0
+            val longitude = result.data?.getDoubleExtra("longitude", 0.0) ?: 0.0
+
+            Timber.d("## [장소 선택 완료] 주소: $detailAddress, 위도: $latitude, 경도: $longitude")
+            if (detailAddress.isNotEmpty()) {
+                binding.tvSearch.text = detailAddress
+                binding.tvSearch.setTextColor(ContextCompat.getColor(this, R.color.grey_50))
+            }
+            mainViewModel.setSelectedPlace(detailAddress, latitude, longitude)
+        }
+    }
+
+    private var alarmSoundBottomSheet: AlarmSoundBottomSheet? = null
+
+    // 알람 소리 바텀시트에서 선택한 알람. 기본값 "알람 소리1"
+    private var selectedAlarmSoundId: Int = -1
+    private var selectedAlarmSoundText: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +77,39 @@ class CreateAlarmActivity : AppCompatActivity() {
             insets
         }
 
+        observeMainViewModel()
         setupView()
     }
 
+    private fun observeMainViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    mainViewModel.uiState.collect { state ->
+                        if (state.isLoading) {
+                            loadingScreen.show()
+                        } else {
+                            loadingScreen.hide()
+                        }
+
+                        if (state.errorMessage?.isNotEmpty() == true) {
+                            WhiplashToast.showErrorToast(this@CreateAlarmActivity, state.errorMessage)
+                        }
+
+                        // 알람 생성 결과
+                        if (state.isAlarmCreated) {
+                            WhiplashToast.showSuccessToast(this@CreateAlarmActivity, getString(R.string.alarm_created))
+                            finish()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupView() {
+        loadingScreen = WhiplashLoadingScreen(this)
+
         with(binding) {
             setupExpandableView()
             setRepeatDay()
@@ -48,19 +117,49 @@ class CreateAlarmActivity : AppCompatActivity() {
 
             whCreateAlarm.setTitle(getString(R.string.create_alarm_header))
 
+            selectedAlarmSoundText = getString(R.string.sound_1)
+            tvAlarmSoundDetail.text = selectedAlarmSoundText
+
             // 도착 목표 장소는?
             clSelectPlaceContainer.setOnClickListener {
-                navigateTo<SearchPlaceActivity> {}
+                placeSelectionLauncher.launch(
+                    Intent(this@CreateAlarmActivity, SearchPlaceActivity::class.java)
+                )
             }
 
             // 지도에서 찾기
             clSearchInMapContainer.setOnClickListener {
-                navigateTo<SelectPlaceActivity> {}
+                placeSelectionLauncher.launch(
+                    Intent(this@CreateAlarmActivity, SelectPlaceActivity::class.java)
+                )
             }
 
+            // 알람 소리 설정
+            llAlarmSound.setOnClickListener {
+                // 알람 소리 선택, 미리듣기 뷰가 있는 바텀 시트 프래그먼트 표시
+                showAlarmSoundBottomSheet()
+            }
+
+            // 저장하기
             btnSaveAlarm.setOnClickListener {
-                val time = getSelectedTime()
-                Timber.d("## [시간] 오전 / 오후 : ${time.first}, 시 : ${time.second}, 분 : ${time.third}")
+                val time = getSelectedTime24Hour()
+                Timber.d("## [시간] 24시간 형식: $time")
+                val selectedDays = getSelectedDays()
+                val detailAddress = mainViewModel.uiState.value.selectedPlace?.detailAddress
+                val latitude = mainViewModel.uiState.value.selectedPlace?.latitude
+                val longitude = mainViewModel.uiState.value.selectedPlace?.longitude
+
+                mainViewModel.addAlarm(
+                    request = AddAlarmRequest(
+                        address = detailAddress ?: "",
+                        latitude = latitude ?: 0.0,
+                        longitude = longitude ?: 0.0,
+                        alarmPurpose = binding.etAlarmPurpose.getText(),
+                        time = time,
+                        repeatDays = selectedDays,
+                        soundType = selectedAlarmSoundText
+                    )
+                )
             }
         }
     }
@@ -92,6 +191,23 @@ class CreateAlarmActivity : AppCompatActivity() {
         dayButtons.forEachIndexed { index, button ->
             button.setText(dayNames[index])
         }
+    }
+
+    private fun getSelectedDays(): List<String> {
+        val selectedDays = mutableListOf<String>()
+        val dayButtons = arrayOf(
+            binding.btnMon, binding.btnTue, binding.btnWed, binding.btnThur,
+            binding.btnFri, binding.btnSat, binding.btnSun
+        )
+        val dayNames = resources.getStringArray(R.array.day_names_korean)
+
+        dayButtons.forEachIndexed { index, button ->
+            if (button.isSelected) {
+                selectedDays.add(dayNames[index])
+            }
+        }
+
+        return selectedDays
     }
 
     private fun setTimePickers() {
@@ -139,14 +255,35 @@ class CreateAlarmActivity : AppCompatActivity() {
     }
 
     /**
-     * 현재 선택된 시간 가져옴
+     * 현재 선택된 시간을 24시간 형식(18:30)으로 가져옴
      */
-    private fun getSelectedTime(): Triple<String, Int, Int> {
-        val amPm = if (binding.npAmPm.value == 0) getString(R.string.time_am) else getString(R.string.time_pm)
-        val hour = binding.npHours.value
+    private fun getSelectedTime24Hour(): String {
+        val isAmSelected = binding.npAmPm.value == 0
+        val hour12 = binding.npHours.value
         val minute = binding.npMinutes.value
 
-        return Triple(amPm, hour, minute)
+        val hour24 = when {
+            isAmSelected && hour12 == 12 -> 0       // 오전 12시 -> 0시
+            isAmSelected -> hour12                  // 오전 1-11시 -> 1-11시
+            !isAmSelected && hour12 == 12 -> 12     // 오후 12시 -> 12시
+            else -> hour12 + 12                     // 오후 1-11시 -> 13-23시
+        }
+
+        return String.format("%02d:%02d", hour24, minute)
+    }
+
+    private fun showAlarmSoundBottomSheet() {
+        if (alarmSoundBottomSheet?.isVisible == true) return
+
+        val bottomSheetFragment = AlarmSoundBottomSheet.newInstance(
+            onAlarmSoundSelected = { selectedSound, selectedId ->
+                binding.tvAlarmSoundDetail.text = selectedSound
+                selectedAlarmSoundId = selectedId
+                selectedAlarmSoundText = selectedSound // 선택된 텍스트 저장
+            },
+            selectedRadioButtonId = selectedAlarmSoundId
+        )
+        bottomSheetFragment.show(supportFragmentManager, "AlarmSoundBottomSheet")
     }
 
 }

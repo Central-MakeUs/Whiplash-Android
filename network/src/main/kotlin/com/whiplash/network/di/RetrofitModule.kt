@@ -80,8 +80,7 @@ object RetrofitModule {
     @Singleton
     fun provideAuthInterceptor(
         tokenProvider: TokenProvider,
-        @TokenReissueClient authService: AuthService
-    ): AuthInterceptor = AuthInterceptor(tokenProvider, authService)
+    ): AuthInterceptor = AuthInterceptor(tokenProvider)
 
     @Provides
     @Singleton

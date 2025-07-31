@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
+import android.provider.Settings
 
 /**
  * 액티비티 이동 관련 유틸 함수 관리
@@ -146,4 +147,9 @@ object ActivityUtils {
             }
         }
     }
+
+    fun Context.getAndroidDeviceId(): String {
+        return Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID) ?: "unknown"
+    }
+
 }

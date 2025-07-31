@@ -30,18 +30,50 @@ class MainViewModel @Inject constructor(
         val isLoading: Boolean = false,
         val errorMessage: String? = null,
 
+        // 알람 생성 성공 여부
+        val isAlarmCreated: Boolean = false,
+
         // 알람 목록 조회 api 결과
         val alarmList: List<GetAlarmEntity> = emptyList(),
 
-        val isAddAlarm: Boolean = false,
-
         // 알람 발생 내역 생성 결과
-        val isCreateAlarmOccurrence: Boolean = false,
         val createdOccurrence: CreateAlarmOccurrenceEntity? = null,
+
+        // 선택한 장소 위경도
+        val selectedPlace: SelectedPlace? = null,
+    )
+
+    data class SelectedPlace(
+        val detailAddress: String,
+        val latitude: Double,
+        val longitude: Double
     )
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+
+    fun setSelectedPlace(
+        detailAddress: String,
+        latitude: Double,
+        longitude: Double
+    ) {
+        _uiState.update {
+            it.copy(
+                selectedPlace = SelectedPlace(
+                    detailAddress = detailAddress,
+                    latitude = latitude,
+                    longitude = longitude
+                )
+            )
+        }
+        Timber.d("## [장소 저장] 주소: $detailAddress, 위도: $latitude, 경도: $longitude")
+    }
+
+    fun clearSelectedPlace() = _uiState.update {
+        it.copy(
+            selectedPlace = null
+        )
+    }
 
     // 알람 목록 조회
     fun getAlarms() = viewModelScope.launch {
@@ -84,7 +116,7 @@ class MainViewModel @Inject constructor(
 
     // 알람 등록
     fun addAlarm(request: AddAlarmRequest) = viewModelScope.launch {
-        _uiState.update { it.copy(isAddAlarm = true) }
+        _uiState.update { it.copy(isLoading = true) }
 
         try {
             addAlarmUseCase(request).collect { result ->
@@ -93,7 +125,7 @@ class MainViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            isAddAlarm = false,
+                            isAlarmCreated = true,
                             errorMessage = null
                         )
                     }
@@ -105,7 +137,7 @@ class MainViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            isAddAlarm = false,
+                            isAlarmCreated = false,
                             errorMessage = e.message
                         )
                     }
@@ -118,7 +150,7 @@ class MainViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     isLoading = false,
-                    isAddAlarm = false,
+                    isAlarmCreated = false,
                     errorMessage = e.message
                 )
             }
@@ -127,7 +159,7 @@ class MainViewModel @Inject constructor(
 
     // 알람 발생 내역 생성
     fun createAlarmOccurrence(alarmId: Long) = viewModelScope.launch {
-        _uiState.update { it.copy(isCreateAlarmOccurrence = true) }
+        _uiState.update { it.copy(isLoading = true) }
 
         try {
             createAlarmOccurrenceUseCase(alarmId).collect { result ->
@@ -135,7 +167,7 @@ class MainViewModel @Inject constructor(
                     Timber.d("## [알람 발생 내역 생성] 성공 : $occurrence")
                     _uiState.update {
                         it.copy(
-                            isCreateAlarmOccurrence = false,
+                            isLoading = false,
                             createdOccurrence = occurrence,
                             errorMessage = null
                         )
@@ -146,7 +178,7 @@ class MainViewModel @Inject constructor(
                     Timber.e("## [알람 발생 내역 생성] 실패 : $e")
                     _uiState.update {
                         it.copy(
-                            isCreateAlarmOccurrence = false,
+                            isLoading = false,
                             errorMessage = e.message
                         )
                     }
@@ -158,7 +190,7 @@ class MainViewModel @Inject constructor(
             Timber.e("## [알람 발생 내역 생성] 에러 : $e")
             _uiState.update {
                 it.copy(
-                    isCreateAlarmOccurrence = false,
+                    isLoading = false,
                     errorMessage = e.message
                 )
             }

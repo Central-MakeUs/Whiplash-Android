@@ -1,11 +1,17 @@
 package com.whiplash.presentation.search_place
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.whiplash.domain.entity.auth.response.SearchPlaceEntity
 import com.whiplash.presentation.R
@@ -14,6 +20,9 @@ import com.whiplash.presentation.databinding.ActivitySearchPlaceBinding
 import com.whiplash.presentation.map.SelectPlaceActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -25,7 +34,20 @@ class SearchPlaceActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchPlaceBinding
     private lateinit var loadingScreen: WhiplashLoadingScreen
 
+    private val searchPlaceViewModel: SearchPlaceViewModel by viewModels()
     private lateinit var searchPlaceAdapter: SearchPlaceAdapter
+
+    private var searchJob: Job? = null
+
+    private val selectPlaceLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // SelectPlaceActivity에서 받은 결과를 CreateAlarmActivity로 전달
+            setResult(RESULT_OK, result.data)
+            finish()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +61,33 @@ class SearchPlaceActivity : AppCompatActivity() {
         }
 
         setupView()
-        testRecyclerView()
+        observeSearchPlaceViewModel()
+    }
+    
+    private fun observeSearchPlaceViewModel() {
+        lifecycleScope.launch { 
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    searchPlaceViewModel.uiState.collect { state ->
+                        if (state.isLoading) {
+                            loadingScreen.show()
+                        } else {
+                            loadingScreen.hide()
+                        }
+
+                        // 장소 검색 결과
+                        if (state.placeList.isNotEmpty()) {
+                            searchPlaceAdapter.submitList(state.placeList)
+                            binding.tvSearchResult.visibility = View.VISIBLE
+                            binding.rvSearchPlace.visibility = View.VISIBLE
+                        } else {
+                            binding.tvSearchResult.visibility = View.GONE
+                            binding.rvSearchPlace.visibility = View.GONE
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setupView() {
@@ -47,6 +95,7 @@ class SearchPlaceActivity : AppCompatActivity() {
         with(binding) {
             whSearchPlace.setTitle(getString(R.string.select_place_header))
             setupRecyclerView()
+            setupSearchBar()
         }
     }
 
@@ -59,12 +108,15 @@ class SearchPlaceActivity : AppCompatActivity() {
 
             Timber.d("## [장소 선택] 위도 : $latitude, 경도 : $longitude")
             Timber.d("## [장소 선택] 간단한 주소 : $simpleAddress, 상세 주소 : $detailAddress")
-            navigateTo<SelectPlaceActivity> {
-                putExtra("latitude", latitude)
-                putExtra("longitude", longitude)
-                putExtra("simpleAddress", simpleAddress)
-                putExtra("detailAddress", detailAddress)
-            }
+
+            selectPlaceLauncher.launch(
+                Intent(this, SelectPlaceActivity::class.java).apply {
+                    putExtra("latitude", latitude)
+                    putExtra("longitude", longitude)
+                    putExtra("simpleAddress", simpleAddress)
+                    putExtra("detailAddress", detailAddress)
+                }
+            )
         }
 
         binding.rvSearchPlace.apply {
@@ -72,44 +124,23 @@ class SearchPlaceActivity : AppCompatActivity() {
             addItemDecoration(DividerItemDecoration(this@SearchPlaceActivity, DividerItemDecoration.VERTICAL))
         }
     }
-
-    // TODO : api 적용 전 사용하는 임시값
-    private fun testRecyclerView() {
-        val list = listOf(
-            SearchPlaceEntity(
-                name = "경기도청",
-                address = "",
-                latitude = 37.2889398,
-                longitude = 127.053822
-            ),
-            SearchPlaceEntity(
-                name = "경기도청 북부청사",
-                address = "경기도 의정부시 신곡동 800 경기도청 북부청사",
-                latitude = 37.7474404,
-                longitude = 127.0717166
-            ),
-            SearchPlaceEntity(
-                name = "캐리비안베이",
-                address = "경기도 용인시 처인구 포곡읍 전대리 310",
-                latitude = 37.2981411,
-                longitude = 127.2005786
-            ),
-            SearchPlaceEntity(
-                name = "한국민속촌",
-                address = "경기도 용인시 기흥구 보라동 35 한국민속촌",
-                latitude = 37.2594023,
-                longitude = 127.1205573
-            ),
-            SearchPlaceEntity(
-                name = "스타필드 수원",
-                address = "경기도 수원시 장안구 정자동 111-14 스타필드 수원",
-                latitude = 37.2873924,
-                longitude = 126.9915726
-            ),
-        )
-
-        searchPlaceAdapter.submitList(list)
-        binding.tvSearchResult.visibility = View.VISIBLE
+    
+    private fun setupSearchBar() {
+        binding.wsbPlace.setOnTextChangeListener { query ->
+            searchJob?.cancel()
+            
+            if (query.isNotBlank()) {
+                searchJob = lifecycleScope.launch {
+                    delay(300)
+                    Timber.d("## [장소 선택] 검색어 : $query")
+                    searchPlaceViewModel.searchPlace(query.trim())
+                }
+            } else {
+                // 검색어가 비어있으면 리사이클러뷰 숨김
+                binding.tvSearchResult.visibility = View.GONE
+                binding.rvSearchPlace.visibility = View.GONE
+            }
+        }
     }
 
 }

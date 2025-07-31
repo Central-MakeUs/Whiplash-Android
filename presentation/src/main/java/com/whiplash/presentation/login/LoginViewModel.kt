@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiplash.domain.entity.auth.request.LoginRequestEntity
 import com.whiplash.domain.entity.auth.request.LogoutRequestEntity
+import com.whiplash.domain.entity.auth.request.TokenReissueRequestEntity
 import com.whiplash.domain.provider.CrashlyticsProvider
 import com.whiplash.domain.provider.TokenProvider
+import com.whiplash.domain.usecase.auth.ReissueTokenUseCase
 import com.whiplash.domain.usecase.auth.SocialLoginUseCase
 import com.whiplash.domain.usecase.auth.SocialLogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,13 +21,13 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-// TODO : api 수정되면 MOCK 대신 GOOGLE, KAKAO 넘기게 수정
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val googleLoginManager: GoogleLoginManager,
     private val kakaoLoginManager: KakaoLoginManager,
     private val socialLoginUseCase: SocialLoginUseCase,
     private val socialLogoutUseCase: SocialLogoutUseCase,
+    private val reissueTokenUseCase: ReissueTokenUseCase,
     private val tokenProvider: TokenProvider,
     private val crashlyticsProvider: CrashlyticsProvider,
 ) : ViewModel() {
@@ -51,7 +53,7 @@ class LoginViewModel @Inject constructor(
             googleLoginManager.handleGoogleSignIn(data)
                 .fold(
                     onSuccess = { result ->
-                        invokeLogin("MOCK", result.idToken, deviceId)
+                        invokeLogin("GOOGLE", result.idToken, deviceId)
                     },
                     onFailure = { e ->
                         crashlyticsProvider.recordError(e)
@@ -87,7 +89,8 @@ class LoginViewModel @Inject constructor(
             kakaoLoginManager.signIn(context)
                 .fold(
                     onSuccess = { result ->
-                        invokeLogin("MOCK", result.accessToken, deviceId)
+                        Timber.e("## [카카오 로그인] 성공 : $result")
+                        invokeLogin("KAKAO", result.accessToken, deviceId)
                     },
                     onFailure = { e ->
                         Timber.e("## 카카오 로그인 실패: ${e.message}")
@@ -122,10 +125,10 @@ class LoginViewModel @Inject constructor(
                 deviceId = deviceId
             )
             socialLoginUseCase(request).collect { result ->
-                result.onSuccess { loginResponse ->
+                result.onSuccess { response ->
                     tokenProvider.saveTokens(
-                        loginResponse.accessToken,
-                        loginResponse.refreshToken
+                        response.accessToken,
+                        response.refreshToken
                     )
 
                     _uiState.update {
@@ -201,5 +204,28 @@ class LoginViewModel @Inject constructor(
     }
 
     fun resetLogoutState() = _uiState.update { it.copy(isLogoutSuccess = false) }
+
+    fun reissueToken(deviceId: String) = viewModelScope.launch {
+        try {
+            val request = TokenReissueRequestEntity(deviceId = deviceId)
+            reissueTokenUseCase(request).collect { result ->
+                result.onSuccess { tokenResponse ->
+                    tokenProvider.saveTokens(
+                        tokenResponse.accessToken,
+                        tokenResponse.refreshToken
+                    )
+                    Timber.d("## [토큰 재발급] 성공")
+                }.onFailure { e ->
+                    crashlyticsProvider.recordError(e)
+                    crashlyticsProvider.logError("토큰 재발급 실패 : ${e.message}")
+                    Timber.e("## [토큰 재발급] 실패: ${e.message}")
+                }
+            }
+        } catch (e: Exception) {
+            crashlyticsProvider.recordError(e)
+            crashlyticsProvider.logError("토큰 재발급 에러 : ${e.message}")
+            Timber.e("## [토큰 재발급] 에러: ${e.message}")
+        }
+    }
 
 }
