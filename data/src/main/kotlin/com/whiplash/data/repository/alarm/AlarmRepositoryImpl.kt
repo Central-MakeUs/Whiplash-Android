@@ -19,7 +19,9 @@ class AlarmRepositoryImpl @Inject constructor(
     override suspend fun getAlarmList(): Flow<Result<List<GetAlarmEntity>>> =
         safeApiCallWithTransform(
             apiCall = { alarmService.getAlarms() },
-            transform = { response -> response.result.map { alarmMapper.toEntity(it) } }
+            transform = { response ->
+                response.result?.map { alarmMapper.toEntity(it) } ?: emptyList()
+            }
         )
 
     override suspend fun addAlarm(request: AddAlarmRequest): Flow<Result<Unit>> =
@@ -31,6 +33,9 @@ class AlarmRepositoryImpl @Inject constructor(
     override suspend fun createAlarmOccurrence(alarmId: Long): Flow<Result<CreateAlarmOccurrenceEntity>> =
         safeApiCallWithTransform(
             apiCall = { alarmService.createAlarmOccurrence(alarmId) },
-            transform = { response -> alarmMapper.toCreateOccurrenceEntity(response.result) }
+            transform = { response ->
+                response.result?.let { alarmMapper.toCreateOccurrenceEntity(it) }
+                    ?: throw Exception("알람 발생 내역 생성 api 응답이 null")
+            }
         )
 }

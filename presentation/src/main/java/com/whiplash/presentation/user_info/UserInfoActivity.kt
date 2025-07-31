@@ -10,12 +10,19 @@ import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityUserInfoBinding
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
+import com.whiplash.presentation.login.KakaoLoginManager
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class UserInfoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUserInfoBinding
+
+    @Inject
+    lateinit var kakaoLoginManager: KakaoLoginManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,6 +106,9 @@ class UserInfoActivity : AppCompatActivity() {
                 showRightArrow(true)
                 setOnItemClickListener {
                     Timber.d("## [회원정보] 로그아웃 클릭")
+                    lifecycleScope.launch {
+                        kakaoLoginManager.signOut()
+                    }
                 }
             }
 

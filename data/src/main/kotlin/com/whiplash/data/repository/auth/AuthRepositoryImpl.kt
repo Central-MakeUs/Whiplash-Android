@@ -19,13 +19,19 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun socialLogin(request: LoginRequestEntity): Flow<Result<LoginResponseEntity>> =
         safeApiCallWithTransform(
             apiCall = { authService.invokeSocialLogin(authMapper.toSocialLoginRequest(request)) },
-            transform = { response -> authMapper.toLoginResponseEntity(response.result) }
+            transform = { response ->
+                response.result?.let { authMapper.toLoginResponseEntity(it) }
+                    ?: throw Exception("소셜로그인 api 응답이 null")
+            }
         )
 
     override suspend fun reissueToken(request: TokenReissueRequestEntity): Flow<Result<TokenReissueResponseEntity>> =
         safeApiCallWithTransform(
             apiCall = { authService.reissueToken(authMapper.toTokenReissueRequest(request)) },
-            transform = { response -> authMapper.toTokenReissueResponseEntity(response.result) }
+            transform = { response ->
+                response.result?.let { authMapper.toTokenReissueResponseEntity(it) }
+                    ?: throw Exception("토큰 재발행 api 응답이 null")
+            }
         )
 
     override suspend fun socialLogout(request: LogoutRequestEntity): Flow<Result<Unit>> =

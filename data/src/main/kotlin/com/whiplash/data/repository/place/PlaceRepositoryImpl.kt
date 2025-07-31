@@ -16,12 +16,18 @@ class PlaceRepositoryImpl @Inject constructor(
     override suspend fun searchPlace(query: String): Flow<Result<List<SearchPlaceEntity>>> =
         safeApiCallWithTransform(
             apiCall = { placeService.searchPlace(query) },
-            transform = { response -> response.result.map { placeMapper.toEntity(it) } }
+            transform = { response ->
+                response.result?.map { placeMapper.toEntity(it) } ?: emptyList()
+            }
         )
 
     override suspend fun getPlaceDetail(latitude: Double, longitude: Double): Flow<Result<PlaceDetailEntity>> =
         safeApiCallWithTransform(
             apiCall = { placeService.getPlaceDetail(latitude, longitude) },
-            transform = { response -> placeMapper.toEntity(response.result) }
+            transform = { response ->
+                response.result?.let { placeMapper.toEntity(it) }
+                    ?: throw Exception("Place detail not found")
+            }
         )
+
 }

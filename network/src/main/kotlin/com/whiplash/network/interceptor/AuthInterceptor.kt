@@ -17,6 +17,8 @@ class AuthInterceptor @Inject constructor(
     private val tokenProvider: TokenProvider
 ) : Interceptor {
 
+    private val TAG = this::class.simpleName
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
         val url = originalRequest.url.encodedPath
@@ -45,6 +47,7 @@ class AuthInterceptor @Inject constructor(
 
         // 토큰 만료 시 재발급 시도
         if (shouldRefreshToken(response, accessToken)) {
+            Log.d(TAG, "## [토큰 재발급] 조건 만족, 재발급 시도")
             return handleTokenRefresh(chain, originalRequest, response)
         }
 
@@ -52,23 +55,74 @@ class AuthInterceptor @Inject constructor(
     }
 
     private fun shouldRefreshToken(response: Response, accessToken: String?): Boolean {
-        if (accessToken == null) return false
-        if (response.code == 401) return true
+        Log.d(TAG, "## [토큰 체크] accessToken: $accessToken, responseCode: ${response.code}")
+        
+        // runBlocking 대신 동기적으로 확인
+        val refreshToken = try {
+            runBlocking { 
+                tokenProvider.refreshToken.firstOrNull() 
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "## [토큰 체크] refreshToken 읽기 실패: ${e.message}")
+            null
+        }
+        
+        Log.d(TAG, "## [토큰 체크] refreshToken: ${refreshToken?.take(20)}...")
+        
+        if (refreshToken == null) {
+            Log.d(TAG, "## [토큰 체크] refreshToken이 null이므로 재로그인 필요")
+            return false
+        }
+        
+        // accessToken이 null이거나 401 응답인 경우 재발급 필요
+        if (accessToken == null || response.code == 401) {
+            Log.d(TAG, "## [토큰 체크] accessToken null 또는 401 응답, 재발급 필요")
+            return true
+        }
 
         return try {
             val responseBody = response.peekBody(Long.MAX_VALUE).string()
-            responseBody.contains("AUTH_102") || responseBody.contains("AUTH_103")
+            Log.d(TAG, "## [토큰 체크] 응답 본문: $responseBody")
+            val needsRefresh = responseBody.contains("AUTH_102") || responseBody.contains("AUTH_103")
+            Log.d(TAG, "## [토큰 체크] AUTH_102/103 포함 여부: $needsRefresh")
+            needsRefresh
         } catch (e: Exception) {
+            Log.e(TAG, "## [토큰 체크] 응답 본문 읽기 실패: ${e.message}")
             false
         }
     }
 
     private fun handleTokenRefresh(chain: Interceptor.Chain, originalRequest: Request, response: Response): Response {
+        Log.d(TAG, "## [토큰 재발급 메서드] handleTokenRefresh 호출됨")
         synchronized(this) {
             response.close()
 
-            val deviceId = runBlocking { tokenProvider.deviceId.firstOrNull() } ?: return createUnauthorizedResponse()
-            val refreshToken = runBlocking { tokenProvider.refreshToken.firstOrNull() } ?: return createUnauthorizedResponse()
+            val deviceId = try {
+                runBlocking { tokenProvider.deviceId.firstOrNull() }
+            } catch (e: Exception) {
+                Log.e(TAG, "## [토큰 재발급] deviceId 읽기 실패: ${e.message}")
+                null
+            }
+            
+            val refreshToken = try {
+                runBlocking { tokenProvider.refreshToken.firstOrNull() }
+            } catch (e: Exception) {
+                Log.e(TAG, "## [토큰 재발급] refreshToken 읽기 실패: ${e.message}")
+                null
+            }
+            
+            Log.d(TAG, "## [토큰 재발급] deviceId: $deviceId")
+            Log.d(TAG, "## [토큰 재발급] refreshToken: ${refreshToken?.take(20)}...")
+            
+            if (deviceId == null) {
+                Log.e(TAG, "## [토큰 재발급] deviceId가 null이므로 401 반환")
+                return createUnauthorizedResponse(originalRequest)
+            }
+            
+            if (refreshToken == null) {
+                Log.e(TAG, "## [토큰 재발급] refreshToken이 null이므로 401 반환")
+                return createUnauthorizedResponse(originalRequest)
+            }
 
             return try {
                 val reissueRequest = Request.Builder()
@@ -76,10 +130,11 @@ class AuthInterceptor @Inject constructor(
                     .post("""{"deviceId":"$deviceId"}""".toRequestBody("application/json".toMediaTypeOrNull()))
                     .addHeader("Authorization", refreshToken)
                     .build()
-                Log.e("refresh", "## [토큰 재발급] 재발급 요청 : $reissueRequest")
+                Log.d(TAG, "## [토큰 재발급] 재발급 요청 생성: ${reissueRequest.url}")
 
                 val reissueResponse = chain.proceed(reissueRequest)
                 val responseBody = reissueResponse.body?.string()
+                Log.d(TAG, "## [토큰 재발급] 응답: ${reissueResponse.code}, 본문: $responseBody")
                 reissueResponse.close()
 
                 if (reissueResponse.isSuccessful && responseBody?.contains("\"isSuccess\":true") == true) {
@@ -97,17 +152,17 @@ class AuthInterceptor @Inject constructor(
                 }
 
                 runBlocking { tokenProvider.clearTokens() }
-                createUnauthorizedResponse()
+                createUnauthorizedResponse(originalRequest)
             } catch (e: Exception) {
                 runBlocking { tokenProvider.clearTokens() }
-                createUnauthorizedResponse()
+                createUnauthorizedResponse(originalRequest)
             }
         }
     }
 
-    private fun createUnauthorizedResponse(): Response {
+    private fun createUnauthorizedResponse(originalRequest: Request): Response {
         return Response.Builder()
-            .request(Request.Builder().url("http://localhost/").build())
+            .request(originalRequest)
             .protocol(okhttp3.Protocol.HTTP_1_1)
             .code(401)
             .message("Unauthorized")
