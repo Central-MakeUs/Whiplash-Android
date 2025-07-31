@@ -99,6 +99,7 @@ class CreateAlarmActivity : AppCompatActivity() {
                         // 알람 생성 결과
                         if (state.isAlarmCreated) {
                             WhiplashToast.showSuccessToast(this@CreateAlarmActivity, getString(R.string.alarm_created))
+                            finish()
                         }
                     }
                 }
@@ -115,7 +116,7 @@ class CreateAlarmActivity : AppCompatActivity() {
             setTimePickers()
 
             whCreateAlarm.setTitle(getString(R.string.create_alarm_header))
-            
+
             selectedAlarmSoundText = getString(R.string.sound_1)
             tvAlarmSoundDetail.text = selectedAlarmSoundText
 
@@ -141,8 +142,8 @@ class CreateAlarmActivity : AppCompatActivity() {
 
             // 저장하기
             btnSaveAlarm.setOnClickListener {
-                val time = getSelectedTime()
-                Timber.d("## [시간] 오전 / 오후 : ${time.first}, 시 : ${time.second}, 분 : ${time.third}")
+                val time = getSelectedTime24Hour()
+                Timber.d("## [시간] 24시간 형식: $time")
                 val selectedDays = getSelectedDays()
                 val detailAddress = mainViewModel.uiState.value.selectedPlace?.detailAddress
                 val latitude = mainViewModel.uiState.value.selectedPlace?.latitude
@@ -154,7 +155,7 @@ class CreateAlarmActivity : AppCompatActivity() {
                         latitude = latitude ?: 0.0,
                         longitude = longitude ?: 0.0,
                         alarmPurpose = binding.etAlarmPurpose.getText(),
-                        time = "${time.second}:${time.third}",
+                        time = time,
                         repeatDays = selectedDays,
                         soundType = selectedAlarmSoundText
                     )
@@ -254,14 +255,21 @@ class CreateAlarmActivity : AppCompatActivity() {
     }
 
     /**
-     * 현재 선택된 시간 가져옴
+     * 현재 선택된 시간을 24시간 형식(18:30)으로 가져옴
      */
-    private fun getSelectedTime(): Triple<String, Int, Int> {
-        val amPm = if (binding.npAmPm.value == 0) getString(R.string.time_am) else getString(R.string.time_pm)
-        val hour = binding.npHours.value
+    private fun getSelectedTime24Hour(): String {
+        val isAmSelected = binding.npAmPm.value == 0
+        val hour12 = binding.npHours.value
         val minute = binding.npMinutes.value
 
-        return Triple(amPm, hour, minute)
+        val hour24 = when {
+            isAmSelected && hour12 == 12 -> 0       // 오전 12시 -> 0시
+            isAmSelected -> hour12                  // 오전 1-11시 -> 1-11시
+            !isAmSelected && hour12 == 12 -> 12     // 오후 12시 -> 12시
+            else -> hour12 + 12                     // 오후 1-11시 -> 13-23시
+        }
+
+        return String.format("%02d:%02d", hour24, minute)
     }
 
     private fun showAlarmSoundBottomSheet() {
