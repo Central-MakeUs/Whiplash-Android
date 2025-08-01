@@ -1,11 +1,14 @@
 package com.whiplash.network.api
 
 import com.whiplash.network.dto.request.RequestAddAlarms
+import com.whiplash.network.dto.request.RequestDeleteAlarm
 import com.whiplash.network.dto.response.BaseResponse
 import com.whiplash.network.dto.response.ResponseCreateAlarmOccurrence
+import com.whiplash.network.dto.response.ResponseDeleteAlarm
 import com.whiplash.network.dto.response.ResponseGetAlarmList
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -37,5 +40,18 @@ interface AlarmService {
     suspend fun createAlarmOccurrence(
         @Path("alarmId") alarmId: Long
     ): Response<ResponseCreateAlarmOccurrence>
+
+    /**
+     * 알람 삭제
+     */
+    @DELETE("alarms/{alarmId}")
+    suspend fun deleteAlarm(
+        @Path("alarmId") alarmId: Long,
+        @Body requestDeleteAlarm: RequestDeleteAlarm
+    ): Response<BaseResponse<Unit>>
+
+    /**
+     * 알람 끄기
+     */
 
 }

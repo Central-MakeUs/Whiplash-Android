@@ -14,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.whiplash.domain.entity.alarm.request.AddAlarmRequest
+import com.whiplash.domain.entity.alarm.request.AddAlarmRequestEntity
 import com.whiplash.presentation.R
 import com.whiplash.presentation.component.bottom_sheet.AlarmSoundBottomSheet
 import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
@@ -22,10 +22,8 @@ import com.whiplash.presentation.databinding.ActivityCreateAlarmBinding
 import com.whiplash.presentation.main.MainViewModel
 import com.whiplash.presentation.map.SelectPlaceActivity
 import com.whiplash.presentation.search_place.SearchPlaceActivity
-import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import com.whiplash.presentation.util.WhiplashToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Calendar
@@ -150,7 +148,7 @@ class CreateAlarmActivity : AppCompatActivity() {
                 val longitude = mainViewModel.uiState.value.selectedPlace?.longitude
 
                 mainViewModel.addAlarm(
-                    request = AddAlarmRequest(
+                    request = AddAlarmRequestEntity(
                         address = detailAddress ?: "",
                         latitude = latitude ?: 0.0,
                         longitude = longitude ?: 0.0,
