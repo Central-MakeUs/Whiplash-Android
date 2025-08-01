@@ -2,10 +2,12 @@ package com.whiplash.network.api
 
 import com.whiplash.network.dto.request.RequestAddAlarms
 import com.whiplash.network.dto.request.RequestDeleteAlarm
+import com.whiplash.network.dto.request.RequestTurnOffAlarm
 import com.whiplash.network.dto.response.BaseResponse
 import com.whiplash.network.dto.response.ResponseCreateAlarmOccurrence
 import com.whiplash.network.dto.response.ResponseDeleteAlarm
 import com.whiplash.network.dto.response.ResponseGetAlarmList
+import com.whiplash.network.dto.response.ResponseTurnOffAlarm
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -53,5 +55,10 @@ interface AlarmService {
     /**
      * 알람 끄기
      */
+    @POST("alarms/{alarmId}/off")
+    suspend fun turnOffAlarm(
+        @Path("alarmId") alarmId: Long,
+        @Body requestTurnOffAlarm: RequestTurnOffAlarm
+    ): Response<ResponseTurnOffAlarm>
 
 }

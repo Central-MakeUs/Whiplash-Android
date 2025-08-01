@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiplash.domain.entity.alarm.request.AddAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.request.DeleteAlarmRequestEntity
+import com.whiplash.domain.entity.alarm.request.TurnOffAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.response.CreateAlarmOccurrenceEntity
 import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.domain.provider.CrashlyticsProvider
@@ -11,6 +12,7 @@ import com.whiplash.domain.usecase.alarm.AddAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
 import com.whiplash.domain.usecase.alarm.DeleteAlarmUseCase
 import com.whiplash.domain.usecase.alarm.GetAlarmsUseCase
+import com.whiplash.domain.usecase.alarm.TurnOffAlarmUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +27,7 @@ class MainViewModel @Inject constructor(
     private val getAlarmsUseCase: GetAlarmsUseCase,
     private val addAlarmUseCase: AddAlarmUseCase,
     private val deleteAlarmUseCase: DeleteAlarmUseCase,
+    private val turnOffAlarmUseCase: TurnOffAlarmUseCase,
     private val createAlarmOccurrenceUseCase: CreateAlarmOccurrenceUseCase,
     private val crashlyticsProvider: CrashlyticsProvider,
 ) : ViewModel() {
@@ -47,6 +50,9 @@ class MainViewModel @Inject constructor(
 
         // 알람 삭제 성공 여부
         val isAlarmDeleted: Boolean = false,
+
+        // 알람 끄기 성공 여부
+        val isAlarmTurnedOff: Boolean = false
     )
 
     data class SelectedPlace(
@@ -239,6 +245,52 @@ class MainViewModel @Inject constructor(
             crashlyticsProvider.recordError(e)
             crashlyticsProvider.logError("알람 삭제 api 에러 : ${e.message}")
             Timber.d("## [알람 삭제] 에러 : $e")
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    isAlarmDeleted = false,
+                    errorMessage = e.message,
+                )
+            }
+        }
+    }
+
+    // 알람 끄기
+    fun turnOffAlarm(
+        alarmId: Long,
+        turnOffAlarmRequestEntity: TurnOffAlarmRequestEntity
+    ) = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = true) }
+
+        try {
+            turnOffAlarmUseCase.invoke(alarmId, turnOffAlarmRequestEntity)
+                .collect { result ->
+                    result.onSuccess { response ->
+                        Timber.d("## [알람 끄기] 성공 : $response")
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isAlarmTurnedOff = true,
+                                errorMessage = null,
+                            )
+                        }
+                    }.onFailure { e ->
+                        crashlyticsProvider.recordError(e)
+                        crashlyticsProvider.logError("알람 끄기 api 실패 : ${e.message}")
+                        Timber.d("## [알람 끄기] 실패 : $e")
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isAlarmTurnedOff = false,
+                                errorMessage = e.message,
+                            )
+                        }
+                    }
+                }
+        } catch (e: Exception) {
+            crashlyticsProvider.recordError(e)
+            crashlyticsProvider.logError("알람 끄기 api 에러 : ${e.message}")
+            Timber.d("## [알람 끄기] 에러 : $e")
             _uiState.update {
                 it.copy(
                     isLoading = false,
