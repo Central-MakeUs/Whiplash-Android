@@ -15,7 +15,7 @@ class AlarmMapper @Inject constructor() {
             return GetAlarmEntity(
                 alarmId = alarmId,
                 alarmPurpose = alarmPurpose,
-                repeatDays = repeatDays,
+                repeatsDays = repeatsDays,
                 time = time,
                 address = address,
                 latitude = latitude,

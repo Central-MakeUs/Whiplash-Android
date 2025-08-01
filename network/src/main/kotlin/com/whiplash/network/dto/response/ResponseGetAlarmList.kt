@@ -8,7 +8,7 @@ typealias ResponseGetAlarmList = BaseResponse<List<AlarmDto>>
 data class AlarmDto(
     val alarmId: Long,
     val alarmPurpose: String,
-    val repeatDays: List<String>,
+    val repeatsDays: List<String>,
     val time: String,
     val address: String,
     val latitude: Double,

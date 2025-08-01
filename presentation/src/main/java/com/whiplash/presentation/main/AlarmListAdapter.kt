@@ -32,7 +32,7 @@ class AlarmListAdapter : ListAdapter<GetAlarmEntity, AlarmListAdapter.AlarmViewH
                 tvAlarmTime.text = time
 
                 // 알람 설정한 요일들을 한글로 변환
-                tvRepeatDays.text = DateUtils.convertDaysToKorean(alarm.repeatDays)
+                tvRepeatDays.text = DateUtils.convertDaysToKorean(alarm.repeatsDays)
 
                 // 장소명
                 tvAddress.text = alarm.address
