@@ -8,6 +8,7 @@ import com.whiplash.domain.usecase.alarm.AddAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
 import com.whiplash.domain.usecase.alarm.DeleteAlarmUseCase
 import com.whiplash.domain.usecase.alarm.GetAlarmsUseCase
+import com.whiplash.domain.usecase.alarm.TurnOffAlarmUseCase
 import com.whiplash.domain.usecase.auth.ReissueTokenUseCase
 import com.whiplash.domain.usecase.auth.SocialLoginUseCase
 import com.whiplash.domain.usecase.auth.SocialLogoutUseCase
@@ -73,5 +74,10 @@ object UseCaseModule {
     @Singleton
     fun provideDeleteAlarmUseCase(repository: AlarmRepository): DeleteAlarmUseCase =
         DeleteAlarmUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideTurnOffAlarmUseCase(repository: AlarmRepository): TurnOffAlarmUseCase =
+        TurnOffAlarmUseCase(repository)
 
 }
