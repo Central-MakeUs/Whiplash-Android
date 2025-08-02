@@ -1,9 +1,15 @@
 package com.whiplash.presentation.user_info
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.whiplash.presentation.R
@@ -77,14 +83,15 @@ class UserInfoActivity : AppCompatActivity() {
                 }
             }
 
-            // 정보동의 설정
+            // 동의여부 설정
             uivSettingAgreements.apply {
                 setIcon(R.drawable.ic_profile_agree)
                 setText(getString(R.string.setting_agreements))
                 showAppVersion(false)
                 showRightArrow(true)
                 setOnItemClickListener {
-                    Timber.d("## [회원정보] 정보동의 설정 클릭")
+                    Timber.d("## [회원정보] 동의여부 설정 클릭")
+                    openNotificationSettings()
                 }
             }
 
@@ -137,6 +144,47 @@ class UserInfoActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(emailIntent, "문의하기"))
         } catch (e: Exception) {
             WhiplashToast.showErrorToast(this, "이메일 앱을 찾을 수 없습니다")
+        }
+    }
+
+    private fun openNotificationSettings() {
+        // 안드 13+ 에서 알림 권한 확인 및 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                        == PackageManager.PERMISSION_GRANTED -> {
+                    // 권한이 이미 허용됨 - 설정 화면으로 이동
+                }
+                ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS) -> {
+                    // 권한을 거절했지만 다시 요청할 수 있으면 요청
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                        1001
+                    )
+                    return
+                }
+                else -> {
+                    // 권한을 거절하고 "다시 묻지 않음"을 선택했거나 처음 요청 - 설정 화면으로 이동
+                }
+            }
+        }
+
+        // 설정 화면으로 이동
+        try {
+            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                }
+            } else {
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = android.net.Uri.parse("package:$packageName")
+                }
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Timber.e(e, "알림 설정 화면을 열 수 없습니다")
+            WhiplashToast.showErrorToast(this, "설정 화면을 열 수 없습니다")
         }
     }
 
