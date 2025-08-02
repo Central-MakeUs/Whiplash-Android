@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
@@ -33,6 +34,10 @@ import com.whiplash.presentation.databinding.ActivitySelectPlaceBinding
 import com.whiplash.presentation.util.PermissionUtils
 import dagger.hilt.android.AndroidEntryPoint
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * 장소 선택 화면
@@ -65,6 +70,11 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
     // 바텀시트에 표시할 간단한 주소, 자세한 주소
     private var simpleAddress: String = ""
     private var detailAddress: String = ""
+
+    // 화면 중앙에 고정된 마커와 원형 오버레이
+    private var centerMarker: Marker? = null
+    private var centerCircleOverlay: CircleOverlay? = null
+    private var locationUpdateJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,38 +143,120 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
             uiSettings.isLocationButtonEnabled = true
         }
 
-        // 전달받은 위치에 마커 + "여기서 알람 끄기!" 표시하면서 카메라 이동
+        // 카메라 이동 리스너 설정
+        setupCameraChangeListener()
+        
+        // 전달받은 위치가 있으면 해당 위치로, 없으면 내 위치로 이동
         if (latitude != 0.0 && longitude != 0.0) {
             val targetLocation = LatLng(latitude, longitude)
             naverMap.moveCamera(CameraUpdate.scrollTo(targetLocation))
-
-            createCustomMarker(targetLocation, getString(R.string.disable_alarm_here))
+            setupCenterMarkerAndCircle()
         } else {
-            // 네이버 지도를 사용하면 내가 만든 권한 요청 함수 대신 아래 코드를 사용하라는 컴파일 에러가 표시되어 아래 로직 사용
-            // 앱 실행에 오류는 없지만 이 로직을 사용하기로 함
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                return
+            getCurrentLocationAndSetup()
+        }
+    }
+
+    private fun setupCameraChangeListener() {
+        naverMap.addOnCameraChangeListener { reason, animated ->
+            locationUpdateJob?.cancel()
+
+            // 카메라 이동 시마다 마커, 원형 오버레이 위치는 즉시 업데이트
+            val cameraPosition = naverMap.cameraPosition
+            updateCenterMarkerAndCircle(cameraPosition.target)
+
+            locationUpdateJob = lifecycleScope.launch {
+                delay(500)
+                latitude = cameraPosition.target.latitude
+                longitude = cameraPosition.target.longitude
+                Timber.d("## [위치] 0.5초 후 위도 : $latitude, 경도 : $longitude")
+            }
+        }
+    }
+
+    private fun getCurrentLocationAndSetup() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            location?.let {
+                val latLng = LatLng(it.latitude, it.longitude)
+                latitude = it.latitude
+                longitude = it.longitude
+                naverMap.apply {
+                    moveCamera(CameraUpdate.scrollTo(latLng))
+                    locationOverlay.position = latLng
+                    locationOverlay.isVisible = true
+                }
+                setupCenterMarkerAndCircle()
+            }
+        }
+    }
+
+    private fun setupCenterMarkerAndCircle() {
+        val centerPosition = naverMap.cameraPosition.target
+        createCenterMarker(centerPosition)
+        createCenterCircleOverlay(centerPosition)
+    }
+
+    private fun updateCenterMarkerAndCircle(position: LatLng) {
+        centerMarker?.position = position
+        centerCircleOverlay?.center = position
+    }
+
+    private fun createCenterMarker(position: LatLng) {
+        // 기존 마커가 있으면 제거
+        centerMarker?.map = null
+        
+        centerMarker = Marker().apply {
+            this.position = position
+            
+            // LinearLayout에 텍스트뷰 + 이미지뷰를 세로로 배치
+            val linearLayout = LinearLayout(this@SelectPlaceActivity).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = android.view.Gravity.CENTER_HORIZONTAL
             }
 
-            // 마지막으로 알려진 위치
-            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                location?.let {
-                    // 위치 값을 받아오면 내 위치에 마커 표시
-                    val latLng = LatLng(it.latitude, it.longitude)
-                    naverMap.apply {
-                        moveCamera(CameraUpdate.scrollTo(latLng))
-                        locationOverlay.position = latLng
-                        locationOverlay.isVisible = true
-                    }
+            // 텍스트뷰 동적 생성
+            val textView = createMarkerTextView(getString(R.string.disable_alarm_here))
+            linearLayout.addView(textView)
+
+            // 마커 이미지뷰 생성
+            val imageView = ImageView(this@SelectPlaceActivity).apply {
+                setImageResource(R.drawable.ic_place_marker_48)
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    topMargin = -textView.layoutParams.height - resources.getDimensionPixelSize(R.dimen.dp_8)
                 }
             }
+            linearLayout.addView(imageView)
+
+            icon = OverlayImage.fromView(linearLayout)
+            anchor = PointF(0.5f, 0.8f)
+            map = naverMap
+        }
+    }
+
+    private fun createCenterCircleOverlay(position: LatLng) {
+        // 기존 원형 오버레이가 있으면 제거
+        centerCircleOverlay?.map = null
+        
+        centerCircleOverlay = CircleOverlay().apply {
+            center = position
+            radius = 100.0
+            color = resources.getColor(R.color.pink_10, null)
+            outlineColor = resources.getColor(R.color.pink_400, null)
+            outlineWidth = resources.getDimensionPixelSize(R.dimen.dp_1)
+            map = naverMap
         }
     }
 
@@ -202,62 +294,6 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
                 setResult(RESULT_OK, intent)
                 finish()
             }
-        }
-    }
-
-    fun updateBottomSheetAddress(address: String, detailAddress: String) {
-        this.simpleAddress = address
-        this.detailAddress = detailAddress
-        setupBottomSheetViews()
-    }
-
-    // 커스텀 마커 뷰 생성 (텍스트뷰 + 마커 이미지를 세로로 배치)
-    private fun createCustomMarker(position: LatLng, address: String) {
-        val marker = Marker()
-        marker.position = position
-
-        // LinearLayout에 텍스트뷰 + 이미지뷰를 세로로 배치
-        val linearLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = android.view.Gravity.CENTER_HORIZONTAL
-        }
-
-        // 텍스트뷰 동적 생성
-        val textView = createMarkerTextView(address)
-        linearLayout.addView(textView)
-
-        // 마커 이미지뷰 생성
-        val imageView = ImageView(this).apply {
-            setImageResource(R.drawable.ic_place_marker_48)
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                // 텍스트뷰 높이만큼 마진을 먹여서 마커 아이콘 위치를 위경도에 정확히 맞춤
-                topMargin = -textView.layoutParams.height - resources.getDimensionPixelSize(R.dimen.dp_8)
-            }
-        }
-        linearLayout.addView(imageView)
-
-        marker.icon = OverlayImage.fromView(linearLayout)
-        // 마커가 해당 위경도에 정확히 표시되기 위한 anchor 설정
-        marker.anchor = PointF(0.5f, 0.8f)
-        marker.map = naverMap
-
-        // 마커 기준 100m 반경 원형 오버레이 추가
-        createCircleOverlay(position)
-    }
-
-    // 마커 기준으로 100m 반경 원형 표시
-    private fun createCircleOverlay(position: LatLng) {
-        val circle = CircleOverlay()
-        circle.apply {
-            center = position
-            radius = 100.0 // 100미터
-            color = resources.getColor(R.color.pink_10, null)
-            outlineColor = resources.getColor(R.color.pink_400, null) // 테두리
-            outlineWidth = resources.getDimensionPixelSize(R.dimen.dp_1) // 테두리 두께
-            map = naverMap
         }
     }
 
