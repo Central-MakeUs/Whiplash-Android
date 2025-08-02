@@ -154,23 +154,24 @@ class UserInfoActivity : AppCompatActivity() {
                 ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                         == PackageManager.PERMISSION_GRANTED -> {
                     // 권한이 이미 허용됨 - 설정 화면으로 이동
+                    openAppNotificationSettings()
                 }
-                ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS) -> {
-                    // 권한을 거절했지만 다시 요청할 수 있으면 요청
+                else -> {
+                    // 권한이 없는 경우 - 항상 권한 요청을 먼저 시도
                     ActivityCompat.requestPermissions(
                         this,
                         arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                         1001
                     )
-                    return
-                }
-                else -> {
-                    // 권한을 거절하고 "다시 묻지 않음"을 선택했거나 처음 요청 - 설정 화면으로 이동
                 }
             }
+        } else {
+            // 안드 13 미만에선 바로 설정 화면 이동
+            openAppNotificationSettings()
         }
+    }
 
-        // 설정 화면으로 이동
+    private fun openAppNotificationSettings() {
         try {
             val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
@@ -185,6 +186,23 @@ class UserInfoActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Timber.e(e, "알림 설정 화면을 열 수 없습니다")
             WhiplashToast.showErrorToast(this, "설정 화면을 열 수 없습니다")
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1001) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한 허용됨 - 아무것도 하지 않음 (설정 화면으로 이동하지 않음)
+                Timber.d("## [회원정보] 알림 권한 허용됨")
+                return
+            } else {
+                // 권한 거절됨 - shouldShowRequestPermissionRationale로 상태 확인
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+                    // "다시 묻지 않음" 선택됨 - 설정 화면으로 이동
+                    openAppNotificationSettings()
+                }
+            }
         }
     }
 
