@@ -78,7 +78,7 @@ class MainViewModel @Inject constructor(
                 )
             )
         }
-        Timber.d("## [장소 저장] 주소: $detailAddress, 위도: $latitude, 경도: $longitude")
+        Timber.d("## [장소 저장] 주소 : $detailAddress, 위도 : $latitude, 경도 : $longitude")
     }
 
     fun clearSelectedPlace() = _uiState.update {

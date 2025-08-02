@@ -49,7 +49,7 @@ class CreateAlarmActivity : AppCompatActivity() {
             val latitude = result.data?.getDoubleExtra("latitude", 0.0) ?: 0.0
             val longitude = result.data?.getDoubleExtra("longitude", 0.0) ?: 0.0
 
-            Timber.d("## [장소 선택 완료] 주소: $detailAddress, 위도: $latitude, 경도: $longitude")
+            Timber.d("## [장소 선택 완료] 알람 설정 화면에 돌아와서 확인한 주소 : $detailAddress, 위도 : $latitude, 경도 : $longitude")
             if (detailAddress.isNotEmpty()) {
                 binding.tvSearch.text = detailAddress
                 binding.tvSearch.setTextColor(ContextCompat.getColor(this, R.color.grey_50))
