@@ -6,6 +6,7 @@ import com.whiplash.domain.repository.member.MemberRepository
 import com.whiplash.domain.repository.place.PlaceRepository
 import com.whiplash.domain.usecase.alarm.AddAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
+import com.whiplash.domain.usecase.alarm.DeleteAlarmUseCase
 import com.whiplash.domain.usecase.alarm.GetAlarmsUseCase
 import com.whiplash.domain.usecase.auth.ReissueTokenUseCase
 import com.whiplash.domain.usecase.auth.SocialLoginUseCase
@@ -67,5 +68,10 @@ object UseCaseModule {
     @Singleton
     fun provideGetPlaceDetailUseCase(repository: PlaceRepository): GetPlaceDetailUseCase =
         GetPlaceDetailUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideDeleteAlarmUseCase(repository: AlarmRepository): DeleteAlarmUseCase =
+        DeleteAlarmUseCase(repository)
 
 }

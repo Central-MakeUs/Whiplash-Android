@@ -1,6 +1,6 @@
 package com.whiplash.domain.entity.alarm.request
 
-data class AddAlarmRequest(
+data class AddAlarmRequestEntity(
     val address: String,
     val latitude: Double,
     val longitude: Double,
