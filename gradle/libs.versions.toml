@@ -44,6 +44,9 @@ numberPicker = "2.4.13"
 naverMapSdk = "3.22.0"
 playServicesLocation = "21.3.0"
 
+# Room DB
+room = "2.7.2"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -99,6 +102,11 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 
 # 알람 설정 화면에서 사용하는 NumberPicker 라이브러리
 number-picker = { module = "io.github.ShawnLin013:number-picker", version.ref = "numberPicker" }
+
+# Room DB
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
