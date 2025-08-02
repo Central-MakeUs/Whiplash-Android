@@ -24,9 +24,9 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fcvNaverMap"
+            android:name="com.naver.maps.map.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:name="com.naver.maps.map.MapFragment"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +34,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- 바텀시트를 CoordinatorLayout에 직접 추가 -->
+    <!-- 간단한 주소, 상세 주소, 취소 / 목표 장소 등록하기 버튼 컨테이너 or 로딩 이미지, 텍스트뷰 컨테이너 -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/addressBottomSheet"
         android:layout_width="match_parent"
@@ -45,55 +45,101 @@
         app:behavior_hideable="false"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <TextView
-            android:id="@+id/tvPlaceAddress"
-            style="@style/subtitle3_b_18"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/llMapLoadingBottomSheet"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:minHeight="28dp"
-            android:textColor="@color/white"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="구리시 갈매동" />
+            tools:visibility="visible">
 
-        <TextView
-            android:id="@+id/tvPlaceDetailAddress"
-            style="@style/body2_m_14"
-            android:layout_width="wrap_content"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:src="@drawable/ic_loading_44" />
+
+            <TextView
+                style="@style/subtitle3_b_18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="위치 확인중이에요"
+                android:textColor="@color/white" />
+
+            <TextView
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="잠시만 기다려 주세요"
+                android:textColor="@color/grey_500" />
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clRegisterTargetPlaceContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:minHeight="20dp"
-            android:textColor="@color/grey_500"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvPlaceAddress"
-            tools:text="경기 구리시 갈매동" />
-
-        <com.whiplash.presentation.component.button.WhiplashCommonButton
-            android:id="@+id/btnCancelRegisterAddress"
-            android:layout_width="98dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="28dp"
-            app:buttonBackgroundColor="@color/grey_800"
-            app:buttonText="@string/cancel_string"
-            app:buttonTextColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvPlaceDetailAddress"
-            app:layout_constraintVertical_bias="0" />
-
-        <com.whiplash.presentation.component.button.WhiplashCommonButton
-            android:id="@+id/btnRegisterAddress"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            app:buttonBackgroundColor="@color/white"
-            app:buttonText="@string/register_target_address"
-            app:buttonTextColor="@color/grey_900"
-            app:layout_constraintBottom_toBottomOf="@+id/btnCancelRegisterAddress"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btnCancelRegisterAddress"
-            app:layout_constraintTop_toTopOf="@+id/btnCancelRegisterAddress" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvPlaceAddress"
+                style="@style/subtitle3_b_18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:minHeight="28dp"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="구리시 갈매동" />
+
+            <TextView
+                android:id="@+id/tvPlaceDetailAddress"
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="20dp"
+                android:textColor="@color/grey_500"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPlaceAddress"
+                tools:text="경기 구리시 갈매동" />
+
+            <com.whiplash.presentation.component.button.WhiplashCommonButton
+                android:id="@+id/btnCancelRegisterAddress"
+                android:layout_width="98dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="28dp"
+                app:buttonBackgroundColor="@color/grey_800"
+                app:buttonText="@string/cancel_string"
+                app:buttonTextColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvPlaceDetailAddress"
+                app:layout_constraintVertical_bias="0" />
+
+            <com.whiplash.presentation.component.button.WhiplashCommonButton
+                android:id="@+id/btnRegisterAddress"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                app:buttonBackgroundColor="@color/white"
+                app:buttonText="@string/register_target_address"
+                app:buttonTextColor="@color/grey_900"
+                app:layout_constraintBottom_toBottomOf="@+id/btnCancelRegisterAddress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btnCancelRegisterAddress"
+                app:layout_constraintTop_toTopOf="@+id/btnCancelRegisterAddress" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -11,12 +11,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
@@ -34,8 +37,12 @@ import com.whiplash.presentation.databinding.ActivitySelectPlaceBinding
 import com.whiplash.presentation.util.PermissionUtils
 import dagger.hilt.android.AndroidEntryPoint
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.whiplash.domain.entity.auth.response.PlaceDetailEntity
+import com.whiplash.presentation.search_place.SearchPlaceViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -47,6 +54,8 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var binding: ActivitySelectPlaceBinding
     private lateinit var loadingScreen: WhiplashLoadingScreen
+
+    private val searchPlaceViewModel: SearchPlaceViewModel by viewModels()
 
     private lateinit var naverMap: NaverMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -101,9 +110,54 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
             PermissionUtils.requestLocationPermissions(this)
         }
 
+        observeSearchPlaceViewModel()
+
         getDataFromIntent()
         setupView()
         setupBottomSheet()
+    }
+
+    private fun observeSearchPlaceViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    searchPlaceViewModel.uiState.collect { _ ->
+                        combine(
+                            searchPlaceViewModel.uiState.map { it.isLoading },
+                            searchPlaceViewModel.uiState.map { it.placeDetail }
+                        ) { isLoading, placeDetail ->
+                            Pair(isLoading, placeDetail)
+                        }.collect { (isLoading, placeDetail) ->
+                            when {
+                                isLoading -> {
+                                    Timber.d("## [장소 선택] 지도에서 위경도 확인. 서버로 보내서 주소 조회 중")
+                                    with(binding) {
+                                        llMapLoadingBottomSheet.visibility = View.VISIBLE
+                                        clRegisterTargetPlaceContainer.visibility = View.GONE
+                                    }
+                                }
+
+                                placeDetail != null -> {
+                                    // 로딩 완료 + 장소 정보 있을 때
+                                    val name = placeDetail.name
+                                    val address = placeDetail.address
+                                    detailAddress = placeDetail.address
+                                    Timber.d("## [장소 선택] 서버로 위경도 넘겨 가져온 주소값 - name : $name, address : $address")
+
+                                    with(binding) {
+                                        llMapLoadingBottomSheet.visibility = View.GONE
+                                        clRegisterTargetPlaceContainer.visibility = View.VISIBLE
+                                        tvPlaceAddress.text = placeDetail.name
+                                        tvPlaceDetailAddress.text = placeDetail.address
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun getDataFromIntent() {
@@ -111,6 +165,9 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
         longitude = intent.getDoubleExtra("longitude", 0.0)
         simpleAddress = intent.getStringExtra("simpleAddress") ?: ""
         detailAddress = intent.getStringExtra("detailAddress") ?: ""
+
+        binding.tvPlaceAddress.text = simpleAddress.ifEmpty { "" }
+        binding.tvPlaceDetailAddress. text = detailAddress. ifEmpty { "" }
     }
 
     private fun setupUserLocationSource() {
@@ -169,6 +226,7 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
                 latitude = cameraPosition.target.latitude
                 longitude = cameraPosition.target.longitude
                 Timber.d("## [위치] 0.5초 후 위도 : $latitude, 경도 : $longitude")
+                searchPlaceViewModel.getPlaceDetail(latitude, longitude)
             }
         }
     }
