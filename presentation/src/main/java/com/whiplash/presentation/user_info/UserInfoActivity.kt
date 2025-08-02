@@ -1,9 +1,15 @@
 package com.whiplash.presentation.user_info
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.whiplash.presentation.R
@@ -77,14 +83,15 @@ class UserInfoActivity : AppCompatActivity() {
                 }
             }
 
-            // 정보동의 설정
+            // 동의여부 설정
             uivSettingAgreements.apply {
                 setIcon(R.drawable.ic_profile_agree)
                 setText(getString(R.string.setting_agreements))
                 showAppVersion(false)
                 showRightArrow(true)
                 setOnItemClickListener {
-                    Timber.d("## [회원정보] 정보동의 설정 클릭")
+                    Timber.d("## [회원정보] 동의여부 설정 클릭")
+                    openNotificationSettings()
                 }
             }
 
@@ -137,6 +144,65 @@ class UserInfoActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(emailIntent, "문의하기"))
         } catch (e: Exception) {
             WhiplashToast.showErrorToast(this, "이메일 앱을 찾을 수 없습니다")
+        }
+    }
+
+    private fun openNotificationSettings() {
+        // 안드 13+ 에서 알림 권한 확인 및 요청
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                        == PackageManager.PERMISSION_GRANTED -> {
+                    // 권한이 이미 허용됨 - 설정 화면으로 이동
+                    openAppNotificationSettings()
+                }
+                else -> {
+                    // 권한이 없는 경우 - 항상 권한 요청을 먼저 시도
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                        1001
+                    )
+                }
+            }
+        } else {
+            // 안드 13 미만에선 바로 설정 화면 이동
+            openAppNotificationSettings()
+        }
+    }
+
+    private fun openAppNotificationSettings() {
+        try {
+            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                }
+            } else {
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = android.net.Uri.parse("package:$packageName")
+                }
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Timber.e(e, "알림 설정 화면을 열 수 없습니다")
+            WhiplashToast.showErrorToast(this, "설정 화면을 열 수 없습니다")
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1001) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한 허용됨 - 아무것도 하지 않음 (설정 화면으로 이동하지 않음)
+                Timber.d("## [회원정보] 알림 권한 허용됨")
+                return
+            } else {
+                // 권한 거절됨 - shouldShowRequestPermissionRationale로 상태 확인
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+                    // "다시 묻지 않음" 선택됨 - 설정 화면으로 이동
+                    openAppNotificationSettings()
+                }
+            }
         }
     }
 

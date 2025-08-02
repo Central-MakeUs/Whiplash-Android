@@ -82,7 +82,7 @@
     <string name="current_version">현재 버전</string>
     <string name="terms_policy">이용 약관</string>
     <string name="personal_info_policy">개인정보처리방침</string>
-    <string name="setting_agreements">정보동의 설정</string>
+    <string name="setting_agreements">동의여부 설정</string>
     <string name="inquiry_string">문의하기</string>
     <string name="logout_string">로그아웃하기</string>
     <string name="withdrawal_string">회원탈퇴</string>
