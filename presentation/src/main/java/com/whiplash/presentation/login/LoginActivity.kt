@@ -36,8 +36,21 @@ class LoginActivity : AppCompatActivity() {
             val deviceId = getAndroidDeviceId()
             loginViewModel.handleGoogleSignIn(result.data, deviceId)
         } else {
-            Timber.e("## [구글 로그인] 로그인 취소 or 실패 - resultCode: ${result.resultCode}")
-            showLoginError("구글 로그인이 취소되었습니다")
+            val data = result.data
+            val errorMessage = if (data != null) {
+                "Intent data: ${data.extras?.let { bundle ->
+                    bundle.keySet().joinToString { key -> "$key: ${bundle.get(key)}" }
+                }}"
+            } else {
+                "Intent data is null"
+            }
+
+            Timber.e("## [구글 로그인] 실패 - resultCode: ${result.resultCode}")
+            Timber.e("## [구글 로그인] $errorMessage")
+
+            // 구글 로그인 결과를 ViewModel에서도 처리하도록 수정
+            val deviceId = getAndroidDeviceId()
+            loginViewModel.handleGoogleSignIn(result.data, deviceId)
         }
     }
 

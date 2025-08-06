@@ -14,11 +14,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "615004113990-0eloglck7i8244aqdlkh028rkcl35feu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whiplash.akuma",
+            "certificate_hash": "646a2398a7665e332c853d4fababb27a7a600b28"
+          }
+        },
+        {
           "client_id": "615004113990-mpv4kvdps44pvi9es40d4i5shinqienp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.whiplash.akuma",
             "certificate_hash": "220fa55e7e30a031697176c52029e1c2bf6ac976"
+          }
+        },
+        {
+          "client_id": "615004113990-sn5jfb2hqnak0l0f5l7hr9rcrek2tp4t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.whiplash.akuma",
+            "certificate_hash": "00d9ae9f325634cd2e447c77233081d1b28283af"
           }
         },
         {
@@ -37,6 +53,13 @@
             {
               "client_id": "615004113990-67b442v8mjvo7bdet7fdj1usahoq0jbd.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "615004113990-dlm3qn3jv9r28s4f1nv4u68tg2q42kv0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.akuma.calling"
+              }
             }
           ]
         }
