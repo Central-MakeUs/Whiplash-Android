@@ -3,6 +3,7 @@ package com.whiplash.data.di
 import com.whiplash.domain.repository.alarm.AlarmRepository
 import com.whiplash.domain.repository.login.AuthRepository
 import com.whiplash.domain.repository.member.MemberRepository
+import com.whiplash.domain.repository.onboarding.OnboardingRepository
 import com.whiplash.domain.repository.place.PlaceRepository
 import com.whiplash.domain.usecase.alarm.AddAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
@@ -13,6 +14,8 @@ import com.whiplash.domain.usecase.auth.ReissueTokenUseCase
 import com.whiplash.domain.usecase.auth.SocialLoginUseCase
 import com.whiplash.domain.usecase.auth.SocialLogoutUseCase
 import com.whiplash.domain.usecase.member.ChangeTermsStateUseCase
+import com.whiplash.domain.usecase.onboarding.GetOnboardingStatusUseCase
+import com.whiplash.domain.usecase.onboarding.SetOnboardingCompletedUseCase
 import com.whiplash.domain.usecase.place.GetPlaceDetailUseCase
 import com.whiplash.domain.usecase.place.SearchPlaceUseCase
 import dagger.Module
@@ -79,5 +82,15 @@ object UseCaseModule {
     @Singleton
     fun provideTurnOffAlarmUseCase(repository: AlarmRepository): TurnOffAlarmUseCase =
         TurnOffAlarmUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideSetOnboardingCompletedUseCase(repository: OnboardingRepository): SetOnboardingCompletedUseCase =
+        SetOnboardingCompletedUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetOnboardingStatusUseCase(repository: OnboardingRepository): GetOnboardingStatusUseCase =
+        GetOnboardingStatusUseCase(repository)
 
 }
