@@ -26,6 +26,16 @@
     <string name="loading_text_first">잠시만 기다려주세요</string>
     <string name="loading_text_second">곧 눈떠를 사용할 수 있어요!</string>
 
+    <!-- 온보딩 화면 -->
+    <string name="first_onboarding_title">무조건 가야 한다!</string>
+    <string name="first_onboarding_subtitle">목표 장소에 도착 해야만 꺼지는 알람!</string>
+    <string name="second_onboarding_title">목표 장소, 목표 시간을</string>
+    <string name="second_onboarding_subtitle">설정하고</string>
+    <string name="third_onboarding_title">목표 장소에 시간 안에 도착하지 못하면</string>
+    <string name="third_onboarding_subtitle">꺼지지 않는 알람이!</string>
+    <string name="fourth_onboarding_title">눈떠와 함께</string>
+    <string name="fourth_onboarding_subtitle">당신의 목표를 이뤄보세요!</string>
+
     <!-- MainActivity - 상단 접고 펼치는 UI -->
     <string name="home_alarm_caution_start">알람 유의사항</string>
     <string name="home_alarm_caution_end">을 반드시 숙지하세요!</string>

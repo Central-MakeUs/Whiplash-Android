@@ -13,10 +13,12 @@ import com.whiplash.presentation.login.KakaoLoginManager
 import com.whiplash.presentation.login.LoginActivity
 import com.whiplash.presentation.login.LoginViewModel
 import com.whiplash.presentation.main.MainActivity
+import com.whiplash.presentation.onboarding.OnBoardingActivity
 import com.whiplash.presentation.util.ActivityUtils.getAndroidDeviceId
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -27,6 +29,7 @@ class SplashActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashBinding
 
     private val loginViewModel: LoginViewModel by viewModels()
+    private val splashViewModel: SplashViewModel by viewModels()
 
     @Inject
     lateinit var googleLoginManager: GoogleLoginManager
@@ -49,6 +52,13 @@ class SplashActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             delay(1000)
+
+            val isOnboardingCompleted = splashViewModel.isOnboardingCompleted.first()
+            if (!isOnboardingCompleted) {
+                navigateToOnboarding()
+                return@launch
+            }
+
             checkLoginStatusAndNavigate()
         }
     }
@@ -62,7 +72,7 @@ class SplashActivity : AppCompatActivity() {
             val googleUser = googleLoginManager.getCurrentUser()
             if (googleUser != null) {
                 Timber.d("## [스플래시] 구글 로그인 상태 확인됨. 이메일 : ${googleUser.email}")
-                loginViewModel.handleGoogleSignIn(null, getAndroidDeviceId())
+                navigateToMain()
                 return
             }
 
@@ -101,6 +111,12 @@ class SplashActivity : AppCompatActivity() {
                     return@collect
                 }
             }
+        }
+    }
+
+    private fun navigateToOnboarding() {
+        navigateTo<OnBoardingActivity> {
+            finishCurrentActivity()
         }
     }
 
