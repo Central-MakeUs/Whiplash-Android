@@ -49,6 +49,7 @@ class OnBoardingActivity : AppCompatActivity() {
                 onboardingViewModel.navigationEvent.collect { event ->
                     when (event) {
                         is OnboardingViewModel.NavigationEvent.NavigateToMain -> navigateToMain()
+                        is OnboardingViewModel.NavigationEvent.NavigateToLogin -> navigateToLogin()
                     }
                 }
             }
@@ -97,6 +98,12 @@ class OnBoardingActivity : AppCompatActivity() {
     private fun completeOnboarding() = onboardingViewModel.completeOnboarding()
 
     private fun navigateToMain() {
+        navigateTo<MainActivity> {
+            finishCurrentActivity()
+        }
+    }
+
+    private fun navigateToLogin() {
         navigateTo<LoginActivity> {
             finishCurrentActivity()
         }
