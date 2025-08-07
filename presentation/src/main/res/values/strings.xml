@@ -33,6 +33,8 @@
     <string name="second_onboarding_subtitle">설정하고</string>
     <string name="third_onboarding_title">목표 장소에 시간 안에 도착하지 못하면</string>
     <string name="third_onboarding_subtitle">꺼지지 않는 알람이!</string>
+    <string name="fourth_onboarding_title">눈떠와 함께</string>
+    <string name="fourth_onboarding_subtitle">당신의 목표를 이뤄보세요!</string>
 
     <!-- MainActivity - 상단 접고 펼치는 UI -->
     <string name="home_alarm_caution_start">알람 유의사항</string>

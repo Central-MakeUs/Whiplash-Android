@@ -33,7 +33,6 @@ class OnboardingSecondFragment : BaseOnboardingFragment<FragmentOnboardingSecond
 
         val lemonColor = ContextCompat.getColor(requireContext(), R.color.lemon_400)
 
-        // '장소' 색상 적용
         val placeStartIndex = fullText.indexOf("장소")
         val placeEndIndex = placeStartIndex + "장소".length
         spannable.setSpan(
@@ -43,7 +42,6 @@ class OnboardingSecondFragment : BaseOnboardingFragment<FragmentOnboardingSecond
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
-        // '시간' 색상 적용
         val timeStartIndex = fullText.indexOf("시간")
         val timeEndIndex = timeStartIndex + "시간".length
         spannable.setSpan(

@@ -3,6 +3,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".onboarding.fragment.OnboardingFourthFragment">
+
+    <TextView
+        android:id="@+id/tvFourthOnboardingTitle"
+        style="@style/subtitle3_b_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fourth_onboarding_title"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvFourthOnboardingSubTitle"
+        style="@style/subtitle3_b_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/fourth_onboarding_subtitle"
+        android:textColor="@color/lemon_400"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFourthOnboardingTitle" />
+
+    <ImageView
+        android:id="@+id/ivFourthOnboardingBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/bg_fourth_onboarding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFourthOnboardingSubTitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
