@@ -13,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityOnBoardingBinding
+import com.whiplash.presentation.login.LoginActivity
 import com.whiplash.presentation.main.MainActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
@@ -96,7 +97,7 @@ class OnBoardingActivity : AppCompatActivity() {
     private fun completeOnboarding() = onboardingViewModel.completeOnboarding()
 
     private fun navigateToMain() {
-        navigateTo<MainActivity> {
+        navigateTo<LoginActivity> {
             finishCurrentActivity()
         }
     }
