@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
 
         tvManageUserInfo.setOnClickListener {
             popupWindow.dismiss()
-            Timber.d("## [팝업] 회원 정보 관리 클릭")
+            Timber.d("## [팝업] 회원 정보 클릭")
             navigateTo<UserInfoActivity> {}
         }
 

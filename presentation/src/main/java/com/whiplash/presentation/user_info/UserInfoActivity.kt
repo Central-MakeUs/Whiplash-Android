@@ -17,6 +17,8 @@ import com.whiplash.presentation.databinding.ActivityUserInfoBinding
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
+import com.whiplash.presentation.dialog.LogoutPopup
+import com.whiplash.presentation.dialog.WithdrawalPopup
 import com.whiplash.presentation.login.KakaoLoginManager
 import com.whiplash.presentation.util.WhiplashToast
 import kotlinx.coroutines.launch
@@ -29,7 +31,10 @@ class UserInfoActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUserInfoBinding
 
     @Inject
-    lateinit var kakaoLoginManager: KakaoLoginManager
+    lateinit var logoutPopup: LogoutPopup
+
+    @Inject
+    lateinit var withdrawalPopup: WithdrawalPopup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,8 +71,8 @@ class UserInfoActivity : AppCompatActivity() {
                 showAppVersion(false)
                 showRightArrow(true)
                 setOnItemClickListener {
-                    openWebPage("https://m.naver.com")
                     Timber.d("## [회원정보] 이용약관 클릭")
+                    openWebPage("https://nonstop-alibi-f82.notion.site/2431862b9eb28060b16ec47a60fcef22?source=copy_link")
                 }
             }
 
@@ -79,7 +84,7 @@ class UserInfoActivity : AppCompatActivity() {
                 showRightArrow(true)
                 setOnItemClickListener {
                     Timber.d("## [회원정보] 개인정보처리방침 클릭")
-                    openWebPage("https://m.naver.com")
+                    openWebPage("https://nonstop-alibi-f82.notion.site/2431862b9eb2800b95cdcf5daea2e83e?source=copy_link")
                 }
             }
 
@@ -115,9 +120,11 @@ class UserInfoActivity : AppCompatActivity() {
                 showRightArrow(true)
                 setOnItemClickListener {
                     Timber.d("## [회원정보] 로그아웃 클릭")
-                    lifecycleScope.launch {
-                        kakaoLoginManager.signOut()
-                    }
+                    logoutPopup.show(
+                        logoutClickListener = {
+                            //
+                        }
+                    )
                 }
             }
 
@@ -128,7 +135,11 @@ class UserInfoActivity : AppCompatActivity() {
                 showAppVersion(false)
                 showRightArrow(true)
                 setOnItemClickListener {
-                    Timber.d("## [회원정보] 회원탈퇴 클릭")
+                    withdrawalPopup.show(
+                        withdrawalClickListener = {
+                            //
+                        }
+                    )
                 }
             }
         }
