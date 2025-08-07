@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -234,6 +235,23 @@ class UserInfoActivity : AppCompatActivity() {
     private fun openWebPage(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, url.toUri())
         startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        checkNotificationPermissionStatus()
+    }
+
+    private fun checkNotificationPermissionStatus(): Boolean {
+        val isNotificationEnabled = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        } else {
+            NotificationManagerCompat.from(this).areNotificationsEnabled()
+        }
+
+        Timber.d("## [회원정보] 푸시 알림 허용 상태 : $isNotificationEnabled")
+        return isNotificationEnabled
     }
 
 }

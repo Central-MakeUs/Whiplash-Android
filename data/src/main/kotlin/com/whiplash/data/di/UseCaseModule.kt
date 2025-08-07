@@ -14,6 +14,7 @@ import com.whiplash.domain.usecase.auth.ReissueTokenUseCase
 import com.whiplash.domain.usecase.auth.SocialLoginUseCase
 import com.whiplash.domain.usecase.auth.SocialLogoutUseCase
 import com.whiplash.domain.usecase.member.ChangeTermsStateUseCase
+import com.whiplash.domain.usecase.member.WithdrawUseCase
 import com.whiplash.domain.usecase.onboarding.GetOnboardingStatusUseCase
 import com.whiplash.domain.usecase.onboarding.SetOnboardingCompletedUseCase
 import com.whiplash.domain.usecase.place.GetPlaceDetailUseCase
@@ -57,6 +58,11 @@ object UseCaseModule {
     @Singleton
     fun provideSocialLogoutUseCase(repository: AuthRepository): SocialLogoutUseCase =
         SocialLogoutUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideWithdrawUseCase(repository: MemberRepository): WithdrawUseCase =
+        WithdrawUseCase(repository)
 
     @Provides
     @Singleton
