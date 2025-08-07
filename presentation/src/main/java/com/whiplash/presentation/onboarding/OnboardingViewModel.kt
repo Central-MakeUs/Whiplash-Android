@@ -35,11 +35,11 @@ class OnboardingViewModel @Inject constructor(
     }
 
     private suspend fun checkLoginStatus(): Boolean {
-        // Google 로그인 상태 체크
+        // 구글 로그인 상태 체크
         val googleUser = getCurrentUserUseCase()
         if (googleUser != null) return true
         
-        // Kakao 로그인 상태 체크
+        // 카카오 로그인 상태 체크
         val kakaoUserResult = getCurrentKakaoUserUseCase()
         return kakaoUserResult.isSuccess && kakaoUserResult.getOrNull() != null
     }

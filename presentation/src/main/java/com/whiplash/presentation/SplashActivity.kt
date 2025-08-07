@@ -72,7 +72,7 @@ class SplashActivity : AppCompatActivity() {
             val googleUser = googleLoginManager.getCurrentUser()
             if (googleUser != null) {
                 Timber.d("## [스플래시] 구글 로그인 상태 확인됨. 이메일 : ${googleUser.email}")
-                loginViewModel.handleGoogleSignIn(null, getAndroidDeviceId())
+                navigateToMain()
                 return
             }
 
