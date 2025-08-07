@@ -2,6 +2,7 @@ package com.whiplash.presentation.di
 
 import android.content.Context
 import com.whiplash.presentation.dialog.DisableAlarmPopup
+import com.whiplash.presentation.dialog.LogoutPopup
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,5 +18,10 @@ object DialogModule {
     @ActivityScoped
     fun provideDisableAlarmPopup(@ActivityContext context: Context): DisableAlarmPopup =
         DisableAlarmPopup(context)
+
+    @Provides
+    @ActivityScoped
+    fun provideLogoutPopup(@ActivityContext context: Context): LogoutPopup =
+        LogoutPopup(context)
 
 }

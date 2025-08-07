@@ -56,6 +56,12 @@
     <string name="disable_alarm_remain_count">알림끄기 남은 횟수</string>
     <string name="cannot_disable_alarm">이제 알람을 끌 수 없어요.\n지정한 장소로 이동해 알람 끄기를 도전하세요.</string>
 
+    <!-- 로그아웃 팝업 -->
+    <string name="logout_popup_title">로그아웃</string>
+    <string name="logout_popup_content">정말 로그아웃하시겠어요?</string>
+
+    <!-- 회원탈퇴 팝업 -->
+
     <!-- 알람 설정 화면 -->
     <string name="create_alarm_header">알람 설정</string>
     <string name="create_alarm">저장하기</string>

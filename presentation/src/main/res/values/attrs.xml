@@ -5,6 +5,8 @@
         <attr name="buttonBackgroundColor" format="color|reference" />
         <attr name="buttonText" format="string" />
         <attr name="buttonTextColor" format="color|reference" />
+        <attr name="borderColor" format="color|reference" />
+        <attr name="borderWidth" format="dimension" />
     </declare-styleable>
 
     <!-- 공통 editText -->
