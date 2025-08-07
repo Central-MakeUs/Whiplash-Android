@@ -66,8 +66,8 @@ class UserInfoActivity : AppCompatActivity() {
                 showAppVersion(false)
                 showRightArrow(true)
                 setOnItemClickListener {
-                    openWebPage("https://m.naver.com")
                     Timber.d("## [회원정보] 이용약관 클릭")
+                    openWebPage("https://nonstop-alibi-f82.notion.site/2431862b9eb28060b16ec47a60fcef22?source=copy_link")
                 }
             }
 
@@ -79,7 +79,7 @@ class UserInfoActivity : AppCompatActivity() {
                 showRightArrow(true)
                 setOnItemClickListener {
                     Timber.d("## [회원정보] 개인정보처리방침 클릭")
-                    openWebPage("https://m.naver.com")
+                    openWebPage("https://nonstop-alibi-f82.notion.site/2431862b9eb2800b95cdcf5daea2e83e?source=copy_link")
                 }
             }
 
