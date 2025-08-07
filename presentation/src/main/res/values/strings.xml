@@ -61,6 +61,9 @@
     <string name="logout_popup_content">정말 로그아웃하시겠어요?</string>
 
     <!-- 회원탈퇴 팝업 -->
+    <string name="withdrawal_popup_content">정말 탈퇴 하시겠어요?</string>
+    <string name="withdrawal_popup_sub_content">탈퇴 시 기록을 되돌릴 수 없어요</string>
+    <string name="withdrawal_popup_ok_button">탈퇴하기</string>
 
     <!-- 알람 설정 화면 -->
     <string name="create_alarm_header">알람 설정</string>
