@@ -105,6 +105,7 @@
     <string name="inquiry_string">문의하기</string>
     <string name="logout_string">로그아웃하기</string>
     <string name="withdrawal_string">회원탈퇴</string>
+    <string name="withdrawal_success_message">회원 탈퇴가 완료되었습니다</string>
 
     <!-- 회원 정보 화면 > XML -->
     <string name="version_info_title">버전 정보</string>

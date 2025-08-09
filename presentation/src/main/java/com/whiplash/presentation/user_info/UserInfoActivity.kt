@@ -18,10 +18,14 @@ import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityUserInfoBinding
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.whiplash.presentation.dialog.LogoutPopup
 import com.whiplash.presentation.dialog.WithdrawalPopup
 import com.whiplash.presentation.login.KakaoLoginManager
+import com.whiplash.presentation.login.LoginActivity
+import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import com.whiplash.presentation.util.WhiplashToast
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -51,12 +55,29 @@ class UserInfoActivity : AppCompatActivity() {
             insets
         }
 
+        observeUserInfoViewModel()
         setupUserInfoViews()
+    }
+
+    private fun observeUserInfoViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userInfoViewModel.uiState.collect { state ->
+                    // 회원 탈퇴 성공 여부
+                    if (state.isWithdrawCompleted) {
+                        WhiplashToast.showSuccessToast(this@UserInfoActivity, getString(R.string.withdrawal_success_message))
+                        navigateTo<LoginActivity> {
+                            setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setupUserInfoViews() {
         with(binding) {
-            whUserInfo.setTitle("회원 정보")
+            whUserInfo.setTitle(getString(R.string.manage_user_info))
 
             // 현재 버전
             uivCurrentVersion.apply {
