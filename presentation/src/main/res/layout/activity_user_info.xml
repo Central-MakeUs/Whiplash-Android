@@ -62,7 +62,7 @@
         android:layout_marginTop="20dp"
         android:layout_height="wrap_content"/>
 
-    <!-- 정보동의 설정 -->
+    <!-- 동의여부 설정 -->
     <com.whiplash.presentation.component.view.UserInfoView
         android:id="@+id/uivSettingAgreements"
         android:layout_width="match_parent"

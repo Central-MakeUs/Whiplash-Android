@@ -12,6 +12,12 @@ class MemberRepositoryImpl @Inject constructor(
     private val service: MemberService,
     private val mapper: MemberMapper,
 ): MemberRepository {
+    override suspend fun withdraw(): Flow<Result<Unit>> =
+        safeApiCallWithTransform(
+            apiCall = { service.withdraw() },
+            transform = {}
+        )
+
     override suspend fun changeTermsState(request: ChangeTermsStateEntity): Flow<Result<Unit>> =
         safeApiCallWithTransform(
             apiCall = { service.changeTermsState(mapper.toNetworkRequest(request)) },

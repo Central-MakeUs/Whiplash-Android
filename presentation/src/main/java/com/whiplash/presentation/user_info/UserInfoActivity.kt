@@ -7,8 +7,10 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -16,10 +18,14 @@ import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityUserInfoBinding
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.whiplash.presentation.dialog.LogoutPopup
 import com.whiplash.presentation.dialog.WithdrawalPopup
 import com.whiplash.presentation.login.KakaoLoginManager
+import com.whiplash.presentation.login.LoginActivity
+import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import com.whiplash.presentation.util.WhiplashToast
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -29,6 +35,8 @@ import javax.inject.Inject
 class UserInfoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUserInfoBinding
+
+    private val userInfoViewModel: UserInfoViewModel by viewModels()
 
     @Inject
     lateinit var logoutPopup: LogoutPopup
@@ -47,12 +55,30 @@ class UserInfoActivity : AppCompatActivity() {
             insets
         }
 
+        observeUserInfoViewModel()
         setupUserInfoViews()
+    }
+
+    private fun observeUserInfoViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userInfoViewModel.uiState.collect { state ->
+                    // 회원 탈퇴 성공 여부
+                    if (state.isWithdrawCompleted) {
+                        WhiplashToast.showSuccessToast(this@UserInfoActivity, getString(R.string.withdrawal_success_message))
+                        userInfoViewModel.clearWithdrawCompleted()
+                        navigateTo<LoginActivity> {
+                            setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setupUserInfoViews() {
         with(binding) {
-            whUserInfo.setTitle("회원 정보")
+            whUserInfo.setTitle(getString(R.string.manage_user_info))
 
             // 현재 버전
             uivCurrentVersion.apply {
@@ -137,7 +163,7 @@ class UserInfoActivity : AppCompatActivity() {
                 setOnItemClickListener {
                     withdrawalPopup.show(
                         withdrawalClickListener = {
-                            //
+                            userInfoViewModel.withdraw()
                         }
                     )
                 }
@@ -231,6 +257,23 @@ class UserInfoActivity : AppCompatActivity() {
     private fun openWebPage(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, url.toUri())
         startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        checkNotificationPermissionStatus()
+    }
+
+    private fun checkNotificationPermissionStatus(): Boolean {
+        val isNotificationEnabled = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        } else {
+            NotificationManagerCompat.from(this).areNotificationsEnabled()
+        }
+
+        Timber.d("## [회원정보] 푸시 알림 허용 상태 : $isNotificationEnabled")
+        return isNotificationEnabled
     }
 
 }
