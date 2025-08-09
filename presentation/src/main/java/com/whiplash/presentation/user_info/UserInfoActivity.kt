@@ -66,6 +66,7 @@ class UserInfoActivity : AppCompatActivity() {
                     // 회원 탈퇴 성공 여부
                     if (state.isWithdrawCompleted) {
                         WhiplashToast.showSuccessToast(this@UserInfoActivity, getString(R.string.withdrawal_success_message))
+                        userInfoViewModel.clearWithdrawCompleted()
                         navigateTo<LoginActivity> {
                             setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         }

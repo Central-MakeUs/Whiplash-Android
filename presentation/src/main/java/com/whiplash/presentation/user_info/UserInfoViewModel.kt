@@ -65,6 +65,8 @@ class UserInfoViewModel @Inject constructor(
         }
     }
 
+    fun clearWithdrawCompleted() = _uiState.update { it.copy(isWithdrawCompleted = false) }
+
     // 약관 동의 상태 변경
     fun changeTermsState(
         privacyPolicy: Boolean,
