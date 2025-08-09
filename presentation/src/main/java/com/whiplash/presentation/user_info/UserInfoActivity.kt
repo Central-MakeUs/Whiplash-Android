@@ -141,7 +141,7 @@ class UserInfoActivity : AppCompatActivity() {
                 setOnItemClickListener {
                     withdrawalPopup.show(
                         withdrawalClickListener = {
-                            //
+                            userInfoViewModel.withdraw()
                         }
                     )
                 }
