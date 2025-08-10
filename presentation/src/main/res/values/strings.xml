@@ -79,10 +79,10 @@
     <string name="alarm_created">알람이 추가되었어요</string>
 
     <string name="not_sound">소리없음</string>
-    <string name="sound_1">알람 소리1</string>
-    <string name="sound_2">알람 소리2</string>
-    <string name="sound_3">알람 소리3</string>
-    <string name="sound_4">알람 소리4</string>
+    <string name="sound_1">카리나의 쓴소리</string>
+    <string name="sound_2">일어나 움직여</string>
+    <string name="sound_3">경고! 내 인생!</string>
+    <string name="sound_4">나는 조선의 자존심</string>
     <string name="sound_pre_listening">미리듣기</string>
 
     <!-- 알람 설정 화면 하단 경고 UI -->
