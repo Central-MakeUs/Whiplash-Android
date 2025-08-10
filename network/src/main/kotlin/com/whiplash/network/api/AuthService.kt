@@ -2,6 +2,7 @@ package com.whiplash.network.api
 
 import com.whiplash.network.dto.request.RequestInvokeSocialLogin
 import com.whiplash.network.dto.request.RequestInvokeSocialLogout
+import com.whiplash.network.dto.request.RequestRegisterFcmToken
 import com.whiplash.network.dto.request.RequestTokenReissue
 import com.whiplash.network.dto.response.BaseResponse
 import com.whiplash.network.dto.response.ResponseInvokeSocialLogin
@@ -38,6 +39,14 @@ interface AuthService {
     @POST("auth/logout")
     suspend fun invokeSocialLogout(
         @Body requestInvokeSocialLogout: RequestInvokeSocialLogout
+    ): Response<BaseResponse<Unit>>
+
+    /**
+     * FCM 토큰 등록
+     */
+    @POST("auth/fcm-token")
+    suspend fun registerFcmToken(
+        @Body requestRegisterFcmToken: RequestRegisterFcmToken
     ): Response<BaseResponse<Unit>>
 
 }

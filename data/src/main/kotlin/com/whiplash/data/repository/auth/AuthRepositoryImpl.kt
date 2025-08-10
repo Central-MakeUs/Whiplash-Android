@@ -4,6 +4,7 @@ import com.whiplash.data.mapper.AuthMapper
 import com.whiplash.data.repository.safeApiCallWithTransform
 import com.whiplash.domain.entity.auth.request.LoginRequestEntity
 import com.whiplash.domain.entity.auth.request.LogoutRequestEntity
+import com.whiplash.domain.entity.auth.request.RegisterFcmTokenRequestEntity
 import com.whiplash.domain.entity.auth.request.TokenReissueRequestEntity
 import com.whiplash.domain.entity.auth.response.LoginResponseEntity
 import com.whiplash.domain.entity.auth.response.TokenReissueResponseEntity
@@ -37,6 +38,12 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun socialLogout(request: LogoutRequestEntity): Flow<Result<Unit>> =
         safeApiCallWithTransform(
             apiCall = { authService.invokeSocialLogout(authMapper.toSocialLogoutRequest(request)) },
+            transform = { Unit }
+        )
+
+    override suspend fun registerFcmToken(request: RegisterFcmTokenRequestEntity): Flow<Result<Unit>> =
+        safeApiCallWithTransform(
+            apiCall = { authService.registerFcmToken(authMapper.toRegisterFcmTokenRequest(request)) },
             transform = { Unit }
         )
 }
