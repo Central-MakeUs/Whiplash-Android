@@ -7,6 +7,7 @@ import com.whiplash.data.repository.safeApiCallWithTransform
 import com.whiplash.domain.entity.alarm.request.AddAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.request.DeleteAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.request.TurnOffAlarmRequestEntity
+import com.whiplash.domain.entity.alarm.response.CheckInAlarmEntity
 import com.whiplash.domain.entity.alarm.response.CreateAlarmOccurrenceEntity
 import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.domain.entity.alarm.response.TurnOffAlarmResponseEntity
@@ -64,6 +65,15 @@ class AlarmRepositoryImpl @Inject constructor(
             transform = { response ->
                 response.result?.let { alarmMapper.toTurnOffAlarmEntity(it) }
                     ?: throw Exception("알람 끄기 api 응답이 null")
+            }
+        )
+
+    override suspend fun checkInAlarm(alarmId: Long): Flow<Result<CheckInAlarmEntity>> =
+        safeApiCallWithTransform(
+            apiCall = { alarmService.checkInAlarm(alarmId) },
+            transform = { response ->
+                response.result?.let { alarmMapper.toCheckInAlarmEntity(it) }
+                    ?: throw Exception("알람 도착 인증 api 응답이 null")
             }
         )
 

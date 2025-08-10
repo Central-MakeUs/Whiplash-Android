@@ -4,6 +4,7 @@ import com.whiplash.network.dto.request.RequestAddAlarms
 import com.whiplash.network.dto.request.RequestDeleteAlarm
 import com.whiplash.network.dto.request.RequestTurnOffAlarm
 import com.whiplash.network.dto.response.BaseResponse
+import com.whiplash.network.dto.response.ResponseCheckInAlarm
 import com.whiplash.network.dto.response.ResponseCreateAlarmOccurrence
 import com.whiplash.network.dto.response.ResponseDeleteAlarm
 import com.whiplash.network.dto.response.ResponseGetAlarmList
@@ -60,5 +61,15 @@ interface AlarmService {
         @Path("alarmId") alarmId: Long,
         @Body requestTurnOffAlarm: RequestTurnOffAlarm
     ): Response<ResponseTurnOffAlarm>
+
+    /**
+     * 알람 도착 인증
+     *
+     * 도착 위치 반경 100m 이내에 들어와야 도착 인증 가능
+     */
+    @POST("alarms./{alarmId}/checkIn")
+    suspend fun checkInAlarm(
+        @Path("alarmId") alarmId: Long
+    ): Response<ResponseCheckInAlarm>
 
 }
