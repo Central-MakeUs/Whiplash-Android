@@ -9,19 +9,48 @@ import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.presentation.databinding.ItemHomeAlarmBinding
 import com.whiplash.presentation.util.DateUtils
 
-class AlarmListAdapter : ListAdapter<GetAlarmEntity, AlarmListAdapter.AlarmViewHolder>(AlarmDiffCallback()) {
+class AlarmListAdapter(
+    private val onItemClick: (Int) -> Unit = {}
+) : ListAdapter<GetAlarmEntity, AlarmListAdapter.AlarmViewHolder>(AlarmDiffCallback()) {
+
+    private var isDeleteMode = false
+    private var selectedPosition = -1
+
+    fun setDeleteMode(deleteMode: Boolean) {
+        isDeleteMode = deleteMode
+        if (!deleteMode) {
+            selectedPosition = -1
+        }
+
+        notifyDataSetChanged()
+    }
+
+    fun toggleSelection(position: Int) {
+        selectedPosition = if (selectedPosition == position) -1 else position
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
         val binding = ItemHomeAlarmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AlarmViewHolder(binding)
+        return AlarmViewHolder(binding, onItemClick)
     }
 
     override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), isDeleteMode, selectedPosition == position)
     }
 
-    class AlarmViewHolder(private val binding: ItemHomeAlarmBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(alarm: GetAlarmEntity) {
+    class AlarmViewHolder(
+        private val binding: ItemHomeAlarmBinding,
+        private val onItemClick: (Int) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                onItemClick(adapterPosition)
+            }
+        }
+
+        fun bind(alarm: GetAlarmEntity, isDeleteMode: Boolean, isSelected: Boolean) {
             with(binding) {
                 // 알람명
                 tvHomeAlarmTopText.text = alarm.alarmPurpose
@@ -37,7 +66,19 @@ class AlarmListAdapter : ListAdapter<GetAlarmEntity, AlarmListAdapter.AlarmViewH
                 // 장소명
                 tvAddress.text = alarm.address
 
-                wtAlarm.setChecked(true)
+                // 체크박스 가시성, 상태 설정
+                if (isDeleteMode) {
+                    ivAlarmCheck.visibility = android.view.View.VISIBLE
+                    ivAlarmCheck.setImageResource(
+                        if (isSelected) {
+                            com.whiplash.presentation.R.drawable.ic_check_pressed_22
+                        } else {
+                            com.whiplash.presentation.R.drawable.ic_check_default_22
+                        }
+                    )
+                } else {
+                    ivAlarmCheck.visibility = android.view.View.GONE
+                }
             }
         }
 

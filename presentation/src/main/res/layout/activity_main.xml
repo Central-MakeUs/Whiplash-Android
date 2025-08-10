@@ -272,6 +272,13 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glRvTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="126dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvHomeAlarm"
         android:layout_width="match_parent"
@@ -283,7 +290,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llExpandableHeader"
+        app:layout_constraintTop_toTopOf="@+id/glRvTop"
         tools:itemCount="10"
         tools:listitem="@layout/item_home_alarm" />
 
