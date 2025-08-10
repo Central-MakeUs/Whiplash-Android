@@ -9,6 +9,7 @@ import com.whiplash.domain.entity.alarm.response.CreateAlarmOccurrenceEntity
 import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.domain.provider.CrashlyticsProvider
 import com.whiplash.domain.usecase.alarm.AddAlarmUseCase
+import com.whiplash.domain.usecase.alarm.CheckInAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
 import com.whiplash.domain.usecase.alarm.DeleteAlarmUseCase
 import com.whiplash.domain.usecase.alarm.GetAlarmsUseCase
@@ -29,6 +30,7 @@ class MainViewModel @Inject constructor(
     private val deleteAlarmUseCase: DeleteAlarmUseCase,
     private val turnOffAlarmUseCase: TurnOffAlarmUseCase,
     private val createAlarmOccurrenceUseCase: CreateAlarmOccurrenceUseCase,
+    private val checkInAlarmUseCase: CheckInAlarmUseCase,
     private val crashlyticsProvider: CrashlyticsProvider,
 ) : ViewModel() {
 
@@ -52,7 +54,10 @@ class MainViewModel @Inject constructor(
         val isAlarmDeleted: Boolean = false,
 
         // 알람 끄기 성공 여부
-        val isAlarmTurnedOff: Boolean = false
+        val isAlarmTurnedOff: Boolean = false,
+
+        // 알람 도착 인증 성공 여부
+        val isAlarmCheckedIn: Boolean = false,
     )
 
     data class SelectedPlace(
@@ -295,6 +300,48 @@ class MainViewModel @Inject constructor(
                 it.copy(
                     isLoading = false,
                     isAlarmDeleted = false,
+                    errorMessage = e.message,
+                )
+            }
+        }
+    }
+
+    // 알람 도착 인증
+    fun checkInAlarm(alarmId: Long) = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = true) }
+
+        try {
+            checkInAlarmUseCase.invoke(alarmId).collect { result ->
+                result.onSuccess { response ->
+                    Timber.d("## [알람 도착 인증] 성공 : $response")
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isAlarmCheckedIn = true,
+                            errorMessage = null,
+                        )
+                    }
+                }.onFailure { e ->
+                    crashlyticsProvider.recordError(e)
+                    crashlyticsProvider.logError("알람 도착 인증 api 에러 : ${e.message}")
+                    Timber.d("## [알람 도착 인증] 에러 : $e")
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isAlarmCheckedIn = false,
+                            errorMessage = e.message,
+                        )
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            crashlyticsProvider.recordError(e)
+            crashlyticsProvider.logError("알람 도착 인증 api 에러 : ${e.message}")
+            Timber.d("## [알람 도착 인증] 에러 : $e")
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    isAlarmCheckedIn = false,
                     errorMessage = e.message,
                 )
             }
