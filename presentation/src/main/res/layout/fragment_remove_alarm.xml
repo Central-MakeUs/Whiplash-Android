@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet_16_radius"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/dp_18"
+    android:paddingVertical="@dimen/dp_32">
+
+    <TextView
+        style="@style/subtitle3_b_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remove_alarm_title"
+        android:textColor="@color/white" />
+
+    <TextView
+        style="@style/subtitle5_b_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/remove_alarm_sub_title"
+        android:textColor="@color/white" />
+
+    <RadioGroup
+        android:id="@+id/rgRemoveReason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:orientation="vertical">
+
+        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+            android:id="@+id/rbRemoveReason1"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dp_8"
+            android:text="@string/remove_alarm_reason_1"
+            android:textColor="@color/white" />
+
+        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+            android:id="@+id/rbRemoveReason2"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dp_8"
+            android:text="@string/remove_alarm_reason_2"
+            android:textColor="@color/white" />
+
+        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+            android:id="@+id/rbRemoveReason3"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dp_8"
+            android:text="@string/remove_alarm_reason_3"
+            android:textColor="@color/white" />
+
+        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+            android:id="@+id/rbRemoveReason4"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dp_8"
+            android:text="@string/remove_alarm_reason_4"
+            android:textColor="@color/white" />
+
+        <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
+            android:id="@+id/rbRemoveReason5"
+            style="@style/body2_m_14"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dp_8"
+            android:text="@string/remove_alarm_reason_5"
+            android:textColor="@color/white" />
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDisableAlarmContent">
+
+        <com.whiplash.presentation.component.button.WhiplashCommonButton
+            android:id="@+id/btnCancelRemove"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_weight="1"
+            app:borderColor="@color/grey_700"
+            app:borderWidth="@dimen/dp_1"
+            app:buttonBackgroundColor="@color/grey_800"
+            app:buttonText="@string/cancel_string"
+            app:buttonTextColor="@color/white" />
+
+        <com.whiplash.presentation.component.button.WhiplashCommonButton
+            android:id="@+id/btnRemove"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_weight="1"
+            app:buttonBackgroundColor="@color/white"
+            app:buttonText="@string/ok_string"
+            app:buttonTextColor="@color/grey_900" />
+
+    </LinearLayout>
+
+</LinearLayout>

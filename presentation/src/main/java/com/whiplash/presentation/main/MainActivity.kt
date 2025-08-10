@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import androidx.core.view.isVisible
+import com.whiplash.presentation.component.bottom_sheet.RemoveAlarmBottomSheet
 
 /**
  * 알람 리사이클러뷰 표시 및 알람 등록 버튼, 상단에 알림 관련 문구 표시 등이 표시되는 메인 화면
@@ -47,6 +48,8 @@ class MainActivity : AppCompatActivity() {
     private var isDeleteMode = false
     private var previousExpandableHeaderVisibility = View.GONE
     private var previousExpandableContentVisibility = View.GONE
+
+    private var removeAlarmBottomSheet: RemoveAlarmBottomSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +87,7 @@ class MainActivity : AppCompatActivity() {
         alarmListAdapter = AlarmListAdapter { position ->
             if (isDeleteMode) {
                 alarmListAdapter.toggleSelection(position)
+                showRemoveAlarmBottomSheet()
             }
         }
         binding.rvHomeAlarm.adapter = alarmListAdapter
@@ -174,6 +178,18 @@ class MainActivity : AppCompatActivity() {
             screenWidth - (anchorLeft + popupWidth) - (20 * resources.displayMetrics.density).toInt()
 
         popupWindow.showAsDropDown(binding.ivDotMenu, xOffset, 0)
+    }
+
+    private fun showRemoveAlarmBottomSheet() {
+        if (removeAlarmBottomSheet?.isVisible == true) return
+
+        val bottomSheetFragment = RemoveAlarmBottomSheet.newInstance(
+            onRemoveReasonSelectedListener = { reason: String ->
+                Timber.d("## [알람 삭제] 이유 : $reason")
+            }
+        )
+
+        bottomSheetFragment.show(supportFragmentManager, "RemoveAlarmBottomSheet")
     }
 
     private fun startDeleteMode() {
