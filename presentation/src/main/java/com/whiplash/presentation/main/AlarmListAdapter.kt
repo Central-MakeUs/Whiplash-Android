@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
+import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ItemHomeAlarmBinding
 import com.whiplash.presentation.util.DateUtils
 
@@ -29,6 +30,18 @@ class AlarmListAdapter(
         selectedPosition = if (selectedPosition == position) -1 else position
         notifyDataSetChanged()
     }
+
+    fun clearSelection() {
+        selectedPosition = -1
+        notifyDataSetChanged()
+    }
+
+    fun getSelectedAlarms(): List<GetAlarmEntity> =
+        if (selectedPosition in 0 ..< itemCount) {
+            listOf(getItem(selectedPosition))
+        } else {
+            emptyList()
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
         val binding = ItemHomeAlarmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -71,9 +84,9 @@ class AlarmListAdapter(
                     ivAlarmCheck.visibility = android.view.View.VISIBLE
                     ivAlarmCheck.setImageResource(
                         if (isSelected) {
-                            com.whiplash.presentation.R.drawable.ic_check_pressed_22
+                            R.drawable.ic_check_pressed_22
                         } else {
-                            com.whiplash.presentation.R.drawable.ic_check_default_22
+                            R.drawable.ic_check_default_22
                         }
                     )
                 } else {

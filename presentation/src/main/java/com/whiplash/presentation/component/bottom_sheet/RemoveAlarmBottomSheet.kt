@@ -15,14 +15,17 @@ class RemoveAlarmBottomSheet: BottomSheetDialogFragment() {
             get() = _binding!!
 
     private var onRemoveReasonSelectedListener: ((String) -> Unit)? = null
+    private var onDismissListener: (() -> Unit)? = null
     private var reason: String = ""
 
     companion object {
         fun newInstance(
-            onRemoveReasonSelectedListener: ((String) -> Unit)
+            onRemoveReasonSelectedListener: ((String) -> Unit), // 삭제 사유 라디오 버튼 선택 + 삭제 버튼 클릭 시
+            onDismissListener: () -> Unit                       // 취소를 눌러서 바텀 시트를 닫으면 해당 알람의 선택 상태 해제
         ): RemoveAlarmBottomSheet {
             return RemoveAlarmBottomSheet().apply {
                 this.onRemoveReasonSelectedListener = onRemoveReasonSelectedListener
+                this.onDismissListener = onDismissListener
             }
         }
     }
@@ -38,6 +41,10 @@ class RemoveAlarmBottomSheet: BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 바텀 시트 밖을 눌러도 안 닫히게 설정. 취소 버튼 클릭을 통해서만 바텀 시트 닫기 가능
+        dialog?.setCanceledOnTouchOutside(false)
+        isCancelable = false
 
         setupViews()
         setDefaultSelection()
@@ -57,6 +64,7 @@ class RemoveAlarmBottomSheet: BottomSheetDialogFragment() {
             }
 
             btnCancelRemove.setOnClickListener {
+                onDismissListener?.invoke()
                 dismiss()
             }
 

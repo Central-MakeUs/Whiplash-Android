@@ -183,13 +183,24 @@ class MainActivity : AppCompatActivity() {
     private fun showRemoveAlarmBottomSheet() {
         if (removeAlarmBottomSheet?.isVisible == true) return
 
-        val bottomSheetFragment = RemoveAlarmBottomSheet.newInstance(
-            onRemoveReasonSelectedListener = { reason: String ->
-                Timber.d("## [알람 삭제] 이유 : $reason")
+        val bottomSheet = RemoveAlarmBottomSheet.newInstance(
+            onRemoveReasonSelectedListener = { reason ->
+                invokeAlarmRemove(reason)
+            },
+            onDismissListener = {
+                // 바텀 시트가 취소 버튼으로 닫힐 때 삭제할 알람 선택 상태 해제
+                alarmListAdapter.clearSelection()
             }
         )
+        bottomSheet.show(supportFragmentManager, "RemoveAlarmBottomSheet")
+    }
 
-        bottomSheetFragment.show(supportFragmentManager, "RemoveAlarmBottomSheet")
+    private fun invokeAlarmRemove(reason: String) {
+        val selectedAlarms = alarmListAdapter.getSelectedAlarms()
+        Timber.d("## 알람 삭제 사유 : $reason, 선택된 알람 : $selectedAlarms")
+
+        // 삭제 모드 종료
+        endDeleteMode()
     }
 
     private fun startDeleteMode() {
