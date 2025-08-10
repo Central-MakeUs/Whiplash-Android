@@ -36,11 +36,11 @@ class AlarmListAdapter(
         notifyDataSetChanged()
     }
 
-    fun getSelectedAlarms(): List<GetAlarmEntity> =
+    fun getSelectedAlarm(): GetAlarmEntity? =
         if (selectedPosition in 0 ..< itemCount) {
-            listOf(getItem(selectedPosition))
+            getItem(selectedPosition)
         } else {
-            emptyList()
+            null
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {

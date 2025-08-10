@@ -196,7 +196,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun invokeAlarmRemove(reason: String) {
-        val selectedAlarms = alarmListAdapter.getSelectedAlarms()
+        val selectedAlarms = alarmListAdapter.getSelectedAlarm()
         Timber.d("## 알람 삭제 사유 : $reason, 선택된 알람 : $selectedAlarms")
 
         // 삭제 모드 종료
