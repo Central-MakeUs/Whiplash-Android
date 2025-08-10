@@ -109,4 +109,7 @@ dependencies {
 
     // 네이버 지도
     implementation(libs.naver.map.sdk)
+
+    // FCM
+    implementation(libs.firebase.messaging)
 }
