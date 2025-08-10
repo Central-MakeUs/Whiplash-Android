@@ -9,18 +9,24 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.whiplash.domain.entity.auth.request.RegisterFcmTokenRequestEntity
+import com.whiplash.domain.usecase.auth.RegisterFcmTokenUseCase
 import com.whiplash.presentation.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class WhiplashFirebaseMessagingService: FirebaseMessagingService() {
+
+    @Inject
+    lateinit var registerFcmTokenUseCase: RegisterFcmTokenUseCase
 
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -59,9 +65,9 @@ class WhiplashFirebaseMessagingService: FirebaseMessagingService() {
         }
 
         val pendingIntent = PendingIntent.getActivity(
-            this, 
-            0, 
-            intent, 
+            this,
+            0,
+            intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
@@ -98,9 +104,23 @@ class WhiplashFirebaseMessagingService: FirebaseMessagingService() {
     private fun sendTokenToServer(token: String) {
         serviceScope.launch {
             try {
-                //
+                val request = RegisterFcmTokenRequestEntity(fcmToken = token)
+                registerFcmTokenUseCase(request)
+                    .catch { exception ->
+                        Timber.e(exception, "## [FCM] FCM 토큰 서버 전송 실패")
+                    }
+                    .collect { result ->
+                        result.fold(
+                            onSuccess = {
+                                Timber.d("## [FCM] FCM 토큰 서버 전송 성공")
+                            },
+                            onFailure = { exception ->
+                                Timber.e(exception, "## [FCM] FCM 토큰 서버 전송 실패")
+                            }
+                        )
+                    }
             } catch (e: Exception) {
-                //
+                Timber.e(e, "## [FCM] FCM 토큰 전송 중 예외 발생")
             }
         }
     }
