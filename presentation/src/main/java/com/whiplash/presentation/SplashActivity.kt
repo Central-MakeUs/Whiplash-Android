@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.messaging.FirebaseMessaging
 import com.whiplash.presentation.databinding.ActivitySplashBinding
 import com.whiplash.presentation.login.GoogleLoginManager
 import com.whiplash.presentation.login.KakaoLoginManager
@@ -48,6 +49,8 @@ class SplashActivity : AppCompatActivity() {
             insets
         }
 
+        initFcmToken()
+        observeSplashViewModel()
         observeLoginViewModel()
 
         lifecycleScope.launch {
@@ -60,6 +63,20 @@ class SplashActivity : AppCompatActivity() {
             }
 
             checkLoginStatusAndNavigate()
+        }
+    }
+
+    private fun initFcmToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Timber.d("## [FCM] FCM 토큰 가져오기 실패", task.exception)
+                return@addOnCompleteListener
+            }
+
+            val token = task.result
+            Timber.d("## [FCM] 스플래시 화면에서 FCM 토큰 확인 : $token")
+
+            splashViewModel.saveFcmToken(token)
         }
     }
 
@@ -95,6 +112,17 @@ class SplashActivity : AppCompatActivity() {
         } catch (e: Exception) {
             Timber.e("## [스플래시] 로그인 상태 확인 중 에러 : ${e.message}")
             navigateToLogin()
+        }
+    }
+
+    private fun observeSplashViewModel() {
+        lifecycleScope.launch {
+            splashViewModel.uiState.collect { state ->
+                val fcmTokenSaved = state.isFcmTokenSaved
+                if (fcmTokenSaved) {
+                    Timber.d("## [FCM] 스플래시 화면에서 FCM 토큰 dataStore에 저장 확인")
+                }
+            }
         }
     }
 

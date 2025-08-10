@@ -4,7 +4,6 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
-import com.google.firebase.messaging.FirebaseMessaging
 import com.kakao.sdk.common.KakaoSdk
 import com.naver.maps.map.NaverMapSdk
 import dagger.hilt.android.HiltAndroidApp
@@ -18,15 +17,6 @@ class App: Application() {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
-        }
-
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                return@addOnCompleteListener
-            }
-
-            val token = task.result
-            Timber.d("## [FCM] Application에서 FCM 토큰 확인 : $token")
         }
 
         KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_KEY)

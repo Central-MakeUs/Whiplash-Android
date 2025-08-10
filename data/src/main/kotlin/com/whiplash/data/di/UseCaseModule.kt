@@ -5,6 +5,7 @@ import com.whiplash.domain.repository.login.AuthRepository
 import com.whiplash.domain.repository.member.MemberRepository
 import com.whiplash.domain.repository.onboarding.OnboardingRepository
 import com.whiplash.domain.repository.place.PlaceRepository
+import com.whiplash.domain.repository.token.TokenRepository
 import com.whiplash.domain.usecase.alarm.AddAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CheckInAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
@@ -21,6 +22,9 @@ import com.whiplash.domain.usecase.onboarding.GetOnboardingStatusUseCase
 import com.whiplash.domain.usecase.onboarding.SetOnboardingCompletedUseCase
 import com.whiplash.domain.usecase.place.GetPlaceDetailUseCase
 import com.whiplash.domain.usecase.place.SearchPlaceUseCase
+import com.whiplash.domain.usecase.token.ClearFcmTokenUseCase
+import com.whiplash.domain.usecase.token.GetFcmTokenUseCase
+import com.whiplash.domain.usecase.token.SaveFcmTokenUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -110,5 +114,20 @@ object UseCaseModule {
     @Singleton
     fun provideGetOnboardingStatusUseCase(repository: OnboardingRepository): GetOnboardingStatusUseCase =
         GetOnboardingStatusUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideSaveFcmTokenUseCase(repository: TokenRepository): SaveFcmTokenUseCase =
+        SaveFcmTokenUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetFcmTokenUseCase(repository: TokenRepository): GetFcmTokenUseCase =
+        GetFcmTokenUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideClearFcmTokenUseCase(repository: TokenRepository): ClearFcmTokenUseCase =
+        ClearFcmTokenUseCase(repository)
 
 }

@@ -85,4 +85,7 @@ dependencies {
 
     // 알람 설정 화면에서 사용하는 NumberPicker 라이브러리
     implementation(libs.number.picker)
+
+    // FCM
+    implementation(libs.firebase.messaging)
 }

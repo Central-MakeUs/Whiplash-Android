@@ -7,6 +7,7 @@ import com.whiplash.data.repository.login.KakaoAuthRepositoryImpl
 import com.whiplash.data.repository.member.MemberRepositoryImpl
 import com.whiplash.data.repository.onboarding.OnboardingRepositoryImpl
 import com.whiplash.data.repository.place.PlaceRepositoryImpl
+import com.whiplash.data.repository.token.TokenRepositoryImpl
 import com.whiplash.domain.repository.alarm.AlarmRepository
 import com.whiplash.domain.repository.login.AuthRepository
 import com.whiplash.domain.repository.login.GoogleAuthRepository
@@ -14,6 +15,7 @@ import com.whiplash.domain.repository.login.KakaoAuthRepository
 import com.whiplash.domain.repository.member.MemberRepository
 import com.whiplash.domain.repository.onboarding.OnboardingRepository
 import com.whiplash.domain.repository.place.PlaceRepository
+import com.whiplash.domain.repository.token.TokenRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -43,5 +45,8 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindOnboardingRepository(impl: OnboardingRepositoryImpl): OnboardingRepository
+
+    @Binds
+    abstract fun bindTokenRepository(impl: TokenRepositoryImpl): TokenRepository
 
 }
