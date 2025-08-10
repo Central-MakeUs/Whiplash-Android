@@ -62,7 +62,8 @@ class CreateAlarmActivity : AppCompatActivity() {
 
     // 알람 소리 바텀시트에서 선택한 알람. 기본값 "알람 소리1"
     private var selectedAlarmSoundId: Int = -1
-    private var selectedAlarmSoundText: String = ""
+    private var selectedAlarmSoundText: String = "" // 화면에 표시할 텍스트
+    private var selectedAlarmSoundApiText: String = "" // 알람 등록 api로 넘길 텍스트
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,6 +117,7 @@ class CreateAlarmActivity : AppCompatActivity() {
             whCreateAlarm.setTitle(getString(R.string.create_alarm_header))
 
             selectedAlarmSoundText = getString(R.string.sound_1)
+            selectedAlarmSoundApiText = "알람 소리1"
             tvAlarmSoundDetail.text = selectedAlarmSoundText
 
             // 도착 목표 장소는?
@@ -155,7 +157,7 @@ class CreateAlarmActivity : AppCompatActivity() {
                         alarmPurpose = binding.etAlarmPurpose.getText(),
                         time = time,
                         repeatDays = selectedDays,
-                        soundType = selectedAlarmSoundText
+                        soundType = selectedAlarmSoundApiText
                     )
                 )
             }
@@ -274,10 +276,11 @@ class CreateAlarmActivity : AppCompatActivity() {
         if (alarmSoundBottomSheet?.isVisible == true) return
 
         val bottomSheetFragment = AlarmSoundBottomSheet.newInstance(
-            onAlarmSoundSelected = { selectedSound, selectedId ->
-                binding.tvAlarmSoundDetail.text = selectedSound
+            onAlarmSoundSelected = { displayText, selectedId, apiText ->
+                binding.tvAlarmSoundDetail.text = displayText
                 selectedAlarmSoundId = selectedId
-                selectedAlarmSoundText = selectedSound // 선택된 텍스트 저장
+                selectedAlarmSoundText = displayText
+                selectedAlarmSoundApiText = apiText
             },
             selectedRadioButtonId = selectedAlarmSoundId
         )
