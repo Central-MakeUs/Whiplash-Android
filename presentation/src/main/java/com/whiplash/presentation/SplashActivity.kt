@@ -77,6 +77,7 @@ class SplashActivity : AppCompatActivity() {
             Timber.d("## [FCM] 스플래시 화면에서 FCM 토큰 확인 : $token")
 
             splashViewModel.saveFcmToken(token)
+            splashViewModel.registerFcmToken(token)
         }
     }
 
@@ -121,6 +122,7 @@ class SplashActivity : AppCompatActivity() {
                 val fcmTokenSaved = state.isFcmTokenSaved
                 if (fcmTokenSaved) {
                     Timber.d("## [FCM] 스플래시 화면에서 FCM 토큰 dataStore에 저장 확인")
+                    splashViewModel.clearIsFcmTokenSaved()
                 }
             }
         }
