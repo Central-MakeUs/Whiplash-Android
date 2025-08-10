@@ -217,11 +217,13 @@ class MainViewModel @Inject constructor(
     // 알람 삭제
     fun deleteAlarm(
         alarmId: Long,
-        deleteAlarmRequestEntity: DeleteAlarmRequestEntity
+        reason: String
     ) = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
 
         try {
+            val deleteAlarmRequestEntity = DeleteAlarmRequestEntity(reason = reason)
+
             deleteAlarmUseCase.invoke(alarmId, deleteAlarmRequestEntity)
                 .collect { result ->
                     result.onSuccess { response ->
@@ -233,6 +235,9 @@ class MainViewModel @Inject constructor(
                                 errorMessage = null,
                             )
                         }
+
+                        // 삭제 성공 시 알람 목록 새로고침
+                        getAlarms()
                     }.onFailure { e ->
                         crashlyticsProvider.recordError(e)
                         crashlyticsProvider.logError("알람 삭제 api 실패 : ${e.message}")
@@ -259,6 +264,8 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetIsAlarmDeleted() = _uiState.update { it.copy(isAlarmDeleted = false) }
 
     // 알람 끄기
     fun turnOffAlarm(

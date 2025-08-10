@@ -28,6 +28,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import androidx.core.view.isVisible
 import com.whiplash.presentation.component.bottom_sheet.RemoveAlarmBottomSheet
+import com.whiplash.presentation.util.WhiplashToast
 
 /**
  * 알람 리사이클러뷰 표시 및 알람 등록 버튼, 상단에 알림 관련 문구 표시 등이 표시되는 메인 화면
@@ -117,7 +118,14 @@ class MainActivity : AppCompatActivity() {
                 launch {
                     mainViewModel.uiState.collect { state ->
                         with(binding) {
-                            // 알람 목록 조회(현재는 mock data)
+                            val isLoading = state.isLoading
+                            if (isLoading) {
+                                loadingScreen.show()
+                            } else {
+                                loadingScreen.hide()
+                            }
+
+                            // 알람 목록 조회
                             val alarmList = state.alarmList
                             Timber.d("## [알람 목록 조회] 액티비티에서 확인 : $state")
                             if (alarmList.isEmpty()) {
@@ -127,6 +135,13 @@ class MainActivity : AppCompatActivity() {
                                 rvHomeAlarm.visibility = View.VISIBLE
                                 alarmListAdapter.submitList(alarmList)
                                 wevHome.visibility = View.GONE
+                            }
+
+                            // 알람 삭제 성공 여부
+                            val isAlarmDeleted = state.isAlarmDeleted
+                            if (isAlarmDeleted) {
+                                WhiplashToast.showSuccessToast(this@MainActivity, "알람 삭제가 완료되었습니다")
+                                mainViewModel.resetIsAlarmDeleted()
                             }
                         }
                     }
@@ -196,10 +211,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun invokeAlarmRemove(reason: String) {
-        val selectedAlarms = alarmListAdapter.getSelectedAlarm()
-        Timber.d("## 알람 삭제 사유 : $reason, 선택된 알람 : $selectedAlarms")
+        val selectedAlarm = alarmListAdapter.getSelectedAlarm()
+        Timber.d("## 알람 삭제 사유 : $reason, 선택된 알람 : $selectedAlarm")
 
-        // 삭제 모드 종료
+        selectedAlarm?.let { alarm ->
+            mainViewModel.deleteAlarm(
+                alarmId = alarm.alarmId,
+                reason = reason
+            )
+        } ?: run {
+            WhiplashToast.showErrorToast(this@MainActivity, "존재하지 않는 알람입니다. 다시 시도해 주세요")
+        }
+
         endDeleteMode()
     }
 
