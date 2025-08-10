@@ -1,5 +1,7 @@
 package com.whiplash.presentation.component.bottom_sheet
 
+import android.media.AudioAttributes
+import android.media.SoundPool
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +9,7 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.FragmentAlarmSoundBottomSheetBinding
+import com.whiplash.presentation.util.WhiplashToast
 
 class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
 
@@ -16,6 +19,10 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
 
     private var onAlarmSoundSelectedListener: ((String, Int) -> Unit)? = null
     private var selectedRadioButtonId: Int = -1
+
+    private var soundPool: SoundPool? = null
+    private var soundIds: IntArray = IntArray(4)
+    private var currentSoundId: Int = 0
 
     companion object {
         private const val KEY_SELECTED_ID = "selected_radio_button_id"
@@ -43,6 +50,7 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupSoundPool()
         setupBottomSheetBehavior()
         restoreSelectedState()
         setupViews()
@@ -61,12 +69,62 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
         }
     }
 
+    private fun setupSoundPool() {
+        val audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_ALARM)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(1)
+            .setAudioAttributes(audioAttributes)
+            .build()
+
+        soundPool?.let { pool ->
+            soundIds[0] = pool.load(requireContext(), R.raw.sound1, 1)
+            soundIds[1] = pool.load(requireContext(), R.raw.sound2, 1)
+            soundIds[2] = pool.load(requireContext(), R.raw.sound3, 1)
+            soundIds[3] = pool.load(requireContext(), R.raw.sound4, 1)
+        } ?: run {
+            WhiplashToast.showErrorToast(requireActivity(), "알람 소리 초기화 오류가 발생했습니다. 잠시 후 다시 시도해 주세요")
+        }
+    }
+
+    private fun playSelectedAlarmSound() {
+        soundPool?.let { pool ->
+            if (currentSoundId != 0) {
+                pool.stop(currentSoundId)
+            }
+
+            val checkedId = binding.rgAlarmSound.checkedRadioButtonId
+            val soundIndex = when (checkedId) {
+                R.id.rbNothing -> return
+                R.id.rbOption1 -> 0
+                R.id.rbOption2 -> 1
+                R.id.rbOption3 -> 2
+                R.id.rbOption4 -> 3
+                else -> 0
+            }
+
+            currentSoundId = pool.play(
+                soundIds[soundIndex],
+                1.0f,
+                1.0f,
+                1,
+                0,
+                1.0f
+            )
+        } ?: run {
+            WhiplashToast.showErrorToast(requireActivity(), "알람 소리 재생 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요")
+        }
+    }
+
     private fun restoreSelectedState() {
         if (selectedRadioButtonId != -1) {
             binding.rgAlarmSound.check(selectedRadioButtonId)
         } else {
             // 최초 진입 시에는 "알람 소리1"이 선택된 상태
-            binding.rgAlarmSound.check(R.id.rbOption2)
+            binding.rgAlarmSound.check(R.id.rbOption1)
         }
     }
 
@@ -88,10 +146,10 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
                 val checkedId = rgAlarmSound.checkedRadioButtonId
                 val selectedText = when (checkedId) {
                     R.id.rbNothing -> getString(R.string.not_sound)
-                    R.id.rbOption2 -> getString(R.string.sound_1)
-                    R.id.rbOption3 -> getString(R.string.sound_2)
-                    R.id.rbOption4 -> getString(R.string.sound_3)
-                    R.id.rbOption5 -> getString(R.string.sound_4)
+                    R.id.rbOption1 -> getString(R.string.sound_1)
+                    R.id.rbOption2 -> getString(R.string.sound_2)
+                    R.id.rbOption3 -> getString(R.string.sound_3)
+                    R.id.rbOption4 -> getString(R.string.sound_4)
                     else -> getString(R.string.sound_1) // 기본값
                 }
 
@@ -99,11 +157,17 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
                 onAlarmSoundSelectedListener?.invoke(selectedText, checkedId)
                 dismiss()
             }
+
+            ivAlarmPreListening.setOnClickListener {
+                playSelectedAlarmSound()
+            }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        soundPool?.release()
+        soundPool = null
         _binding = null
     }
 }

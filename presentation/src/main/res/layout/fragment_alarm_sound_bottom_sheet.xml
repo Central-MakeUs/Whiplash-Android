@@ -38,7 +38,7 @@
             android:textColor="@color/white" />
 
         <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
-            android:id="@+id/rbOption2"
+            android:id="@+id/rbOption1"
             style="@style/body2_m_14"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
@@ -49,7 +49,7 @@
             android:textColor="@color/white" />
 
         <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
-            android:id="@+id/rbOption3"
+            android:id="@+id/rbOption2"
             style="@style/body2_m_14"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
@@ -60,7 +60,7 @@
             android:textColor="@color/white" />
 
         <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
-            android:id="@+id/rbOption4"
+            android:id="@+id/rbOption3"
             style="@style/body2_m_14"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
@@ -71,7 +71,7 @@
             android:textColor="@color/white" />
 
         <com.whiplash.presentation.component.radiobutton.WhiplashRadioButton
-            android:id="@+id/rbOption5"
+            android:id="@+id/rbOption4"
             style="@style/body2_m_14"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
