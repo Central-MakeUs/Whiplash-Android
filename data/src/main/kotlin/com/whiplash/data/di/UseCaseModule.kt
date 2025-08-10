@@ -11,6 +11,7 @@ import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
 import com.whiplash.domain.usecase.alarm.DeleteAlarmUseCase
 import com.whiplash.domain.usecase.alarm.GetAlarmsUseCase
 import com.whiplash.domain.usecase.alarm.TurnOffAlarmUseCase
+import com.whiplash.domain.usecase.auth.RegisterFcmTokenUseCase
 import com.whiplash.domain.usecase.auth.ReissueTokenUseCase
 import com.whiplash.domain.usecase.auth.SocialLoginUseCase
 import com.whiplash.domain.usecase.auth.SocialLogoutUseCase
@@ -59,6 +60,11 @@ object UseCaseModule {
     @Singleton
     fun provideSocialLogoutUseCase(repository: AuthRepository): SocialLogoutUseCase =
         SocialLogoutUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideRegisterFcmTokenUseCase(repository: AuthRepository): RegisterFcmTokenUseCase =
+        RegisterFcmTokenUseCase(repository)
 
     @Provides
     @Singleton
