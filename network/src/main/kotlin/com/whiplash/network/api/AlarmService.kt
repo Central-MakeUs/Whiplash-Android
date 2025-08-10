@@ -13,6 +13,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -47,7 +48,7 @@ interface AlarmService {
     /**
      * 알람 삭제
      */
-    @DELETE("alarms/{alarmId}")
+    @HTTP(method = "DELETE", path = "alarms/{alarmId}", hasBody = true)
     suspend fun deleteAlarm(
         @Path("alarmId") alarmId: Long,
         @Body requestDeleteAlarm: RequestDeleteAlarm

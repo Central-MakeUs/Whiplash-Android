@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
@@ -22,10 +23,12 @@ import com.whiplash.presentation.dialog.DisableAlarmPopup
 import com.whiplash.presentation.user_info.UserInfoActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import androidx.core.view.isVisible
+import com.whiplash.presentation.component.bottom_sheet.RemoveAlarmBottomSheet
+import com.whiplash.presentation.util.WhiplashToast
 
 /**
  * 알람 리사이클러뷰 표시 및 알람 등록 버튼, 상단에 알림 관련 문구 표시 등이 표시되는 메인 화면
@@ -42,6 +45,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var alarmListAdapter: AlarmListAdapter
 
     private val mainViewModel: MainViewModel by viewModels()
+
+    private var isDeleteMode = false
+    private var previousExpandableHeaderVisibility = View.GONE
+    private var previousExpandableContentVisibility = View.GONE
+
+    private var removeAlarmBottomSheet: RemoveAlarmBottomSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,11 +77,20 @@ class MainActivity : AppCompatActivity() {
             ivDotMenu.setOnClickListener {
                 showThreeDotMenu()
             }
+
+            tvCancelDelete.setOnClickListener {
+                endDeleteMode()
+            }
         }
     }
 
     private fun setupRecyclerView() {
-        alarmListAdapter = AlarmListAdapter()
+        alarmListAdapter = AlarmListAdapter { position ->
+            if (isDeleteMode) {
+                alarmListAdapter.toggleSelection(position)
+                showRemoveAlarmBottomSheet()
+            }
+        }
         binding.rvHomeAlarm.adapter = alarmListAdapter
     }
 
@@ -89,6 +107,8 @@ class MainActivity : AppCompatActivity() {
                 binding.llExpandableContent.visibility = View.GONE
                 binding.ivExpandArrow.setImageResource(R.drawable.ic_down_arrow_white_22)
             }
+            
+            updateRecyclerViewPosition()
         }
     }
 
@@ -98,7 +118,14 @@ class MainActivity : AppCompatActivity() {
                 launch {
                     mainViewModel.uiState.collect { state ->
                         with(binding) {
-                            // 알람 목록 조회(현재는 mock data)
+                            val isLoading = state.isLoading
+                            if (isLoading) {
+                                loadingScreen.show()
+                            } else {
+                                loadingScreen.hide()
+                            }
+
+                            // 알람 목록 조회
                             val alarmList = state.alarmList
                             Timber.d("## [알람 목록 조회] 액티비티에서 확인 : $state")
                             if (alarmList.isEmpty()) {
@@ -108,6 +135,13 @@ class MainActivity : AppCompatActivity() {
                                 rvHomeAlarm.visibility = View.VISIBLE
                                 alarmListAdapter.submitList(alarmList)
                                 wevHome.visibility = View.GONE
+                            }
+
+                            // 알람 삭제 성공 여부
+                            val isAlarmDeleted = state.isAlarmDeleted
+                            if (isAlarmDeleted) {
+                                WhiplashToast.showSuccessToast(this@MainActivity, "알람 삭제가 완료되었습니다")
+                                mainViewModel.resetIsAlarmDeleted()
                             }
                         }
                     }
@@ -132,6 +166,7 @@ class MainActivity : AppCompatActivity() {
         tvRemoveAlarm.setOnClickListener {
             popupWindow.dismiss()
             Timber.d("## [팝업] 알람 삭제 클릭")
+            startDeleteMode()
         }
 
         tvManageUserInfo.setOnClickListener {
@@ -159,6 +194,104 @@ class MainActivity : AppCompatActivity() {
 
         popupWindow.showAsDropDown(binding.ivDotMenu, xOffset, 0)
     }
+
+    private fun showRemoveAlarmBottomSheet() {
+        if (removeAlarmBottomSheet?.isVisible == true) return
+
+        val bottomSheet = RemoveAlarmBottomSheet.newInstance(
+            onRemoveReasonSelectedListener = { reason ->
+                invokeAlarmRemove(reason)
+            },
+            onDismissListener = {
+                // 바텀 시트가 취소 버튼으로 닫힐 때 삭제할 알람 선택 상태 해제
+                alarmListAdapter.clearSelection()
+            }
+        )
+        bottomSheet.show(supportFragmentManager, "RemoveAlarmBottomSheet")
+    }
+
+    private fun invokeAlarmRemove(reason: String) {
+        val selectedAlarm = alarmListAdapter.getSelectedAlarm()
+        Timber.d("## 알람 삭제 사유 : $reason, 선택된 알람 : $selectedAlarm")
+
+        selectedAlarm?.let { alarm ->
+            mainViewModel.deleteAlarm(
+                alarmId = alarm.alarmId,
+                reason = reason
+            )
+        } ?: run {
+            WhiplashToast.showErrorToast(this@MainActivity, "존재하지 않는 알람입니다. 다시 시도해 주세요")
+        }
+
+        endDeleteMode()
+    }
+
+    private fun startDeleteMode() {
+        isDeleteMode = true
+        
+        with(binding) {
+            // 현재 expandable view들의 가시성 저장
+            previousExpandableHeaderVisibility = llExpandableHeader.visibility
+            previousExpandableContentVisibility = llExpandableContent.visibility
+
+            // expandable view 숨기기
+            llExpandableHeader.visibility = View.GONE
+            llExpandableContent.visibility = View.GONE
+
+            // 취소 버튼 표시
+            tvCancelDelete.visibility = View.VISIBLE
+
+            // 리사이클러뷰 위치를 tvCancelDelete 아래로 조정
+            updateRecyclerViewPosition()
+        }
+
+        alarmListAdapter.setDeleteMode(true)
+    }
+
+    private fun endDeleteMode() {
+        isDeleteMode = false
+
+        with(binding) {
+            // 취소 버튼 숨기기
+            tvCancelDelete.visibility = View.GONE
+
+            // expandable view 이전 상태로 복원
+            llExpandableHeader.visibility = previousExpandableHeaderVisibility
+            llExpandableContent.visibility = previousExpandableContentVisibility
+
+            // 리사이클러뷰 위치 복원
+            updateRecyclerViewPosition()
+        }
+
+        alarmListAdapter.setDeleteMode(false)
+    }
+
+    private fun updateRecyclerViewPosition() {
+        val params = binding.glRvTop.layoutParams as ConstraintLayout.LayoutParams
+
+        when {
+            binding.tvCancelDelete.isVisible -> {
+                // 삭제 모드일 때
+                params.guideBegin = 150.dpToPx()
+            }
+            binding.llExpandableContent.isVisible -> {
+                // expandable content가 보일 때
+                params.guideBegin = 350.dpToPx()
+            }
+            binding.llExpandableHeader.isVisible -> {
+                // header만 보일 때
+                params.guideBegin = 150.dpToPx()
+            }
+            else -> {
+                // 기본 상태
+                params.guideBegin = 108.dpToPx()
+            }
+        }
+
+        binding.glRvTop.layoutParams = params
+    }
+
+    private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
 
     override fun onResume() {
         super.onResume()

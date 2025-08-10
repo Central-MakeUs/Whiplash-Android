@@ -40,6 +40,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvHomeAlarmList" />
 
+    <TextView
+        android:id="@+id/tvCancelDelete"
+        style="@style/body2_m_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/cancel_string"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/ivDotMenu"
+        app:layout_constraintTop_toBottomOf="@+id/ivDotMenu"
+        tools:visibility="visible" />
+
     <LinearLayout
         android:id="@+id/llExpandableHeader"
         android:layout_width="match_parent"
@@ -259,6 +272,13 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/glRvTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="126dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvHomeAlarm"
         android:layout_width="match_parent"
@@ -270,7 +290,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llExpandableHeader"
+        app:layout_constraintTop_toTopOf="@+id/glRvTop"
         tools:itemCount="10"
         tools:listitem="@layout/item_home_alarm" />
 
