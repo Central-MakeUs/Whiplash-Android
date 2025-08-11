@@ -1,5 +1,6 @@
 package com.whiplash.akuma
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -38,12 +39,21 @@ class WhiplashFirebaseMessagingService: FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        Timber.d("## [FCM] from : ${remoteMessage.from}")
+        Timber.d("## [FCM] =================================")
+        Timber.d("## [FCM] onMessageReceived 호출됨!")
+        Timber.d("## [FCM] From: ${remoteMessage.from}")
+        Timber.d("## [FCM] Message ID: ${remoteMessage.messageId}")
+        Timber.d("## [FCM] Has notification: ${remoteMessage.notification != null}")
+        Timber.d("## [FCM] Has data: ${remoteMessage.data.isNotEmpty()}")
+        Timber.d("## [FCM] =================================")
 
-        // 알림 메시지 처리
-        remoteMessage.notification?.let {
-            Timber.d("## [FCM] FCM body : ${it.body}")
-            sendNotification(it.title, it.body, remoteMessage.data)
+        if (remoteMessage.data.isNotEmpty()) {
+            Timber.d("## [FCM] 데이터 메시지 처리: ${remoteMessage.data}")
+            sendNotification(
+                title = remoteMessage.data["title"],
+                body = remoteMessage.data["body"],
+                data = remoteMessage.data
+            )
         }
     }
 
@@ -53,12 +63,15 @@ class WhiplashFirebaseMessagingService: FirebaseMessagingService() {
         sendTokenToServer(token)
     }
 
-    private fun sendNotification(title: String?, body: String?, data: Map<String, String> = emptyMap()) {
+    private fun sendNotification(
+        title: String?, 
+        body: String?, 
+        data: Map<String, String> = emptyMap()
+    ) {
         createNotificationChannel()
 
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            // 데이터가 있으면 Intent에 추가
             data.forEach { (key, value) ->
                 putExtra(key, value)
             }
@@ -66,11 +79,12 @@ class WhiplashFirebaseMessagingService: FirebaseMessagingService() {
 
         val pendingIntent = PendingIntent.getActivity(
             this,
-            0,
+            System.currentTimeMillis().toInt(),
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
+        // 알림 스타일 및 액션 설정
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.whiplash_app_icon)
             .setContentTitle(title ?: "눈 떠!")
@@ -79,9 +93,16 @@ class WhiplashFirebaseMessagingService: FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(body ?: "새로운 알림이 있습니다")
+            )
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+        val notificationId = data["notification_id"]?.toIntOrNull() ?: NOTIFICATION_ID
+        notificationManager.notify(notificationId, notificationBuilder.build())
+        
+        Timber.d("## [FCM] 알림 표시 완료 - ID: $notificationId")
     }
 
     private fun createNotificationChannel() {
@@ -94,6 +115,9 @@ class WhiplashFirebaseMessagingService: FirebaseMessagingService() {
                 description = "눈떠 앱 알림 채널"
                 enableLights(true)
                 enableVibration(true)
+                setShowBadge(true)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                setBypassDnd(true)
             }
 
             val notificationManager = getSystemService(NotificationManager::class.java)
