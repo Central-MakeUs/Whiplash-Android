@@ -1,7 +1,10 @@
 package com.whiplash.presentation.create_alarm
 
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,6 +18,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.whiplash.domain.entity.alarm.request.AddAlarmRequestEntity
+import com.whiplash.domain.repository.alarm.AlarmSchedulerRepository
 import com.whiplash.presentation.R
 import com.whiplash.presentation.component.bottom_sheet.AlarmSoundBottomSheet
 import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
@@ -24,6 +28,7 @@ import com.whiplash.presentation.map.SelectPlaceActivity
 import com.whiplash.presentation.search_place.SearchPlaceActivity
 import com.whiplash.presentation.util.WhiplashToast
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Calendar
@@ -40,6 +45,9 @@ class CreateAlarmActivity : AppCompatActivity() {
     private lateinit var loadingScreen: WhiplashLoadingScreen
 
     private val mainViewModel: MainViewModel by viewModels()
+
+    @Inject
+    lateinit var alarmScheduler: AlarmSchedulerRepository
 
     private val placeSelectionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -97,6 +105,8 @@ class CreateAlarmActivity : AppCompatActivity() {
 
                         // 알람 생성 결과
                         if (state.isAlarmCreated) {
+                            // 서버에 알람 등록 성공 후 로컬 알람 스케줄링
+                            scheduleLocalAlarm()
                             WhiplashToast.showSuccessToast(this@CreateAlarmActivity, getString(R.string.alarm_created))
                             finish()
                         }
@@ -285,6 +295,24 @@ class CreateAlarmActivity : AppCompatActivity() {
             selectedRadioButtonId = selectedAlarmSoundId
         )
         bottomSheetFragment.show(supportFragmentManager, "AlarmSoundBottomSheet")
+    }
+
+    private fun scheduleLocalAlarm() {
+        val time = getSelectedTime24Hour()
+        val selectedDays = getSelectedDays()
+        val detailAddress = mainViewModel.uiState.value.selectedPlace?.detailAddress ?: ""
+        val alarmPurpose = binding.etAlarmPurpose.getText()
+
+        val alarmId = System.currentTimeMillis().toInt()
+
+        alarmScheduler.scheduleAlarm(
+            alarmId = alarmId,
+            time = time,
+            repeatDays = selectedDays,
+            alarmPurpose = alarmPurpose,
+            address = detailAddress,
+            soundType = selectedAlarmSoundApiText  // NEW
+        )
     }
 
 }
