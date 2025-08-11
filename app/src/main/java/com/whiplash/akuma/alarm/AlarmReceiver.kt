@@ -154,15 +154,10 @@ class AlarmReceiver : BroadcastReceiver() {
         if (soundType.isNullOrBlank()) return null
         val normalized = soundType.trim()
 
-        // Accept resource key name, display string, or API text
         return when {
             normalized.equals("sound_1", ignoreCase = true) ||
                     normalized.equals(context.getString(com.whiplash.presentation.R.string.sound_1), ignoreCase = true) ||
                     normalized.equals("알람 소리1", ignoreCase = true) -> com.whiplash.presentation.R.raw.sound1
-
-            // Add more mappings when more raw assets are provided:
-            // normalized.equals("sound_2", true) || normalized.equals(context.getString(PR.string.sound_2), true) || normalized.equals("알람 소리2", true) -> PR.raw.sound2
-            // ...
 
             else -> null
         }
