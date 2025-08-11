@@ -3,9 +3,7 @@ package com.whiplash.data.repository.auth
 import com.whiplash.data.mapper.AuthMapper
 import com.whiplash.data.repository.safeApiCallWithTransform
 import com.whiplash.domain.entity.auth.request.LoginRequestEntity
-import com.whiplash.domain.entity.auth.request.LogoutRequestEntity
 import com.whiplash.domain.entity.auth.request.RegisterFcmTokenRequestEntity
-import com.whiplash.domain.entity.auth.request.TokenReissueRequestEntity
 import com.whiplash.domain.entity.auth.response.LoginResponseEntity
 import com.whiplash.domain.entity.auth.response.TokenReissueResponseEntity
 import com.whiplash.domain.repository.login.AuthRepository
@@ -26,18 +24,18 @@ class AuthRepositoryImpl @Inject constructor(
             }
         )
 
-    override suspend fun reissueToken(request: TokenReissueRequestEntity): Flow<Result<TokenReissueResponseEntity>> =
+    override suspend fun reissueToken(): Flow<Result<TokenReissueResponseEntity>> =
         safeApiCallWithTransform(
-            apiCall = { authService.reissueToken(authMapper.toTokenReissueRequest(request)) },
+            apiCall = { authService.reissueToken() },
             transform = { response ->
                 response.result?.let { authMapper.toTokenReissueResponseEntity(it) }
                     ?: throw Exception("토큰 재발행 api 응답이 null")
             }
         )
 
-    override suspend fun socialLogout(request: LogoutRequestEntity): Flow<Result<Unit>> =
+    override suspend fun socialLogout(): Flow<Result<Unit>> =
         safeApiCallWithTransform(
-            apiCall = { authService.invokeSocialLogout(authMapper.toSocialLogoutRequest(request)) },
+            apiCall = { authService.invokeSocialLogout() },
             transform = { Unit }
         )
 

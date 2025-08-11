@@ -5,8 +5,6 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiplash.domain.entity.auth.request.LoginRequestEntity
-import com.whiplash.domain.entity.auth.request.LogoutRequestEntity
-import com.whiplash.domain.entity.auth.request.TokenReissueRequestEntity
 import com.whiplash.domain.provider.CrashlyticsProvider
 import com.whiplash.domain.provider.TokenProvider
 import com.whiplash.domain.usecase.auth.ReissueTokenUseCase
@@ -163,10 +161,9 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun signOut(deviceId: String) = viewModelScope.launch {
+    fun signOut() = viewModelScope.launch {
         try {
-            val logoutRequest = LogoutRequestEntity(deviceId = deviceId)
-            socialLogoutUseCase(logoutRequest).collect { result ->
+            socialLogoutUseCase.invoke().collect { result ->
                 result.onSuccess {
                     Timber.d("## [로그아웃] 성공")
                     googleLoginManager.signOut()
@@ -207,8 +204,7 @@ class LoginViewModel @Inject constructor(
 
     fun reissueToken(deviceId: String) = viewModelScope.launch {
         try {
-            val request = TokenReissueRequestEntity(deviceId = deviceId)
-            reissueTokenUseCase(request).collect { result ->
+            reissueTokenUseCase.invoke().collect { result ->
                 result.onSuccess { tokenResponse ->
                     tokenProvider.saveTokens(
                         tokenResponse.accessToken,
