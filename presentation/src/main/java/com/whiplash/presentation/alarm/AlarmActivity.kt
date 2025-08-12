@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
@@ -31,7 +32,10 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityAlarmBinding
 import com.whiplash.presentation.main.MainViewModel
+import com.whiplash.presentation.map.SelectPlaceActivity
+import com.whiplash.presentation.map.SelectPlaceActivity.Companion
 import com.whiplash.presentation.search_place.SearchPlaceViewModel
+import com.whiplash.presentation.util.PermissionUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -44,6 +48,13 @@ import timber.log.Timber
  */
 @AndroidEntryPoint
 class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
+
+    companion object {
+        /**
+         * @see onRequestPermissionsResult
+         */
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+    }
 
     private lateinit var binding: ActivityAlarmBinding
     private val mainViewModel: MainViewModel by viewModels()
@@ -77,6 +88,8 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        setupUserLocationSource()
 
         val alarmId = intent.getIntExtra("alarmId", -1)
         val alarmPurpose = intent.getStringExtra("alarmPurpose") ?: ""
@@ -136,20 +149,25 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
                 // 장소 인증 api 호출. 호출 성공 시 알람 끄고 도착 인증 화면으로 이동
             }
 
-//            root.setOnClickListener {
-//                // 알람 정지 브로드캐스트 전송
-//                val stopIntent = Intent("com.whiplash.akuma.STOP_ALARM").apply {
-//                    putExtra("alarmId", intent.getIntExtra("alarmId", -1))
-//                }
-//                sendBroadcast(stopIntent)
-//                finish()
-//            }
+            root.setOnClickListener {
+                // 알람 정지 브로드캐스트 전송
+                val stopIntent = Intent("com.whiplash.akuma.STOP_ALARM").apply {
+                    putExtra("alarmId", intent.getIntExtra("alarmId", -1))
+                }
+                sendBroadcast(stopIntent)
+                finish()
+            }
         }
     }
 
     private fun formatHour24(hour: Int): String = String.format("%02d", hour)
 
     private fun formatMinute(minute: Int): String = String.format("%02d", minute)
+
+    private fun setupUserLocationSource() {
+        locationSource = FusedLocationSource(this, 1000)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+    }
 
     @UiThread
     override fun onMapReady(map: NaverMap) {
@@ -275,6 +293,33 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
                 setupCenterMarkerAndCircle()
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        PermissionUtils.handleLocationPermissionResult(
+            requestCode,
+            permissions,
+            grantResults,
+            onAllPermissionsGranted = {
+                setupNaverMap()
+            },
+            onPartialPermissionsGranted = {
+                setupNaverMap()
+            },
+            onPermissionDenied = {
+                // 권한 거부
+            }
+        )
+        if (::naverMap.isInitialized && requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (!locationSource.isActivated) {
+                naverMap.locationOverlay.isVisible = false
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
 }

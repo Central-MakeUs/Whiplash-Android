@@ -18,6 +18,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:elevation="1dp"
             android:scaleType="centerCrop"
             android:src="@drawable/bg_local_alarm" />
 
@@ -109,6 +110,7 @@
             android:layout_marginStart="18dp"
             android:layout_marginTop="28dp"
             android:layout_marginBottom="40dp"
+            android:elevation="1dp"
             app:buttonBackgroundColor="@color/white"
             app:buttonText="@string/local_alarm_left_button"
             app:buttonTextColor="@color/grey_900"
@@ -121,6 +123,7 @@
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="18dp"
+            android:elevation="1dp"
             app:buttonBackgroundColor="@color/lemon_400"
             app:buttonText="@string/local_alarm_right_button"
             app:buttonTextColor="@color/grey_900"
