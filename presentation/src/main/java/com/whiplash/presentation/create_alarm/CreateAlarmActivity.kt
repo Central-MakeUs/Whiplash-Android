@@ -305,6 +305,8 @@ class CreateAlarmActivity : AppCompatActivity() {
         val selectedDays = getSelectedDays()
         val detailAddress = mainViewModel.uiState.value.selectedPlace?.detailAddress ?: ""
         val alarmPurpose = binding.etAlarmPurpose.getText()
+        val latitude = mainViewModel.uiState.value.selectedPlace?.latitude ?: 0.0
+        val longitude = mainViewModel.uiState.value.selectedPlace?.longitude ?: 0.0
 
         val alarmId = (detailAddress + alarmPurpose + time + selectedDays.joinToString()).hashCode()
 
@@ -314,7 +316,9 @@ class CreateAlarmActivity : AppCompatActivity() {
             repeatDays = selectedDays,
             alarmPurpose = alarmPurpose,
             address = detailAddress,
-            soundType = selectedAlarmSoundApiText
+            soundType = selectedAlarmSoundApiText,
+            latitude = latitude,
+            longitude = longitude,
         )
     }
 

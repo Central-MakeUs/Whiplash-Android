@@ -26,6 +26,8 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
         alarmPurpose: String,
         address: String,
         soundType: String,
+        latitude: Double,
+        longitude: Double,
     ) {
         Timber.d("## [AlarmScheduler] 알람 스케줄링 시작 - ID : $alarmId, 시간 : $time, 반복 : $repeatDays")
 
@@ -34,14 +36,22 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
         val minute = timeParts[1].toInt()
 
         if (repeatDays.isEmpty()) {
-            scheduleOneTimeAlarm(alarmId, hour, minute, alarmPurpose, address, soundType)
+            scheduleOneTimeAlarm(alarmId, hour, minute, alarmPurpose, address, soundType, latitude, longitude)
         } else {
-            scheduleRepeatingAlarms(alarmId, hour, minute, repeatDays, alarmPurpose, address, soundType)
+            scheduleRepeatingAlarms(alarmId, hour, minute, repeatDays, alarmPurpose, address, soundType, latitude, longitude)
         }
     }
 
     override fun cancelAlarm(alarmId: Int) {
-        val pendingIntent = createPendingIntent(alarmId, "", "")
+        val pendingIntent = createPendingIntent(
+            alarmId = alarmId,
+            purpose = "",
+            address = "",
+            hour = 0,
+            minute = 0,
+            latitude = 0.0,
+            longitude = 0.0
+        )
         alarmManager.cancel(pendingIntent)
     }
 
@@ -52,16 +62,18 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
         purpose: String,
         address: String,
         soundType: String,
+        latitude: Double,
+        longitude: Double,
     ) {
         val calendar = Calendar.getInstance().apply {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0) 
+            set(Calendar.MILLISECOND, 0)
             if (before(Calendar.getInstance())) add(Calendar.DAY_OF_MONTH, 1)
         }
 
-        val pendingIntent = createPendingIntent(alarmId, purpose, address, soundType)
+        val pendingIntent = createPendingIntent(alarmId, purpose, address, soundType, hour, minute, latitude, longitude)
         Timber.d("## [AlarmScheduler] 단발성 알람 설정 - 시간 : ${calendar.time}, 현재시간 : ${Calendar.getInstance().time}")
 
         alarmManager.setExactAndAllowWhileIdle(
@@ -80,6 +92,8 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
         purpose: String,
         address: String,
         soundType: String,
+        latitude: Double,
+        longitude: Double,
     ) {
         val dayMap = mapOf(
             "월" to Calendar.MONDAY,
@@ -113,9 +127,11 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
                 putExtra("alarmId", alarmId)
                 putExtra("alarmPurpose", purpose)
                 putExtra("address", address)
+                putExtra("latitude", latitude)
+                putExtra("longitude", longitude)
                 putExtra("soundType", soundType)
-                putExtra("originalHour", hour)      // 원본 시간 저장
-                putExtra("originalMinute", minute)  // 원본 분 저장
+                putExtra("originalHour", hour)
+                putExtra("originalMinute", minute)
             }
 
             val pendingIntent = PendingIntent.getBroadcast(
@@ -139,16 +155,22 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
         alarmId: Int,
         purpose: String,
         address: String,
-        soundType: String = "알람 소리1"
+        soundType: String = "알람 소리1",
+        hour: Int,
+        minute: Int,
+        latitude: Double = 0.0,
+        longitude: Double = 0.0
     ): PendingIntent {
         val intent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
             component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
             putExtra("alarmId", alarmId)
             putExtra("alarmPurpose", purpose)
             putExtra("address", address)
+            putExtra("latitude", latitude)
+            putExtra("longitude", longitude)
             putExtra("soundType", soundType)
-            putExtra("originalHour", Calendar.getInstance().get(Calendar.HOUR_OF_DAY))
-            putExtra("originalMinute", Calendar.getInstance().get(Calendar.MINUTE))
+            putExtra("originalHour", hour)
+            putExtra("originalMinute", minute)
         }
 
         return PendingIntent.getBroadcast(

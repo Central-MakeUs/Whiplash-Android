@@ -8,6 +8,8 @@ interface AlarmSchedulerRepository {
         alarmPurpose: String,
         address: String,
         soundType: String,
+        latitude: Double,
+        longitude: Double,
     )
 
     fun cancelAlarm(alarmId: Int)

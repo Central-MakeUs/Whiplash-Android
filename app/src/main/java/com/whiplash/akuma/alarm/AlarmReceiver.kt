@@ -59,9 +59,13 @@ class AlarmReceiver : BroadcastReceiver() {
             val alarmId = intent.getIntExtra("alarmId", -1)
             val alarmPurpose = intent.getStringExtra("alarmPurpose") ?: "알람"
             val address = intent.getStringExtra("address") ?: ""
+            val latitude = intent.getDoubleExtra("latitude", 0.0)
+            val longitude = intent.getDoubleExtra("longitude", 0.0)
             val soundType = intent.getStringExtra("soundType") ?: "알람 소리1"
+            val originalHour = intent.getIntExtra("originalHour", 0)
+            val originalMinute = intent.getIntExtra("originalMinute", 0)
 
-            Timber.d("## [알람 수신] ID: $alarmId, 목적: $alarmPurpose, 주소: $address")
+            Timber.d("## [알람 수신] ID: $alarmId, 목적: $alarmPurpose, 주소: $address, 위도: $latitude, 경도: $longitude")
 
             // 반복 알람이면 다음 주의 같은 요일로 다시 스케줄링
             scheduleNextWeekAlarm(context, intent)
@@ -70,7 +74,7 @@ class AlarmReceiver : BroadcastReceiver() {
             playAlarmSound(context, soundType)
             startVibration(context)
             createNotificationChannel(context)
-            showAlarmNotification(context, alarmId, alarmPurpose, address)
+            showAlarmNotification(context, alarmId, alarmPurpose, address, latitude, longitude, originalHour, originalMinute)
         } else {
             Timber.d("## [AlarmReceiver] 다른 액션 수신: ${intent.action}")
         }
@@ -80,31 +84,32 @@ class AlarmReceiver : BroadcastReceiver() {
         val alarmId = originalIntent.getIntExtra("alarmId", -1)
         val alarmPurpose = originalIntent.getStringExtra("alarmPurpose") ?: "알람"
         val address = originalIntent.getStringExtra("address") ?: ""
+        val latitude = originalIntent.getDoubleExtra("latitude", 0.0)
+        val longitude = originalIntent.getDoubleExtra("longitude", 0.0)
         val soundType = originalIntent.getStringExtra("soundType") ?: "알람 소리1"
-        val originalHour = originalIntent.getIntExtra("originalHour", 9)      // 기본값 9시
-        val originalMinute = originalIntent.getIntExtra("originalMinute", 0)   // 기본값 0분
+        val originalHour = originalIntent.getIntExtra("originalHour", 9)
+        val originalMinute = originalIntent.getIntExtra("originalMinute", 0)
 
-        // 알람 ID가 기본 ID * 10 + 요일 형식인지 확인 (반복 알람)
         if (alarmId > 10) {
             val dayOfWeek = alarmId % 10
 
-            // Calendar의 요일과 매칭 (1=일요일, 2=월요일, ... 7=토요일)
             if (dayOfWeek in 1..7) {
                 val calendar = Calendar.getInstance().apply {
-                    add(Calendar.WEEK_OF_YEAR, 1) // 다음 주
+                    add(Calendar.WEEK_OF_YEAR, 1)
                     set(Calendar.DAY_OF_WEEK, dayOfWeek)
-                    set(Calendar.HOUR_OF_DAY, originalHour)    // 원본 시간 사용
-                    set(Calendar.MINUTE, originalMinute)       // 원본 분 사용
+                    set(Calendar.HOUR_OF_DAY, originalHour)
+                    set(Calendar.MINUTE, originalMinute)
                     set(Calendar.SECOND, 0)
                     set(Calendar.MILLISECOND, 0)
                 }
 
-                // 동일한 정보로 새 Intent 생성
                 val newIntent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
                     component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
                     putExtra("alarmId", alarmId)
                     putExtra("alarmPurpose", alarmPurpose)
                     putExtra("address", address)
+                    putExtra("latitude", latitude)
+                    putExtra("longitude", longitude)
                     putExtra("soundType", soundType)
                     putExtra("originalHour", originalHour)
                     putExtra("originalMinute", originalMinute)
@@ -227,11 +232,24 @@ class AlarmReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun showAlarmNotification(context: Context, alarmId: Int, purpose: String, address: String) {
+    private fun showAlarmNotification(
+        context: Context,
+        alarmId: Int,
+        purpose: String,
+        address: String,
+        latitude: Double,
+        longitude: Double,
+        hour: Int,
+        minute: Int
+    ) {
         val intent = Intent(context, AlarmActivity::class.java).apply {
             putExtra("alarmId", alarmId)
             putExtra("alarmPurpose", purpose)
             putExtra("address", address)
+            putExtra("latitude", latitude)
+            putExtra("longitude", longitude)
+            putExtra("hour", hour)
+            putExtra("minute", minute)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
