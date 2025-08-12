@@ -73,6 +73,8 @@ class CreateAlarmActivity : AppCompatActivity() {
     private var selectedAlarmSoundText: String = "" // 화면에 표시할 텍스트
     private var selectedAlarmSoundApiText: String = "" // 알람 등록 api로 넘길 텍스트
 
+    private var isAlarmScheduled = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -103,8 +105,9 @@ class CreateAlarmActivity : AppCompatActivity() {
                             WhiplashToast.showErrorToast(this@CreateAlarmActivity, state.errorMessage)
                         }
 
-                        // 알람 생성 결과
-                        if (state.isAlarmCreated) {
+                        // 알람 생성 결과는 1번만 처리
+                        if (state.isAlarmCreated && !isAlarmScheduled) {
+                            isAlarmScheduled = true
                             // 서버에 알람 등록 성공 후 로컬 알람 스케줄링
                             scheduleLocalAlarm()
                             WhiplashToast.showSuccessToast(this@CreateAlarmActivity, getString(R.string.alarm_created))
@@ -303,7 +306,7 @@ class CreateAlarmActivity : AppCompatActivity() {
         val detailAddress = mainViewModel.uiState.value.selectedPlace?.detailAddress ?: ""
         val alarmPurpose = binding.etAlarmPurpose.getText()
 
-        val alarmId = System.currentTimeMillis().toInt()
+        val alarmId = (detailAddress + alarmPurpose + time + selectedDays.joinToString()).hashCode()
 
         alarmScheduler.scheduleAlarm(
             alarmId = alarmId,
@@ -311,7 +314,7 @@ class CreateAlarmActivity : AppCompatActivity() {
             repeatDays = selectedDays,
             alarmPurpose = alarmPurpose,
             address = detailAddress,
-            soundType = selectedAlarmSoundApiText  // NEW
+            soundType = selectedAlarmSoundApiText
         )
     }
 

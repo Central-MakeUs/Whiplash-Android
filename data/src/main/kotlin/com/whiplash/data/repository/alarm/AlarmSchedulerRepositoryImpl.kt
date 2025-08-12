@@ -57,6 +57,7 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0) 
             if (before(Calendar.getInstance())) add(Calendar.DAY_OF_MONTH, 1)
         }
 
@@ -99,17 +100,38 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
                 set(Calendar.HOUR_OF_DAY, hour)
                 set(Calendar.MINUTE, minute)
                 set(Calendar.SECOND, 0)
-                if (before(Calendar.getInstance())) add(Calendar.WEEK_OF_YEAR, 1)
+                set(Calendar.MILLISECOND, 0)
+
+                if (before(Calendar.getInstance())) {
+                    add(Calendar.WEEK_OF_YEAR, 1)
+                }
             }
 
-            val pendingIntent = createPendingIntent(alarmId, purpose, address, soundType)
+            // 시간 정보를 포함한 Intent 생성
+            val intent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
+                component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
+                putExtra("alarmId", alarmId)
+                putExtra("alarmPurpose", purpose)
+                putExtra("address", address)
+                putExtra("soundType", soundType)
+                putExtra("originalHour", hour)      // 원본 시간 저장
+                putExtra("originalMinute", minute)  // 원본 분 저장
+            }
 
-            alarmManager.setRepeating(
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                alarmId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 calendar.timeInMillis,
-                AlarmManager.INTERVAL_DAY * 7,
                 pendingIntent
             )
+
+            Timber.d("## [AlarmScheduler] 반복 알람 설정 완료 - 요일: $day, 시간: ${calendar.time}")
         }
     }
 
@@ -125,6 +147,8 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
             putExtra("alarmPurpose", purpose)
             putExtra("address", address)
             putExtra("soundType", soundType)
+            putExtra("originalHour", Calendar.getInstance().get(Calendar.HOUR_OF_DAY))
+            putExtra("originalMinute", Calendar.getInstance().get(Calendar.MINUTE))
         }
 
         return PendingIntent.getBroadcast(

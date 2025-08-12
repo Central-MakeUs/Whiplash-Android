@@ -1,9 +1,11 @@
 package com.whiplash.akuma.alarm
 
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
@@ -18,6 +20,7 @@ import androidx.core.app.NotificationCompat
 import com.whiplash.akuma.R
 import com.whiplash.presentation.alarm.AlarmActivity
 import timber.log.Timber
+import java.util.Calendar
 
 class AlarmReceiver : BroadcastReceiver() {
 
@@ -72,16 +75,69 @@ class AlarmReceiver : BroadcastReceiver() {
 
             Timber.d("## [알람 수신] ID: $alarmId, 목적: $alarmPurpose, 주소: $address")
 
+            // 반복 알람이면 다음 주의 같은 요일로 다시 스케줄링
+            scheduleNextWeekAlarm(context, intent)
+
             acquireWakeLock(context)
-
             playAlarmSound(context, soundType)
-
             startVibration(context)
-
             createNotificationChannel(context)
             showAlarmNotification(context, alarmId, alarmPurpose, address)
         } else {
             Timber.d("## [AlarmReceiver] 다른 액션 수신: ${intent.action}")
+        }
+    }
+
+    private fun scheduleNextWeekAlarm(context: Context, originalIntent: Intent) {
+        val alarmId = originalIntent.getIntExtra("alarmId", -1)
+        val alarmPurpose = originalIntent.getStringExtra("alarmPurpose") ?: "알람"
+        val address = originalIntent.getStringExtra("address") ?: ""
+        val soundType = originalIntent.getStringExtra("soundType") ?: "알람 소리1"
+        val originalHour = originalIntent.getIntExtra("originalHour", 9)      // 기본값 9시
+        val originalMinute = originalIntent.getIntExtra("originalMinute", 0)   // 기본값 0분
+
+        // 알람 ID가 기본 ID * 10 + 요일 형식인지 확인 (반복 알람)
+        if (alarmId > 10) {
+            val dayOfWeek = alarmId % 10
+
+            // Calendar의 요일과 매칭 (1=일요일, 2=월요일, ... 7=토요일)
+            if (dayOfWeek in 1..7) {
+                val calendar = Calendar.getInstance().apply {
+                    add(Calendar.WEEK_OF_YEAR, 1) // 다음 주
+                    set(Calendar.DAY_OF_WEEK, dayOfWeek)
+                    set(Calendar.HOUR_OF_DAY, originalHour)    // 원본 시간 사용
+                    set(Calendar.MINUTE, originalMinute)       // 원본 분 사용
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+
+                // 동일한 정보로 새 Intent 생성
+                val newIntent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
+                    component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
+                    putExtra("alarmId", alarmId)
+                    putExtra("alarmPurpose", alarmPurpose)
+                    putExtra("address", address)
+                    putExtra("soundType", soundType)
+                    putExtra("originalHour", originalHour)
+                    putExtra("originalMinute", originalMinute)
+                }
+
+                val pendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    alarmId,
+                    newIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+
+                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.timeInMillis,
+                    pendingIntent
+                )
+
+                Timber.d("## [다음 주 알람 스케줄링] 시간: ${calendar.time}")
+            }
         }
     }
 
