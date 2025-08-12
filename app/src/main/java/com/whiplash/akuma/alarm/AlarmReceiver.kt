@@ -9,15 +9,12 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
-import android.media.MediaPlayer
-import android.media.RingtoneManager
 import android.media.SoundPool
 import android.os.Build
 import android.os.PowerManager
 import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.core.app.NotificationCompat
-import com.whiplash.akuma.R
 import com.whiplash.presentation.alarm.AlarmActivity
 import timber.log.Timber
 import java.util.Calendar
@@ -26,7 +23,6 @@ class AlarmReceiver : BroadcastReceiver() {
 
     companion object {
         private const val CHANNEL_ID = "WHIPLASH_ALARM_CHANNEL"
-        var mediaPlayer: MediaPlayer? = null
         private var soundPool: SoundPool? = null
         private var loadedSoundId: Int? = null
         private var playingStreamId: Int? = null
@@ -34,14 +30,6 @@ class AlarmReceiver : BroadcastReceiver() {
 
         fun stopAlarmSound() {
             try {
-                mediaPlayer?.let {
-                    if (it.isPlaying) {
-                        it.stop()
-                    }
-                    it.release()
-                }
-                mediaPlayer = null
-
                 playingStreamId?.let { streamId ->
                     soundPool?.stop(streamId)
                 }
@@ -156,49 +144,34 @@ class AlarmReceiver : BroadcastReceiver() {
 
             val resId = resolveSoundResId(context, soundType)
 
-            if (resId != null) {
-                val attrs = AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_ALARM)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build()
+            val attrs = AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ALARM)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build()
 
-                soundPool = SoundPool.Builder()
-                    .setAudioAttributes(attrs)
-                    .setMaxStreams(1)
-                    .build()
+            soundPool = SoundPool.Builder()
+                .setAudioAttributes(attrs)
+                .setMaxStreams(1)
+                .build()
 
-                soundPool?.setOnLoadCompleteListener { sp, soundId, status ->
-                    if (status == 0) {
-                        val streamId = sp.play(soundId, 1.0f, 1.0f, 1, -1, 1.0f)
-                        playingStreamId = streamId
-                        Timber.d("## [SoundPool 재생 시작] soundId=$soundId, streamId=$streamId")
-                    } else {
-                        Timber.e("## [SoundPool 로드 실패] status=$status")
-                    }
+            soundPool?.setOnLoadCompleteListener { sp, soundId, status ->
+                if (status == 0) {
+                    val streamId = sp.play(soundId, 1.0f, 1.0f, 1, -1, 1.0f)
+                    playingStreamId = streamId
+                    Timber.d("## [SoundPool 재생 시작] soundId=$soundId, streamId=$streamId")
+                } else {
+                    Timber.e("## [SoundPool 로드 실패] status=$status")
                 }
+            }
 
+            if (resId != null) {
                 loadedSoundId = soundPool?.load(context, resId, 1)
                 Timber.d("## [SoundPool 로드 요청] soundType=$soundType, resId=$resId")
-
             } else {
-                val alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-                    ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-                    ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-
-                mediaPlayer = MediaPlayer().apply {
-                    setDataSource(context, alarmUri)
-                    setAudioAttributes(
-                        AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_ALARM)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                            .build()
-                    )
-                    isLooping = true
-                    prepare()
-                    start()
-                }
-
-                Timber.d("## [MediaPlayer 재생 시작] soundType = $soundType, uri = $alarmUri")
+                // resId 없으면 기본 알람음 사용
+                val defaultAlarmResId = com.whiplash.presentation.R.raw.sound1
+                loadedSoundId = soundPool?.load(context, defaultAlarmResId, 1)
+                Timber.d("## [SoundPool 로드 요청] soundType=$soundType, defaultResId=$defaultAlarmResId")
             }
 
         } catch (e: Exception) {
