@@ -121,4 +121,8 @@
     <string name="policy_title">약관 및 정책</string>
     <string name="service_setting_title">서비스 설정</string>
     <string name="logout_withdrawal_title">로그인 / 탈퇴</string>
+
+    <!-- 로컬 알람 울릴 때 표시되는 알람 -->
+    <string name="alarm_title">알람이 울리고 있어요!</string>
+    <string name="alarm_sub_title">앱으로 접속해서 알람을 꺼주세요!</string>
 </resources>

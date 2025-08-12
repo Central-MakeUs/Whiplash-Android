@@ -198,7 +198,7 @@ class AlarmReceiver : BroadcastReceiver() {
                     start()
                 }
 
-                Timber.d("## [MediaPlayer 재생 시작] soundType=$soundType, uri=$alarmUri")
+                Timber.d("## [MediaPlayer 재생 시작] soundType = $soundType, uri = $alarmUri")
             }
 
         } catch (e: Exception) {
@@ -269,8 +269,8 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setContentTitle("알람")
-            .setContentText("$purpose - $address")
+            .setContentTitle(context.getString(com.whiplash.presentation.R.string.alarm_title))
+            .setContentText(context.getString(com.whiplash.presentation.R.string.alarm_sub_title))
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setAutoCancel(false)
