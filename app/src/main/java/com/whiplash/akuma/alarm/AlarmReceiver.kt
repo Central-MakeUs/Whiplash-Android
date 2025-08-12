@@ -193,6 +193,18 @@ class AlarmReceiver : BroadcastReceiver() {
                     normalized.equals(context.getString(com.whiplash.presentation.R.string.sound_1), ignoreCase = true) ||
                     normalized.equals("알람 소리1", ignoreCase = true) -> com.whiplash.presentation.R.raw.sound1
 
+            normalized.equals("sound_2", ignoreCase = true) ||
+                    normalized.equals(context.getString(com.whiplash.presentation.R.string.sound_2), ignoreCase = true) ||
+                    normalized.equals("알람 소리2", ignoreCase = true) -> com.whiplash.presentation.R.raw.sound2
+
+            normalized.equals("sound_3", ignoreCase = true) ||
+                    normalized.equals(context.getString(com.whiplash.presentation.R.string.sound_3), ignoreCase = true) ||
+                    normalized.equals("알람 소리3", ignoreCase = true) -> com.whiplash.presentation.R.raw.sound3
+
+            normalized.equals("sound_4", ignoreCase = true) ||
+                    normalized.equals(context.getString(com.whiplash.presentation.R.string.sound_4), ignoreCase = true) ||
+                    normalized.equals("알람 소리4", ignoreCase = true) -> com.whiplash.presentation.R.raw.sound4
+
             else -> null
         }
     }

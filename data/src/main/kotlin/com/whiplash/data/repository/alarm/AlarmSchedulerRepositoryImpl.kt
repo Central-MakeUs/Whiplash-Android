@@ -121,7 +121,7 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
                 }
             }
 
-            // 시간 정보를 포함한 Intent 생성
+            // 시간 정보를 포함하는 인텐트 생성
             val intent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
                 component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
                 putExtra("alarmId", alarmId)
@@ -147,7 +147,7 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
                 pendingIntent
             )
 
-            Timber.d("## [AlarmScheduler] 반복 알람 설정 완료 - 요일: $day, 시간: ${calendar.time}")
+            Timber.d("## [AlarmScheduler] 반복 알람 설정 완료 - 요일 : $day, 시간 : ${calendar.time}")
         }
     }
 
