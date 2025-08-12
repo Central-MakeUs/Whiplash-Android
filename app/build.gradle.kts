@@ -25,8 +25,8 @@ android {
         applicationId = "com.whiplash.akuma"
         minSdk = 24
         targetSdk = 35
-        versionCode = 4
-        versionName = "0.0.4"
+        versionCode = 5
+        versionName = "0.0.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -109,4 +109,7 @@ dependencies {
 
     // 네이버 지도
     implementation(libs.naver.map.sdk)
+
+    // FCM
+    implementation(libs.firebase.messaging)
 }

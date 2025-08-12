@@ -44,6 +44,9 @@ numberPicker = "2.4.13"
 naverMapSdk = "3.22.0"
 playServicesLocation = "21.3.0"
 
+# FCM
+firebaseMessaging = "24.1.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -99,6 +102,9 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 
 # 알람 설정 화면에서 사용하는 NumberPicker 라이브러리
 number-picker = { module = "io.github.ShawnLin013:number-picker", version.ref = "numberPicker" }
+
+# FCM
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

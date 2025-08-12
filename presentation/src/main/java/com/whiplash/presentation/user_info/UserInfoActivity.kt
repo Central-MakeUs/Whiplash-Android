@@ -21,10 +21,12 @@ import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.whiplash.presentation.component.loading.WhiplashLoadingScreen
 import com.whiplash.presentation.dialog.LogoutPopup
 import com.whiplash.presentation.dialog.WithdrawalPopup
 import com.whiplash.presentation.login.KakaoLoginManager
 import com.whiplash.presentation.login.LoginActivity
+import com.whiplash.presentation.login.LoginViewModel
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import com.whiplash.presentation.util.WhiplashToast
 import kotlinx.coroutines.launch
@@ -35,8 +37,10 @@ import javax.inject.Inject
 class UserInfoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUserInfoBinding
+    private lateinit var loadingScreen: WhiplashLoadingScreen
 
     private val userInfoViewModel: UserInfoViewModel by viewModels()
+    private val loginViewModel: LoginViewModel by viewModels()
 
     @Inject
     lateinit var logoutPopup: LogoutPopup
@@ -55,8 +59,9 @@ class UserInfoActivity : AppCompatActivity() {
             insets
         }
 
-        observeUserInfoViewModel()
         setupUserInfoViews()
+        observeUserInfoViewModel()
+        observeLoginViewModel()
     }
 
     private fun observeUserInfoViewModel() {
@@ -76,7 +81,31 @@ class UserInfoActivity : AppCompatActivity() {
         }
     }
 
+    private fun observeLoginViewModel() {
+        lifecycleScope.launch {
+            loginViewModel.uiState.collect { state ->
+                val isLoading = state.isLoading
+                if (isLoading) {
+                    loadingScreen.show()
+                } else {
+                    loadingScreen.hide()
+                }
+
+                // 로그아웃 여부
+                val isLogoutSuccess = state.isLogoutSuccess
+                if (isLogoutSuccess) {
+                    WhiplashToast.showSuccessToast(this@UserInfoActivity, "성공적으로 로그아웃되었습니다")
+                    navigateTo<LoginActivity> {
+                        setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupUserInfoViews() {
+        loadingScreen = WhiplashLoadingScreen(this)
+
         with(binding) {
             whUserInfo.setTitle(getString(R.string.manage_user_info))
 
@@ -148,7 +177,7 @@ class UserInfoActivity : AppCompatActivity() {
                     Timber.d("## [회원정보] 로그아웃 클릭")
                     logoutPopup.show(
                         logoutClickListener = {
-                            //
+                            loginViewModel.signOut()
                         }
                     )
                 }

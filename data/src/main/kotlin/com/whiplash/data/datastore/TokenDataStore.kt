@@ -20,6 +20,7 @@ class TokenDataStore @Inject constructor(
         private val KEY_ACCESS_TOKEN = stringPreferencesKey("access_token")
         private val KEY_REFRESH_TOKEN = stringPreferencesKey("refresh_token")
         private val KEY_DEVICE_ID = stringPreferencesKey("device_id")
+        private val KEY_FCM_TOKEN = stringPreferencesKey("fcm_token")
     }
 
     val accessToken: Flow<String?> = context.dataStore.data
@@ -30,6 +31,9 @@ class TokenDataStore @Inject constructor(
 
     val deviceId: Flow<String?> = context.dataStore.data
         .map { it[KEY_DEVICE_ID] }
+        
+    val fcmToken: Flow<String?> = context.dataStore.data
+        .map { it[KEY_FCM_TOKEN] }
 
     suspend fun saveTokens(accessToken: String, refreshToken: String) {
         context.dataStore.edit { prefs ->
@@ -43,11 +47,18 @@ class TokenDataStore @Inject constructor(
             prefs[KEY_DEVICE_ID] = deviceId
         }
     }
+    
+    suspend fun saveFcmToken(fcmToken: String) {
+        context.dataStore.edit { prefs ->
+            prefs[KEY_FCM_TOKEN] = fcmToken
+        }
+    }
 
     suspend fun clearTokens() {
         context.dataStore.edit { prefs ->
             prefs.remove(KEY_ACCESS_TOKEN)
             prefs.remove(KEY_REFRESH_TOKEN)
+            prefs.remove(KEY_FCM_TOKEN)
         }
     }
 }

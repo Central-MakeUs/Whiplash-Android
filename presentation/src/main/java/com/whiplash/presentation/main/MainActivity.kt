@@ -22,6 +22,7 @@ import com.whiplash.presentation.databinding.ActivityMainBinding
 import com.whiplash.presentation.dialog.DisableAlarmPopup
 import com.whiplash.presentation.user_info.UserInfoActivity
 import com.whiplash.presentation.util.ActivityUtils.navigateTo
+import com.whiplash.presentation.util.PermissionUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -65,6 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         loadingScreen = WhiplashLoadingScreen(this)
 
+        requestNotificationPermission()
         setupExpandableView()
         setupRecyclerView()
         observeMainViewModel()
@@ -82,6 +84,54 @@ class MainActivity : AppCompatActivity() {
                 endDeleteMode()
             }
         }
+    }
+
+    /**
+     * 알림 권한 요청
+     */
+    private fun requestNotificationPermission() {
+        if (PermissionUtils.hasNotificationPermission(this)) {
+            Timber.d("## [권한] 알림 권한이 이미 허용됨")
+            return
+        }
+
+        performNotificationPermissionRequest()
+    }
+
+    /**
+     * 실제 알림 권한 요청 수행
+     */
+    private fun performNotificationPermissionRequest() {
+        val requested = PermissionUtils.requestNotificationPermission(this)
+        if (requested) {
+            Timber.d("## [권한] 알림 권한 요청함")
+        } else {
+            Timber.d("## [권한] 알림 권한 요청 불필요 (Android 13 미만)")
+        }
+    }
+
+    /**
+     * 권한 요청 결과 처리
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantedResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantedResults)
+        
+        // 알림 권한 결과 처리
+        PermissionUtils.handleNotificationPermissionResult(
+            requestCode = requestCode,
+            permissions = permissions,
+            grantedResults = grantedResults,
+            onPermissionGranted = {
+                Timber.d("## [권한] 알림 권한 허용됨")
+            },
+            onPermissionDenied = {
+                Timber.d("## [권한] 알림 권한 거부됨")
+            }
+        )
     }
 
     private fun setupRecyclerView() {

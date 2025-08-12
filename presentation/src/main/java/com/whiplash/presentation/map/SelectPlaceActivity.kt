@@ -52,6 +52,13 @@ import timber.log.Timber
 @AndroidEntryPoint
 class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    companion object {
+        /**
+         * @see onRequestPermissionsResult
+         */
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+    }
+
     private lateinit var binding: ActivitySelectPlaceBinding
     private lateinit var loadingScreen: WhiplashLoadingScreen
 
@@ -64,13 +71,6 @@ class SelectPlaceActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationSource: FusedLocationSource
 
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
-
-    companion object {
-        /**
-         * @see onRequestPermissionsResult
-         */
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-    }
 
     // 마커를 표시할 위경도
     private var latitude: Double = 0.0

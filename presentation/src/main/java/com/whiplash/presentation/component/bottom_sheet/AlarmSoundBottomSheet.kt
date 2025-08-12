@@ -17,7 +17,7 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
     private val binding
         get() = _binding!!
 
-    private var onAlarmSoundSelectedListener: ((String, Int) -> Unit)? = null
+    private var onAlarmSoundSelectedListener: ((String, Int, String) -> Unit)? = null
     private var selectedRadioButtonId: Int = -1
 
     private var soundPool: SoundPool? = null
@@ -28,7 +28,7 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
         private const val KEY_SELECTED_ID = "selected_radio_button_id"
 
         fun newInstance(
-            onAlarmSoundSelected: (String, Int) -> Unit,
+            onAlarmSoundSelected: (String, Int, String) -> Unit,
             selectedRadioButtonId: Int = -1
         ): AlarmSoundBottomSheet {
             return AlarmSoundBottomSheet().apply {
@@ -144,17 +144,29 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
         with(binding) {
             btnPreListening.setOnClickListener {
                 val checkedId = rgAlarmSound.checkedRadioButtonId
-                val selectedText = when (checkedId) {
+                
+                // UI에 표시할 텍스트
+                val displayText = when (checkedId) {
                     R.id.rbNothing -> getString(R.string.not_sound)
                     R.id.rbOption1 -> getString(R.string.sound_1)
                     R.id.rbOption2 -> getString(R.string.sound_2)
                     R.id.rbOption3 -> getString(R.string.sound_3)
                     R.id.rbOption4 -> getString(R.string.sound_4)
-                    else -> getString(R.string.sound_1) // 기본값
+                    else -> getString(R.string.sound_1)
+                }
+                
+                // 알람 등록 api로 넘길 값
+                val apiText = when (checkedId) {
+                    R.id.rbNothing -> "소리없음"
+                    R.id.rbOption1 -> "알람 소리1"
+                    R.id.rbOption2 -> "알람 소리2"
+                    R.id.rbOption3 -> "알람 소리3"
+                    R.id.rbOption4 -> "알람 소리4"
+                    else -> "알람 소리1"
                 }
 
                 selectedRadioButtonId = checkedId
-                onAlarmSoundSelectedListener?.invoke(selectedText, checkedId)
+                onAlarmSoundSelectedListener?.invoke(displayText, checkedId, apiText)
                 dismiss()
             }
 
