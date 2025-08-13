@@ -4,6 +4,7 @@ import android.view.PixelCopy.Request
 import com.whiplash.domain.entity.alarm.request.AddAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.request.DeleteAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.request.TurnOffAlarmRequestEntity
+import com.whiplash.domain.entity.alarm.response.AddAlarmEntity
 import com.whiplash.domain.entity.alarm.response.CheckInAlarmEntity
 import com.whiplash.domain.entity.alarm.response.CreateAlarmOccurrenceEntity
 import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
@@ -13,6 +14,7 @@ import com.whiplash.network.dto.response.CreateAlarmOccurrenceResult
 import com.whiplash.network.dto.request.RequestAddAlarms
 import com.whiplash.network.dto.request.RequestDeleteAlarm
 import com.whiplash.network.dto.request.RequestTurnOffAlarm
+import com.whiplash.network.dto.response.AddAlarmResult
 import com.whiplash.network.dto.response.CheckInAlarmResult
 import com.whiplash.network.dto.response.ResponseTurnOffAlarm
 import com.whiplash.network.dto.response.TurnOffAlarmResult
@@ -47,6 +49,12 @@ class AlarmMapper @Inject constructor() {
                 soundType = soundType
             )
         }
+    }
+
+    fun toAddAlarmEntity(result: AddAlarmResult): AddAlarmEntity {
+        return AddAlarmEntity(
+            alarmId = result.alarmId
+        )
     }
 
     fun toCreateOccurrenceEntity(result: CreateAlarmOccurrenceResult): CreateAlarmOccurrenceEntity {

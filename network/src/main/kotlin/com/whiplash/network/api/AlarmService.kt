@@ -4,6 +4,7 @@ import com.whiplash.network.dto.request.RequestAddAlarms
 import com.whiplash.network.dto.request.RequestDeleteAlarm
 import com.whiplash.network.dto.request.RequestTurnOffAlarm
 import com.whiplash.network.dto.response.BaseResponse
+import com.whiplash.network.dto.response.ResponseAddAlarm
 import com.whiplash.network.dto.response.ResponseCheckInAlarm
 import com.whiplash.network.dto.response.ResponseCreateAlarmOccurrence
 import com.whiplash.network.dto.response.ResponseDeleteAlarm
@@ -31,7 +32,7 @@ interface AlarmService {
     @POST("alarms")
     suspend fun addAlarm(
         @Body requestAddAlarms: RequestAddAlarms
-    ): Response<BaseResponse<Unit>>
+    ): Response<ResponseAddAlarm>
 
     /**
      * 알람 발생 내역 생성

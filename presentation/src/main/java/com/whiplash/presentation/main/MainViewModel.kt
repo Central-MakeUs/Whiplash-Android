@@ -41,6 +41,9 @@ class MainViewModel @Inject constructor(
         // 알람 생성 성공 여부
         val isAlarmCreated: Boolean = false,
 
+        // 알람 생성 api로 생성된 알람 id
+        val createdAlarmId: Long? = null,
+
         // 알람 목록 조회 api 결과
         val alarmList: List<GetAlarmEntity> = emptyList(),
 
@@ -137,12 +140,13 @@ class MainViewModel @Inject constructor(
 
         try {
             addAlarmUseCase(request).collect { result ->
-                result.onSuccess {
-                    Timber.d("## [알람 등록] 성공")
+                result.onSuccess { response ->
+                    Timber.d("## [알람 등록] 성공, 생성된 ID: ${response.alarmId}")
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             isAlarmCreated = true,
+                            createdAlarmId = response.alarmId,
                             errorMessage = null
                         )
                     }
@@ -155,6 +159,7 @@ class MainViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             isAlarmCreated = false,
+                            createdAlarmId = null,
                             errorMessage = e.message
                         )
                     }
@@ -168,6 +173,7 @@ class MainViewModel @Inject constructor(
                 it.copy(
                     isLoading = false,
                     isAlarmCreated = false,
+                    createdAlarmId = null,
                     errorMessage = e.message
                 )
             }
