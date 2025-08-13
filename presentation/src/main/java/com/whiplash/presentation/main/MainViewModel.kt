@@ -8,6 +8,7 @@ import com.whiplash.domain.entity.alarm.request.TurnOffAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.response.CreateAlarmOccurrenceEntity
 import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.domain.provider.CrashlyticsProvider
+import com.whiplash.domain.repository.alarm.AlarmSchedulerRepository
 import com.whiplash.domain.usecase.alarm.AddAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CheckInAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
@@ -31,6 +32,7 @@ class MainViewModel @Inject constructor(
     private val turnOffAlarmUseCase: TurnOffAlarmUseCase,
     private val createAlarmOccurrenceUseCase: CreateAlarmOccurrenceUseCase,
     private val checkInAlarmUseCase: CheckInAlarmUseCase,
+    private val alarmScheduler: AlarmSchedulerRepository,
     private val crashlyticsProvider: CrashlyticsProvider,
 ) : ViewModel() {
 
@@ -233,6 +235,10 @@ class MainViewModel @Inject constructor(
             deleteAlarmUseCase.invoke(alarmId, deleteAlarmRequestEntity)
                 .collect { result ->
                     result.onSuccess { response ->
+                        // 서버 삭제 성공 시 AlarmManager에 저장된 알람도 삭제
+                        Timber.d("## [알람 삭제] AlarmManager에서 알람 삭제. id : $alarmId")
+                        alarmScheduler.cancelAlarm(alarmId.toInt())
+
                         Timber.d("## [알람 삭제] 성공 : $response")
                         _uiState.update {
                             it.copy(

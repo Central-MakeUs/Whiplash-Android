@@ -43,17 +43,40 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
     }
 
     override fun cancelAlarm(alarmId: Int) {
-        val pendingIntent = createPendingIntent(
-            alarmId = alarmId,
-            purpose = "",
-            address = "",
-            soundType = "",
-            hour = 0,
-            minute = 0,
-            latitude = 0.0,
-            longitude = 0.0
+        // 반복 알람은 모든 요일에 대해 울리지 않게 취소
+        val dayOfWeekList = listOf(1, 2, 3, 4, 5, 6, 7) // 월~일
+
+        dayOfWeekList.forEach { dayOfWeek ->
+            val requestCode = alarmId * 10 + dayOfWeek
+            val intent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
+                component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
+            }
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            alarmManager.cancel(pendingIntent)
+
+            Timber.d("## [AlarmScheduler] 반복 알람 취소 - ID : $alarmId, 요일 : $dayOfWeek, requestCode : $requestCode")
+        }
+
+        // 단발성 알람 취소
+        val singleIntent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
+            component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
+        }
+
+        val singlePendingIntent = PendingIntent.getBroadcast(
+            context,
+            alarmId,
+            singleIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        alarmManager.cancel(pendingIntent)
+        alarmManager.cancel(singlePendingIntent)
+
+        Timber.d("## [AlarmScheduler] 단발성 알람 취소 - ID : $alarmId")
     }
 
     private fun scheduleOneTimeAlarm(
