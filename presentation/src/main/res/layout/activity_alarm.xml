@@ -132,6 +132,48 @@
             app:layout_constraintStart_toEndOf="@+id/btnCancelLocalAlarm"
             app:layout_constraintTop_toTopOf="@+id/btnCancelLocalAlarm" />
 
+        <LinearLayout
+            android:id="@+id/checkInBottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@drawable/bg_bottom_sheet_16_radius"
+            android:elevation="2dp"
+            android:gravity="center|top"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:visibility="gone"
+            app:behavior_hideable="false"
+            app:layout_behavior="@string/bottom_sheet_behavior"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:src="@drawable/ic_loading_44" />
+
+            <TextView
+                style="@style/subtitle3_b_18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/check_in_bottom_sheet_title"
+                android:textColor="@color/white" />
+
+            <TextView
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/check_in_bottom_sheet_sub_title"
+                android:textColor="@color/grey_500" />
+
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

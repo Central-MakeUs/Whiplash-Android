@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PointF
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -20,6 +21,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
@@ -32,9 +34,8 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityAlarmBinding
 import com.whiplash.presentation.main.MainViewModel
-import com.whiplash.presentation.map.SelectPlaceActivity
-import com.whiplash.presentation.map.SelectPlaceActivity.Companion
 import com.whiplash.presentation.search_place.SearchPlaceViewModel
+import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import com.whiplash.presentation.util.PermissionUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
@@ -57,6 +58,7 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private lateinit var binding: ActivityAlarmBinding
+
     private val mainViewModel: MainViewModel by viewModels()
     private val searchPlaceViewModel: SearchPlaceViewModel by viewModels()
 
@@ -72,11 +74,15 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var hour: Int = 0
     private var minute: Int = 0
+    private var alarmId: Long = 0
 
     // 화면 중앙에 고정된 마커, 원형 오버레이
     private var centerMarker: Marker? = null
     private var centerCircleOverlay: CircleOverlay? = null
     private var locationUpdateJob: Job? = null
+
+    // 알람 끄기 위치 확인 로딩 바텀시트
+    private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,8 +96,9 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         setupUserLocationSource()
+        setupBottomSheet()
 
-        val alarmId = intent.getIntExtra("alarmId", -1)
+        alarmId = intent.getLongExtra("alarmId", -1)
         val alarmPurpose = intent.getStringExtra("alarmPurpose") ?: ""
         val address = intent.getStringExtra("address") ?: ""
         latitude = intent.getDoubleExtra("latitude", 0.0)
@@ -102,9 +109,42 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
         Timber.e("## [알람 울림] 위도 : $latitude, 경도 : $longitude, 시간 : $hour, 분 : $minute")
 
         searchPlaceViewModel.getPlaceDetail(latitude, longitude)
+        observeMainViewModel()
         observeSearchPlaceVieWModel()
         setupNaverMap()
         setupView()
+    }
+
+    private fun setupBottomSheet() {
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.checkInBottomSheet)
+        bottomSheetBehavior?.apply {
+            isDraggable = false
+            isHideable = false
+            state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+    }
+
+    private fun observeMainViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    mainViewModel.uiState.collect { state ->
+                        // 로딩 시 바텀 시트 표시
+                        if (state.isLoading) {
+                            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+                        } else {
+                            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                        }
+
+                        // 알람 도착 인증 결과
+                        val isAlarmCheckedIn = state.isAlarmCheckedIn
+                        if (isAlarmCheckedIn) {
+                            // 도착 인증에 성공했어요 화면 이동
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun observeSearchPlaceVieWModel() {
@@ -147,6 +187,7 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
             btnCheckIn.setOnClickListener {
                 // 장소 인증 api 호출. 호출 성공 시 알람 끄고 도착 인증 화면으로 이동
+                mainViewModel.checkInAlarm(alarmId)
             }
 
             root.setOnClickListener {
