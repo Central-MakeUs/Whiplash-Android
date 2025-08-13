@@ -30,6 +30,8 @@ class AlarmCheckInSuccessActivity : AppCompatActivity() {
             insets
         }
 
+        binding.whCheckInSuccess.setTitle(getString(R.string.success_check_in_header))
+
         val address = intent.getStringExtra("address")
         binding.tvCheckInSuccessAddress.text = address
 

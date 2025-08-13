@@ -131,5 +131,6 @@
     <string name="check_in_bottom_sheet_sub_title">잠시만 기다려 주세요</string>
     
     <!-- 도착 인증 성공 화면 -->
-    <string name="success_checkin_title">도착 인증에 성공했어요!</string>
+    <string name="success_check_in_header">도착 인증</string>
+    <string name="success_check_in_title">도착 인증에 성공했어요!</string>
 </resources>

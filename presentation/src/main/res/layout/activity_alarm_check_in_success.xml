@@ -9,7 +9,7 @@
     tools:context=".alarm.AlarmCheckInSuccessActivity">
 
     <com.whiplash.presentation.component.header.WhiplashHeader
-        android:id="@+id/whSelectPlace"
+        android:id="@+id/whCheckInSuccess"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="56dp"
@@ -28,7 +28,7 @@
         style="@style/title5_b_22"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/success_checkin_title"
+        android:text="@string/success_check_in_title"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
