@@ -86,7 +86,7 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
     }
 
     private fun scheduleRepeatingAlarms(
-        baseAlarmId: Int, 
+        alarmId: Int,
         hour: Int,
         minute: Int,
         repeatDays: List<String>,
@@ -108,12 +108,13 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
 
         repeatDays.forEach { day ->
             val dayOfWeek = dayMap[day] ?: return@forEach
-            val requestCode = baseAlarmId * 10 + dayOfWeek
-            
+            // PendingIntent의 requestCode는 Int 사용
+            val requestCode = alarmId * 10 + dayOfWeek
+
             val intent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
                 component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
-                putExtra("alarmId", baseAlarmId) 
-                putExtra("dayOfWeek", dayOfWeek) 
+                putExtra("alarmId", alarmId)
+                putExtra("dayOfWeek", dayOfWeek)
                 putExtra("alarmPurpose", purpose)
                 putExtra("address", address)
                 putExtra("latitude", latitude)
@@ -125,7 +126,7 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
 
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
-                requestCode, 
+                requestCode,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
