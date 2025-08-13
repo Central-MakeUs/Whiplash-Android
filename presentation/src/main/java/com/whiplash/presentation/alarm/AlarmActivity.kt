@@ -75,6 +75,7 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
     private var hour: Int = 0
     private var minute: Int = 0
     private var alarmId: Long = 0
+    private var address: String = ""
 
     // 화면 중앙에 고정된 마커, 원형 오버레이
     private var centerMarker: Marker? = null
@@ -100,7 +101,7 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
         alarmId = intent.getLongExtra("alarmId", -1)
         val alarmPurpose = intent.getStringExtra("alarmPurpose") ?: ""
-        val address = intent.getStringExtra("address") ?: ""
+        address = intent.getStringExtra("address") ?: ""
         latitude = intent.getDoubleExtra("latitude", 0.0)
         longitude = intent.getDoubleExtra("longitude", 0.0)
         hour = intent.getIntExtra("hour", 0)
@@ -140,6 +141,10 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
                         val isAlarmCheckedIn = state.isAlarmCheckedIn
                         if (isAlarmCheckedIn) {
                             // 도착 인증에 성공했어요 화면 이동
+                            navigateTo<AlarmCheckInSuccessActivity> {
+                                putExtra("address", address)
+                                finishCurrentActivity()
+                            }
                         }
                     }
                 }

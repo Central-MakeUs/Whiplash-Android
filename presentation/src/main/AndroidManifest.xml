@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Akuma"
         tools:targetApi="31">
         <activity
+            android:name=".alarm.AlarmCheckInSuccessActivity"
+            android:exported="false" />
+        <activity
             android:name=".alarm.AlarmActivity"
             android:exported="false" />
         <activity
