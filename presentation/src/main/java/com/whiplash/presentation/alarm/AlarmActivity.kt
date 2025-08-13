@@ -99,7 +99,7 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
         setupUserLocationSource()
         setupBottomSheet()
 
-        alarmId = intent.getLongExtra("alarmId", -1)
+        alarmId = intent.getIntExtra("alarmId", -1).toLong()
         val alarmPurpose = intent.getStringExtra("alarmPurpose") ?: ""
         address = intent.getStringExtra("address") ?: ""
         latitude = intent.getDoubleExtra("latitude", 0.0)
@@ -120,9 +120,12 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
         bottomSheetBehavior = BottomSheetBehavior.from(binding.checkInBottomSheet)
         bottomSheetBehavior?.apply {
             isDraggable = false
-            isHideable = false
-            state = BottomSheetBehavior.STATE_COLLAPSED
+            isHideable = true
+            state = BottomSheetBehavior.STATE_HIDDEN
         }
+
+        // 처음에는 바텀시트 숨김
+        binding.checkInBottomSheet.visibility = View.GONE
     }
 
     private fun observeMainViewModel() {
@@ -132,15 +135,19 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
                     mainViewModel.uiState.collect { state ->
                         // 로딩 시 바텀 시트 표시
                         if (state.isLoading) {
+                            binding.checkInBottomSheet.visibility = View.VISIBLE
                             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
                         } else {
-                            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
+                            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                            binding.checkInBottomSheet.visibility = View.GONE
                         }
 
                         // 알람 도착 인증 결과
                         val isAlarmCheckedIn = state.isAlarmCheckedIn
                         if (isAlarmCheckedIn) {
-                            // 도착 인증에 성공했어요 화면 이동
+                            // 바텀시트 숨기고 도착 인증 성공 화면으로 이동
+                            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                            binding.checkInBottomSheet.visibility = View.GONE
                             navigateTo<AlarmCheckInSuccessActivity> {
                                 putExtra("address", address)
                                 finishCurrentActivity()

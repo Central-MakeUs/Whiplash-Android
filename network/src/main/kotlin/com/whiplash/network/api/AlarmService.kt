@@ -68,7 +68,7 @@ interface AlarmService {
      *
      * 도착 위치 반경 100m 이내에 들어와야 도착 인증 가능
      */
-    @POST("alarms./{alarmId}/checkIn")
+    @POST("alarms/{alarmId}/checkIn")
     suspend fun checkInAlarm(
         @Path("alarmId") alarmId: Long
     ): Response<ResponseCheckInAlarm>
