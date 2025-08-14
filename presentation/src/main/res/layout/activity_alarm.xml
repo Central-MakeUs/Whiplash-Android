@@ -144,6 +144,7 @@
             android:orientation="vertical"
             android:paddingHorizontal="16dp"
             android:paddingVertical="12dp"
+            android:visibility="gone"
             app:behavior_hideable="false"
             app:layout_behavior="@string/bottom_sheet_behavior">
 
@@ -168,6 +169,100 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/check_in_bottom_sheet_sub_title"
                 android:textColor="@color/grey_500" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/disableAlarmBottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@drawable/bg_bottom_sheet_16_radius"
+            android:elevation="2dp"
+            android:gravity="center|top"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            app:behavior_hideable="false"
+            app:layout_behavior="@string/bottom_sheet_behavior">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:src="@drawable/ic_notice_44" />
+
+            <TextView
+                style="@style/subtitle5_b_16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/check_in_alarm_disable_title"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:id="@+id/llRemainDisableAlarmCountContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                android:background="@drawable/bg_bordered_container_4_radius"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/dp_10"
+                android:paddingVertical="@dimen/dp_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDisableAlarmSubContent">
+
+                <TextView
+                    style="@style/body2_m_14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/check_in_alarm_disable_sub_title"
+                    android:textColor="@color/grey_300" />
+
+                <TextView
+                    android:id="@+id/tvRemainDisableAlarmCount"
+                    style="@style/body2_m_14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:textColor="@color/lemon_400"
+                    tools:text="2회" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="24dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/llRemainDisableAlarmCount">
+
+                <com.whiplash.presentation.component.button.WhiplashCommonButton
+                    android:id="@+id/btnCancelDisable"
+                    style="@style/subtitle5_b_16"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:layout_weight="1"
+                    app:buttonBackgroundColor="@color/grey_800"
+                    app:buttonText="@string/cancel_string"
+                    app:buttonTextColor="@color/white" />
+
+                <com.whiplash.presentation.component.button.WhiplashCommonButton
+                    android:id="@+id/btnAlarmDisable"
+                    style="@style/subtitle5_b_16"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_weight="1"
+                    app:buttonBackgroundColor="@color/white"
+                    app:buttonText="@string/use_one_disable_change"
+                    app:buttonTextColor="@color/grey_900" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

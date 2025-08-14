@@ -84,6 +84,7 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // 알람 끄기 위치 확인 로딩 바텀시트
     private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
+    private var disableAlarmBehavior: BottomSheetBehavior<View>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +99,7 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
         setupUserLocationSource()
         setupBottomSheet()
+        setupDisableAlarmBottomSheet()
 
         alarmId = intent.getIntExtra("alarmId", -1).toLong()
         val alarmPurpose = intent.getStringExtra("alarmPurpose") ?: ""
@@ -126,6 +128,17 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 처음에는 바텀시트 숨김
         binding.checkInBottomSheet.visibility = View.GONE
+    }
+
+    private fun setupDisableAlarmBottomSheet() {
+        disableAlarmBehavior = BottomSheetBehavior.from(binding.disableAlarmBottomSheet)
+        disableAlarmBehavior?.apply {
+            isDraggable = false
+            isHideable = true
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.disableAlarmBottomSheet.visibility = View.GONE
     }
 
     private fun observeMainViewModel() {
@@ -195,11 +208,24 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
             btnCancelLocalAlarm.setOnClickListener {
                 // 봐주세요 클릭 시 바텀 시트 표시
+                binding.checkInBottomSheet.visibility = View.GONE
+                binding.disableAlarmBottomSheet.visibility = View.VISIBLE
+                disableAlarmBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
             }
 
             btnCheckIn.setOnClickListener {
                 // 장소 인증 api 호출. 호출 성공 시 알람 끄고 도착 인증 화면으로 이동
                 mainViewModel.checkInAlarm(alarmId)
+            }
+
+            btnCancelDisable.setOnClickListener {
+                // 비활성화 바텀시트 > 취소
+                Timber.d("## [비활성화] 취소 클릭")
+            }
+
+            btnAlarmDisable.setOnClickListener {
+                // 1회 사용하기
+                Timber.d("## [비활성화] 1회 사용하기 클릭")
             }
 
             root.setOnClickListener {

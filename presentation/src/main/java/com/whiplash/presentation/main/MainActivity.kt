@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import androidx.core.view.isVisible
+import com.whiplash.presentation.alarm.AlarmActivity
 import com.whiplash.presentation.component.bottom_sheet.RemoveAlarmBottomSheet
 import com.whiplash.presentation.util.WhiplashToast
 
@@ -72,6 +73,10 @@ class MainActivity : AppCompatActivity() {
         observeMainViewModel()
 
         with(binding) {
+            tvHomeAlarmList.setOnClickListener {
+                navigateTo<AlarmActivity> {}
+            }
+
             ivAddAlarm.setOnClickListener {
                 navigateTo<CreateAlarmActivity>{}
             }
