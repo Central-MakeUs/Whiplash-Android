@@ -11,6 +11,7 @@ import com.whiplash.domain.entity.alarm.response.AddAlarmEntity
 import com.whiplash.domain.entity.alarm.response.CheckInAlarmEntity
 import com.whiplash.domain.entity.alarm.response.CreateAlarmOccurrenceEntity
 import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
+import com.whiplash.domain.entity.alarm.response.GetRemainingDisableCountEntity
 import com.whiplash.domain.entity.alarm.response.TurnOffAlarmResponseEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -25,6 +26,15 @@ class AlarmRepositoryImpl @Inject constructor(
             apiCall = { alarmService.getAlarms() },
             transform = { response ->
                 response.result?.map { alarmMapper.toEntity(it) } ?: emptyList()
+            }
+        )
+
+    override suspend fun getRemainingDisableCount(): Flow<Result<GetRemainingDisableCountEntity>> =
+        safeApiCallWithTransform(
+            apiCall = { alarmService.getRemainingDisableCount() },
+            transform = { response ->
+                response.result?.let { alarmMapper.toGetRemainingDisableCountEntity(it) }
+                    ?: throw Exception("남은 알람 끄기 횟수 조회 api 응답이 null")
             }
         )
 

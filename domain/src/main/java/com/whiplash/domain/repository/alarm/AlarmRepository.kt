@@ -7,11 +7,13 @@ import com.whiplash.domain.entity.alarm.response.AddAlarmEntity
 import com.whiplash.domain.entity.alarm.response.CheckInAlarmEntity
 import com.whiplash.domain.entity.alarm.response.CreateAlarmOccurrenceEntity
 import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
+import com.whiplash.domain.entity.alarm.response.GetRemainingDisableCountEntity
 import com.whiplash.domain.entity.alarm.response.TurnOffAlarmResponseEntity
 import kotlinx.coroutines.flow.Flow
 
 interface AlarmRepository {
     suspend fun getAlarmList(): Flow<Result<List<GetAlarmEntity>>>
+    suspend fun getRemainingDisableCount(): Flow<Result<GetRemainingDisableCountEntity>>
     suspend fun addAlarm(request: AddAlarmRequestEntity): Flow<Result<AddAlarmEntity>>
     suspend fun createAlarmOccurrence(alarmId: Long): Flow<Result<CreateAlarmOccurrenceEntity>>
     suspend fun deleteAlarm(alarmId: Long, deleteAlarmRequestEntity: DeleteAlarmRequestEntity): Flow<Result<Unit>>

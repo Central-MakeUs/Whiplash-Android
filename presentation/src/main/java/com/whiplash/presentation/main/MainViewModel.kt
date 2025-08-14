@@ -14,6 +14,7 @@ import com.whiplash.domain.usecase.alarm.CheckInAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
 import com.whiplash.domain.usecase.alarm.DeleteAlarmUseCase
 import com.whiplash.domain.usecase.alarm.GetAlarmsUseCase
+import com.whiplash.domain.usecase.alarm.GetRemainingDisableCountUseCase
 import com.whiplash.domain.usecase.alarm.TurnOffAlarmUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getAlarmsUseCase: GetAlarmsUseCase,
+    private val getRemainingDisableCountUseCase: GetRemainingDisableCountUseCase,
     private val addAlarmUseCase: AddAlarmUseCase,
     private val deleteAlarmUseCase: DeleteAlarmUseCase,
     private val turnOffAlarmUseCase: TurnOffAlarmUseCase,
@@ -48,6 +50,9 @@ class MainViewModel @Inject constructor(
 
         // 알람 목록 조회 api 결과
         val alarmList: List<GetAlarmEntity> = emptyList(),
+
+        // 남은 알람 끄기 횟수 조회 결과
+        val remainCount: Int? = null,
 
         // 알람 발생 내역 생성 결과
         val createdOccurrence: CreateAlarmOccurrenceEntity? = null,
@@ -127,6 +132,46 @@ class MainViewModel @Inject constructor(
             crashlyticsProvider.recordError(e)
             crashlyticsProvider.logError("알림 목록 조회 api 실패 : ${e.message}")
             Timber.e("## [알람 목록 조회] 에러 : $e")
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    errorMessage = e.message
+                )
+            }
+        }
+    }
+
+    // 남은 알람 끄기 횟수 조회
+    fun getRemainingDisableCount() = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = true) }
+
+        try {
+            getRemainingDisableCountUseCase.invoke().collect { result ->
+                result.onSuccess { response ->
+                    Timber.d("## [남은 알람 끄기 횟수 조회] 성공 : ${response.remainingOffCount}")
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            remainCount = response.remainingOffCount,
+                            errorMessage = null
+                        )
+                    }
+                }.onFailure { e ->
+                    crashlyticsProvider.recordError(e)
+                    crashlyticsProvider.logError("남은 알람 끄기 횟수 조회 api 실패 : ${e.message}")
+                    Timber.e("## [남은 알람 끄기 횟수 조회] 실패 : $e")
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = e.message
+                        )
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            crashlyticsProvider.recordError(e)
+            crashlyticsProvider.logError("남은 알람 끄기 횟수 조회 api 실패 : ${e.message}")
+            Timber.e("## [남은 알람 끄기 횟수 조회] 에러 : $e")
             _uiState.update {
                 it.copy(
                     isLoading = false,

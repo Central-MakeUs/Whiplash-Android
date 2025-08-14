@@ -9,6 +9,7 @@ import com.whiplash.network.dto.response.ResponseCheckInAlarm
 import com.whiplash.network.dto.response.ResponseCreateAlarmOccurrence
 import com.whiplash.network.dto.response.ResponseDeleteAlarm
 import com.whiplash.network.dto.response.ResponseGetAlarmList
+import com.whiplash.network.dto.response.ResponseGetRemainingDisableCount
 import com.whiplash.network.dto.response.ResponseTurnOffAlarm
 import retrofit2.Response
 import retrofit2.http.Body
@@ -25,6 +26,12 @@ interface AlarmService {
      */
     @GET("alarms")
     suspend fun getAlarms(): Response<ResponseGetAlarmList>
+
+    /**
+     * 남은 알람 끄기 횟수 조회
+     */
+    @GET("alarms/off-count")
+    suspend fun getRemainingDisableCount(): Response<ResponseGetRemainingDisableCount>
 
     /**
      * 알람 등록
