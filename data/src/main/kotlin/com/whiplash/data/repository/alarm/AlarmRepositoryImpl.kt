@@ -86,13 +86,10 @@ class AlarmRepositoryImpl @Inject constructor(
     override suspend fun checkInAlarm(
         alarmId: Long,
         checkInAlarmRequestEntity: CheckInAlarmRequestEntity
-    ): Flow<Result<CheckInAlarmEntity>> =
+    ): Flow<Result<Unit>> =
         safeApiCallWithTransform(
             apiCall = { alarmService.checkInAlarm(alarmId, alarmMapper.toNetworkRequest(checkInAlarmRequestEntity)) },
-            transform = { response ->
-                response.result?.let { alarmMapper.toCheckInAlarmEntity(it) }
-                    ?: throw Exception("알람 도착 인증 api 응답이 null")
-            }
+            transform = { Unit }
         )
 
 }

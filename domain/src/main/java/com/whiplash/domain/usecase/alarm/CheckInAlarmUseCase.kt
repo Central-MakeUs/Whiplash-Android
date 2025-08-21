@@ -11,5 +11,5 @@ class CheckInAlarmUseCase(
     suspend operator fun invoke(
         alarmId: Long,
         request: CheckInAlarmRequestEntity
-    ): Flow<Result<CheckInAlarmEntity>> = repository.checkInAlarm(alarmId, request)
+    ): Flow<Result<Unit>> = repository.checkInAlarm(alarmId, request)
 }

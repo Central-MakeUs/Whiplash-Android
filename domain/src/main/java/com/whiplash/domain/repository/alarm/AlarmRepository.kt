@@ -19,5 +19,5 @@ interface AlarmRepository {
     suspend fun createAlarmOccurrence(alarmId: Long): Flow<Result<CreateAlarmOccurrenceEntity>>
     suspend fun deleteAlarm(alarmId: Long, deleteAlarmRequestEntity: DeleteAlarmRequestEntity): Flow<Result<Unit>>
     suspend fun turnOffAlarm(alarmId: Long, turnOffAlarmRequestEntity: TurnOffAlarmRequestEntity): Flow<Result<TurnOffAlarmResponseEntity>>
-    suspend fun checkInAlarm(alarmId: Long, request: CheckInAlarmRequestEntity): Flow<Result<CheckInAlarmEntity>>
+    suspend fun checkInAlarm(alarmId: Long, request: CheckInAlarmRequestEntity): Flow<Result<Unit>>
 }

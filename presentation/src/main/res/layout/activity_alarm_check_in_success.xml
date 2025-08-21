@@ -35,28 +35,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/ivCheckInSuccess"
+    <LinearLayout
+        android:id="@+id/llAddressContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:src="@drawable/ic_map_pin_fill_gray300_22"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCheckInSuccessTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvCheckInSuccessTitle">
 
-    <TextView
-        android:id="@+id/tvCheckInSuccessAddress"
-        style="@style/body1_m_16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:includeFontPadding="false"
-        android:textColor="@color/grey_300"
-        app:layout_constraintBottom_toBottomOf="@+id/ivCheckInSuccess"
-        app:layout_constraintStart_toEndOf="@+id/ivCheckInSuccess"
-        app:layout_constraintTop_toTopOf="@+id/ivCheckInSuccess"
-        tools:text="위치명" />
+        <ImageView
+            android:id="@+id/ivCheckInSuccess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_map_pin_fill_gray300_22" />
+
+        <TextView
+            android:id="@+id/tvCheckInSuccessAddress"
+            style="@style/body1_m_16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:includeFontPadding="false"
+            android:textColor="@color/grey_300"
+            tools:text="위치명" />
+
+    </LinearLayout>
 
     <com.whiplash.presentation.component.button.WhiplashCommonButton
         android:id="@+id/btnRegisterAddress"

@@ -81,6 +81,6 @@ interface AlarmService {
     suspend fun checkInAlarm(
         @Path("alarmId") alarmId: Long,
         @Body requestCheckInAlarm: RequestCheckInAlarm,
-    ): Response<ResponseCheckInAlarm>
+    ): Response<Unit>
 
 }

@@ -7,15 +7,20 @@ import android.content.Intent
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.os.Build
+import timber.log.Timber
 
 class StopAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        Timber.d("## [StopAlarmReceiver] onReceive 호출됨 - action: ${intent.action}")
+
         if (intent.action == "com.whiplash.akuma.STOP_ALARM") {
             val alarmId = intent.getIntExtra("alarmId", -1)
             AlarmReceiver.stopAlarmSound()
             stopVibration(context)
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.cancel(alarmId)
+
+            Timber.d("## [StopAlarmReceiver] 알람 정지 완료. alarmId: $alarmId")
         }
     }
 
