@@ -28,18 +28,16 @@ class App: Application() {
     }
 
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "default_channel_id",
-                "기본 알림",
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).apply {
-                description = "Default Alarm Channel"
-            }
-
-            val notificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            "default_channel_id",
+            "기본 알림",
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = "Default Alarm Channel"
         }
+
+        val notificationManager = getSystemService(NotificationManager::class.java)
+        notificationManager.createNotificationChannel(channel)
     }
 
 }
