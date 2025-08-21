@@ -15,6 +15,7 @@ import androidx.activity.viewModels
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
@@ -161,6 +162,10 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
                             binding.checkInBottomSheet.visibility = View.GONE
                         }
 
+                        // 남은 알람 끄기 횟수
+                        // 1 이상 -> 봐주세요 클릭 시 바텀시트에 1회 사용하기 버튼 표시
+                        // 0 -> 봐주세요 클릭 시 장소 인증하기 버튼만 표시
+
                         // 알람 도착 인증 결과
                         val isAlarmCheckedIn = state.isAlarmCheckedIn
                         if (isAlarmCheckedIn) {
@@ -232,15 +237,6 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
             btnAlarmDisable.setOnClickListener {
                 // 1회 사용하기
                 Timber.d("## [비활성화] 1회 사용하기 클릭")
-            }
-
-            root.setOnClickListener {
-                // 알람 정지 브로드캐스트 전송
-                val stopIntent = Intent("com.whiplash.akuma.STOP_ALARM").apply {
-                    putExtra("alarmId", intent.getIntExtra("alarmId", -1))
-                }
-                sendBroadcast(stopIntent)
-                finish()
             }
         }
     }
@@ -411,6 +407,11 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onBackPressed() {
         // 안드 13 미만 버전 대응
         // 이 화면에선 뒤로가기 버튼을 눌러도 뒤로 이동하지 않음
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.getRemainingDisableCount()
     }
 
 }
