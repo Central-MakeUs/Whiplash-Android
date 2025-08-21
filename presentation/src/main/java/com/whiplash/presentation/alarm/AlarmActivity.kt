@@ -286,7 +286,6 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             btnAlarmDisable.setOnClickListener {
-                // 1회 사용하기 - 알람 끄기 API 호출
                 Timber.d("## [비활성화] 1회 사용하기 클릭")
                 // TODO: 1회 사용하기 API 호출 후 알람 끄기
                 hideDisableBottomSheet()

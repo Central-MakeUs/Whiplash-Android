@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import androidx.core.view.isVisible
+import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.presentation.alarm.AlarmActivity
 import com.whiplash.presentation.component.bottom_sheet.RemoveAlarmBottomSheet
 import com.whiplash.presentation.util.WhiplashToast
@@ -140,13 +141,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        alarmListAdapter = AlarmListAdapter { position ->
-            if (isDeleteMode) {
-                alarmListAdapter.toggleSelection(position)
-                showRemoveAlarmBottomSheet()
+        alarmListAdapter = AlarmListAdapter(
+            onItemClick = { position ->
+                if (isDeleteMode) {
+                    alarmListAdapter.toggleSelection(position)
+                    showRemoveAlarmBottomSheet()
+                }
+            },
+            onToggleClick = { alarm ->
+                // on 상태인 토글 클릭 시 팝업 표시
+                // off 상태면 토글 클릭해도 무반응
+                showDisableAlarmPopup(alarm)
             }
-        }
+        )
         binding.rvHomeAlarm.adapter = alarmListAdapter
+    }
+
+    private fun showDisableAlarmPopup(alarm: GetAlarmEntity) {
+        disableAlarmPopup.show(
+            title = "알람 비활성화는 주 2회만 가능해요!",
+            subContent = null,
+            count = mainViewModel.uiState.value.remainCount ?: 0,
+            disableAlarmClickListener = {},
+            okClickListener = {},
+            cancelText = "취소",
+            cancelClickListener = {}
+        )
     }
 
     private fun setupExpandableView() {
@@ -198,6 +218,9 @@ class MainActivity : AppCompatActivity() {
                                 WhiplashToast.showSuccessToast(this@MainActivity, "알람 삭제가 완료되었습니다")
                                 mainViewModel.resetIsAlarmDeleted()
                             }
+
+                            // 남은 알람 끄기 횟수
+                            val remainCount = state.remainCount
                         }
                     }
                 }
@@ -351,6 +374,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         mainViewModel.getAlarms()
+        mainViewModel.getRemainingDisableCount()
     }
 
 }

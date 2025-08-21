@@ -82,6 +82,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvDisableAlarmSubContent">
 
             <TextView
+                style="@style/body2_m_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/disable_alarm_remain_count"
@@ -89,6 +90,7 @@
 
             <TextView
                 android:id="@+id/tvRemainDisableAlarmCount"
+                style="@style/body2_m_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -124,7 +126,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 app:buttonBackgroundColor="@color/white"
-                app:buttonText="@string/home_turn_off_alarm"
+                app:buttonText="@string/use_one_disable_change"
                 app:buttonTextColor="@color/grey_900" />
 
         </LinearLayout>
