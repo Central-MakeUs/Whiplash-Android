@@ -35,6 +35,11 @@ import com.whiplash.presentation.alarm.AlarmActivity
 import com.whiplash.presentation.component.bottom_sheet.RemoveAlarmBottomSheet
 import com.whiplash.presentation.util.WhiplashToast
 import java.time.Instant
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 
 /**
  * 알람 리사이클러뷰 표시 및 알람 등록 버튼, 상단에 알림 관련 문구 표시 등이 표시되는 메인 화면
@@ -246,9 +251,10 @@ class MainActivity : AppCompatActivity() {
                             // 알람 끄기 결과
                             val isAlarmTurnedOff = state.isAlarmTurnedOff
                             if (isAlarmTurnedOff) {
-                                // 특정 알람만 토글 off로 변경
+                                // 특정 알람만 토글 off로 변경하고 로컬 알람에서도 제거
                                 currentTurnOffAlarmId?.let { alarmId ->
                                     alarmListAdapter.updateAlarmToggleState(alarmId, false)
+                                    cancelLocalAlarm(alarmId)
                                     Timber.d("## [알람 끄기] api 호출 성공. alarmId : $alarmId, uiState 값 초기화")
                                 }
                                 mainViewModel.resetIsAlarmTurnedOff()
@@ -260,6 +266,48 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    // 여러 요일에 알람이 울리는 경우 알람을 끈 날(=오늘)에만 알람이 울리지 않게 취소
+    private fun cancelLocalAlarm(alarmId: Long) {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // 현재 요일 확인 (Calendar.SUNDAY = 1, Calendar.MONDAY = 2...)
+        val calendar = java.util.Calendar.getInstance()
+        val currentDayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK)
+
+        // AlarmSchedulerRepositoryImpl에서 사용하는 것과 같은 requestCode 패턴
+        // alarmId는 Int만 사용할 수 있어서 Int 캐스팅은 필수
+        val requestCode = alarmId.toInt() * 10 + currentDayOfWeek
+
+        val intent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
+            component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
+            putExtra("alarmId", alarmId.toInt())
+            putExtra("dayOfWeek", currentDayOfWeek)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            requestCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // 끄려는 요일의 알람만 취소
+        alarmManager.cancel(pendingIntent)
+        pendingIntent.cancel()
+
+        val dayNames = mapOf(
+            java.util.Calendar.SUNDAY to "일",
+            java.util.Calendar.MONDAY to "월",
+            java.util.Calendar.TUESDAY to "화",
+            java.util.Calendar.WEDNESDAY to "수",
+            java.util.Calendar.THURSDAY to "목",
+            java.util.Calendar.FRIDAY to "금",
+            java.util.Calendar.SATURDAY to "토"
+        )
+
+        Timber.d("## [AlarmManager] 특정 요일 알람 취소 완료. alarmId : $alarmId, 요일 : ${dayNames[currentDayOfWeek]}($currentDayOfWeek), requestCode : $requestCode")
     }
 
     private fun showThreeDotMenu() {
