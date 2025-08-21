@@ -3,6 +3,7 @@ package com.whiplash.presentation.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiplash.domain.entity.alarm.request.AddAlarmRequestEntity
+import com.whiplash.domain.entity.alarm.request.CheckInAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.request.DeleteAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.request.TurnOffAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.response.CreateAlarmOccurrenceEntity
@@ -371,11 +372,12 @@ class MainViewModel @Inject constructor(
     }
 
     // 알람 도착 인증
-    fun checkInAlarm(alarmId: Long) = viewModelScope.launch {
+    fun checkInAlarm(alarmId: Long, latitude: Double, longitude: Double) = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
 
         try {
-            checkInAlarmUseCase.invoke(alarmId).collect { result ->
+            val request = CheckInAlarmRequestEntity(latitude = latitude, longitude = longitude)
+            checkInAlarmUseCase.invoke(alarmId, request).collect { result ->
                 result.onSuccess { response ->
                     Timber.d("## [알람 도착 인증] 성공 : $response")
                     _uiState.update {

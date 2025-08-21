@@ -1,6 +1,7 @@
 package com.whiplash.network.api
 
 import com.whiplash.network.dto.request.RequestAddAlarms
+import com.whiplash.network.dto.request.RequestCheckInAlarm
 import com.whiplash.network.dto.request.RequestDeleteAlarm
 import com.whiplash.network.dto.request.RequestTurnOffAlarm
 import com.whiplash.network.dto.response.BaseResponse
@@ -76,9 +77,10 @@ interface AlarmService {
      *
      * 도착 위치 반경 100m 이내에 들어와야 도착 인증 가능
      */
-    @POST("alarms/{alarmId}/checkIn")
+    @POST("alarms/{alarmId}/checkin")
     suspend fun checkInAlarm(
-        @Path("alarmId") alarmId: Long
+        @Path("alarmId") alarmId: Long,
+        @Body requestCheckInAlarm: RequestCheckInAlarm,
     ): Response<ResponseCheckInAlarm>
 
 }

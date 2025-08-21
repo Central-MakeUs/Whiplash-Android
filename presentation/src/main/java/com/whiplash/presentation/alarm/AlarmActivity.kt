@@ -43,6 +43,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import androidx.core.view.isVisible
 
 /**
  * 기기 상단에 표시되는 알람 클릭 시 이동하는 화면
@@ -153,25 +154,54 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     mainViewModel.uiState.collect { state ->
-                        // 로딩 시 바텀 시트 표시
-                        if (state.isLoading) {
+                        // 장소 인증 로딩 시에만 checkInBottomSheet 표시
+                        if (state.isLoading && state.isAlarmCheckedIn == false) {
                             binding.checkInBottomSheet.visibility = View.VISIBLE
                             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-                        } else {
+                            // disableAlarmBottomSheet는 숨김
+                            disableAlarmBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                            binding.disableAlarmBottomSheet.visibility = View.GONE
+                        } else if (!state.isLoading && binding.checkInBottomSheet.isVisible) {
+                            // 장소 인증 로딩이 끝났을 때만 checkInBottomSheet 숨김
                             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
                             binding.checkInBottomSheet.visibility = View.GONE
                         }
 
                         // 남은 알람 끄기 횟수
-                        // 1 이상 -> 봐주세요 클릭 시 바텀시트에 1회 사용하기 버튼 표시
-                        // 0 -> 봐주세요 클릭 시 장소 인증하기 버튼만 표시
+                        val remainCount = state.remainCount
+                        remainCount?.let { count ->
+                            // 남은 횟수 텍스트 업데이트
+                            binding.tvRemainDisableAlarmCount.text = "${count}회"
+                            
+                            if (count > 0) {
+                                binding.ivDisableAlarmBottomSheet.setImageDrawable(
+                                    ContextCompat.getDrawable(this@AlarmActivity, R.drawable.ic_notice_44)
+                                )
+                                binding.tvDisableBottomSheetTitle.text = getString(R.string.check_in_alarm_disable_title)
+                                binding.tvDisableBottomSheetSubTitle.visibility = View.VISIBLE
+                                binding.tvDisableBottomSheetSubTitle.text = getString(R.string.check_in_alarm_not_disable_sub_title)
+                                binding.btnCheckInPlace.visibility = View.GONE
+                                binding.llDisableButtonsContainer.visibility = View.VISIBLE
+                                binding.llRemainDisableAlarmCountContainer.visibility = View.VISIBLE
+                            } else {
+                                binding.ivDisableAlarmBottomSheet.setImageDrawable(
+                                    ContextCompat.getDrawable(this@AlarmActivity, R.drawable.ic_warning_44)
+                                )
+                                binding.tvDisableBottomSheetTitle.text = "알람 끄기 횟수를 모두 사용했어요"
+                                binding.tvDisableBottomSheetSubTitle.visibility = View.GONE
+                                binding.btnCheckInPlace.visibility = View.VISIBLE
+                                binding.llDisableButtonsContainer.visibility = View.GONE
+                                binding.llRemainDisableAlarmCountContainer.visibility = View.GONE
+                            }
+                        }
 
                         // 알람 도착 인증 결과
                         val isAlarmCheckedIn = state.isAlarmCheckedIn
                         if (isAlarmCheckedIn) {
-                            // 바텀시트 숨기고 도착 인증 성공 화면으로 이동
                             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
                             binding.checkInBottomSheet.visibility = View.GONE
+                            disableAlarmBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                            binding.disableAlarmBottomSheet.visibility = View.GONE
                             navigateTo<AlarmCheckInSuccessActivity> {
                                 putExtra("address", address)
                                 finishCurrentActivity()
@@ -226,17 +256,26 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
             btnCheckIn.setOnClickListener {
                 // 장소 인증 api 호출. 호출 성공 시 알람 끄고 도착 인증 화면으로 이동
-                mainViewModel.checkInAlarm(alarmId)
+                mainViewModel.checkInAlarm(alarmId, latitude, longitude)
             }
 
             btnCancelDisable.setOnClickListener {
                 // 비활성화 바텀시트 > 취소
-                Timber.d("## [비활성화] 취소 클릭")
+                disableAlarmBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                binding.disableAlarmBottomSheet.visibility = View.GONE
             }
 
             btnAlarmDisable.setOnClickListener {
-                // 1회 사용하기
+                // 1회 사용하기 - 알람 끄기 API 호출
                 Timber.d("## [비활성화] 1회 사용하기 클릭")
+                // TODO: 1회 사용하기 API 호출 후 알람 끄기
+                disableAlarmBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                binding.disableAlarmBottomSheet.visibility = View.GONE
+                finish()
+            }
+
+            btnCheckInPlace.setOnClickListener {
+                mainViewModel.checkInAlarm(alarmId, latitude, longitude)
             }
         }
     }

@@ -2,6 +2,7 @@ package com.whiplash.data.mapper
 
 import android.view.PixelCopy.Request
 import com.whiplash.domain.entity.alarm.request.AddAlarmRequestEntity
+import com.whiplash.domain.entity.alarm.request.CheckInAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.request.DeleteAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.request.TurnOffAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.response.AddAlarmEntity
@@ -13,6 +14,7 @@ import com.whiplash.domain.entity.alarm.response.TurnOffAlarmResponseEntity
 import com.whiplash.network.dto.response.AlarmDto
 import com.whiplash.network.dto.response.CreateAlarmOccurrenceResult
 import com.whiplash.network.dto.request.RequestAddAlarms
+import com.whiplash.network.dto.request.RequestCheckInAlarm
 import com.whiplash.network.dto.request.RequestDeleteAlarm
 import com.whiplash.network.dto.request.RequestTurnOffAlarm
 import com.whiplash.network.dto.response.AddAlarmResult
@@ -99,6 +101,13 @@ class AlarmMapper @Inject constructor() {
     fun toGetRemainingDisableCountEntity(result: GetRemainingDisableCountResult): GetRemainingDisableCountEntity {
         return GetRemainingDisableCountEntity(
             remainingOffCount = result.remainingOffCount
+        )
+    }
+
+    fun toNetworkRequest(checkInAlarmRequestEntity: CheckInAlarmRequestEntity): RequestCheckInAlarm {
+        return RequestCheckInAlarm(
+            latitude = checkInAlarmRequestEntity.latitude,
+            longitude = checkInAlarmRequestEntity.longitude
         )
     }
 
