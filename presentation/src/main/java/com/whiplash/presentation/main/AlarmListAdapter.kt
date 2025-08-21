@@ -9,6 +9,7 @@ import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ItemHomeAlarmBinding
 import com.whiplash.presentation.util.DateUtils
+import timber.log.Timber
 
 class AlarmListAdapter(
     private val onItemClick: (Int) -> Unit = {},
@@ -53,6 +54,17 @@ class AlarmListAdapter(
         holder.bind(getItem(position), isDeleteMode, selectedPosition == position)
     }
 
+    fun updateAlarmToggleState(alarmId: Long, isToggleOn: Boolean) {
+        Timber.d("## [알람 끄기] 토글 상태 변경. alarmId : $alarmId")
+        val position = currentList.indexOfFirst { it.alarmId == alarmId }
+        if (position != -1) {
+            val updatedAlarm = currentList[position].copy(isToggleOn = isToggleOn)
+            val updatedList = currentList.toMutableList()
+            updatedList[position] = updatedAlarm
+            submitList(updatedList)
+        }
+    }
+
     class AlarmViewHolder(
         private val binding: ItemHomeAlarmBinding,
         private val onItemClick: (Int) -> Unit,
@@ -86,14 +98,21 @@ class AlarmListAdapter(
 
                 // 토글 클릭 리스너 설정
                 wtAlarm.setOnCheckedChangeListener { isChecked ->
-                    if (alarm.isToggleOn && !isChecked) {
-                        // 토글이 true에서 false로 변경될 때만 팝업 표시
-                        onToggleClick(alarm)
-                        // 팝업에서 취소하면 다시 true로 되돌리기 위해
-                        wtAlarm.setChecked(true)
-                    } else if (!alarm.isToggleOn && isChecked) {
-                        // false 상태에서 클릭 시 상태 변경 막기
-                        wtAlarm.setChecked(false)
+                    when {
+                        alarm.isToggleOn && !isChecked -> {
+                            // 토글이 true에서 false로 변경될 때만 팝업 표시
+                            onToggleClick(alarm)
+                            // 팝업에서 취소하면 다시 true로 되돌리기 위해
+                            wtAlarm.setChecked(true)
+                        }
+                        !alarm.isToggleOn && isChecked -> {
+                            // false 상태에서 클릭 시 상태 변경 막기
+                            wtAlarm.setChecked(false)
+                        }
+                        !alarm.isToggleOn && !isChecked -> {
+                            // 이미 false 상태에서 false로 변경 시도 시 아무 반응 없음
+                            // 현재 상태 유지
+                        }
                     }
                 }
 

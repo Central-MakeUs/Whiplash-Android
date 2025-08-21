@@ -1,5 +1,6 @@
 package com.whiplash.presentation.main
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,10 +29,12 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import androidx.core.view.isVisible
+import com.whiplash.domain.entity.alarm.request.TurnOffAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.presentation.alarm.AlarmActivity
 import com.whiplash.presentation.component.bottom_sheet.RemoveAlarmBottomSheet
 import com.whiplash.presentation.util.WhiplashToast
+import java.time.Instant
 
 /**
  * 알람 리사이클러뷰 표시 및 알람 등록 버튼, 상단에 알림 관련 문구 표시 등이 표시되는 메인 화면
@@ -54,6 +57,8 @@ class MainActivity : AppCompatActivity() {
     private var previousExpandableContentVisibility = View.GONE
 
     private var removeAlarmBottomSheet: RemoveAlarmBottomSheet? = null
+
+    private var currentTurnOffAlarmId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,12 +163,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDisableAlarmPopup(alarm: GetAlarmEntity) {
+        val remainCount = mainViewModel.uiState.value.remainCount ?: 0
+        Timber.d("## [알람 끄기] 남은 알람 끄기 횟수 : $remainCount")
+
         disableAlarmPopup.show(
-            title = "알람 비활성화는 주 2회만 가능해요!",
+            title = getString(R.string.check_in_alarm_disable_title),
             subContent = null,
-            count = mainViewModel.uiState.value.remainCount ?: 0,
-            disableAlarmClickListener = {},
-            okClickListener = {},
+            count = remainCount,
+            disableAlarmClickListener = {
+                currentTurnOffAlarmId = alarm.alarmId
+                Timber.d("## [알람 끄기] disableAlarmClickListener 호출. currentTurnOffAlarmId : $currentTurnOffAlarmId")
+                mainViewModel.turnOffAlarm(
+                    alarmId = alarm.alarmId,
+                    turnOffAlarmRequestEntity = TurnOffAlarmRequestEntity(
+                        clientNow = Instant.now().toString()
+                    )
+                )
+            },
+            okClickListener = {
+                //
+            },
             cancelText = "취소",
             cancelClickListener = {}
         )
@@ -200,6 +219,11 @@ class MainActivity : AppCompatActivity() {
                                 loadingScreen.hide()
                             }
 
+                            val errorMessage = state.errorMessage
+                            if (!errorMessage.isNullOrEmpty()) {
+                                WhiplashToast.showErrorToast(this@MainActivity, errorMessage)
+                            }
+
                             // 알람 목록 조회
                             val alarmList = state.alarmList
                             Timber.d("## [알람 목록 조회] 액티비티에서 확인 : $state")
@@ -219,8 +243,18 @@ class MainActivity : AppCompatActivity() {
                                 mainViewModel.resetIsAlarmDeleted()
                             }
 
-                            // 남은 알람 끄기 횟수
-                            val remainCount = state.remainCount
+                            // 알람 끄기 결과
+                            val isAlarmTurnedOff = state.isAlarmTurnedOff
+                            if (isAlarmTurnedOff) {
+                                // 특정 알람만 토글 off로 변경
+                                currentTurnOffAlarmId?.let { alarmId ->
+                                    alarmListAdapter.updateAlarmToggleState(alarmId, false)
+                                    Timber.d("## [알람 끄기] api 호출 성공. alarmId : $alarmId, uiState 값 초기화")
+                                }
+                                mainViewModel.resetIsAlarmTurnedOff()
+                                mainViewModel.getAlarms()
+                                currentTurnOffAlarmId = null
+                            }
                         }
                     }
                 }

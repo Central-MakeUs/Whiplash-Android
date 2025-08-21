@@ -371,6 +371,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun resetIsAlarmTurnedOff() = _uiState.update { it.copy(isAlarmTurnedOff = false) }
+
     // 알람 도착 인증
     fun checkInAlarm(alarmId: Long, latitude: Double, longitude: Double) = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
