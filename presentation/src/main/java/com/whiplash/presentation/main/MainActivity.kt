@@ -297,6 +297,9 @@ class MainActivity : AppCompatActivity() {
         alarmManager.cancel(pendingIntent)
         pendingIntent.cancel()
 
+        // 비활성화 상태 저장
+        mainViewModel.setAlarmDisabled(alarmId, currentDayOfWeek)
+
         val dayNames = mapOf(
             java.util.Calendar.SUNDAY to "일",
             java.util.Calendar.MONDAY to "월",
