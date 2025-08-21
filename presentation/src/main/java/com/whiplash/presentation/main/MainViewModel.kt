@@ -416,4 +416,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun resetIsAlarmCheckedIn() = _uiState.update { it.copy(isAlarmCheckedIn = false) }
+
 }

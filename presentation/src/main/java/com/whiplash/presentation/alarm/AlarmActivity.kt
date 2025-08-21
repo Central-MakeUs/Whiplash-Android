@@ -45,6 +45,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import androidx.core.view.isVisible
+import com.whiplash.domain.entity.alarm.request.TurnOffAlarmRequestEntity
+import kotlinx.coroutines.delay
+import java.time.Instant
 
 /**
  * 기기 상단에 표시되는 알람 클릭 시 이동하는 화면
@@ -177,6 +180,19 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
                         // 알람 도착 인증 결과
                         val isAlarmCheckedIn = state.isAlarmCheckedIn
                         if (isAlarmCheckedIn) {
+                            mainViewModel.turnOffAlarm(
+                                alarmId = alarmId,
+                                turnOffAlarmRequestEntity = TurnOffAlarmRequestEntity(
+                                    clientNow = Instant.now().toString()
+                                )
+                            )
+                            mainViewModel.resetIsAlarmCheckedIn()
+                        }
+
+                        // 알람 끄기 결과
+                        val isAlarmTurnedOff = state.isAlarmTurnedOff
+                        if (isAlarmTurnedOff) {
+                            // turnOffAlarm 성공 시 브로드캐스트 실행
                             val stopIntent = Intent("com.whiplash.akuma.STOP_ALARM").apply {
                                 component = ComponentName(
                                     "com.whiplash.akuma",
@@ -189,7 +205,8 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
                             // 브로드캐스트 처리용 딜레이
                             lifecycleScope.launch {
-                                kotlinx.coroutines.delay(100)
+                                mainViewModel.resetIsAlarmTurnedOff()
+                                delay(100)
 
                                 bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
                                 binding.checkInBottomSheet.visibility = View.GONE
