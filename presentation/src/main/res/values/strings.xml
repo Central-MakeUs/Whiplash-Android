@@ -127,4 +127,17 @@
     <string name="alarm_sub_title">앱으로 접속해서 알람을 꺼주세요!</string>
     <string name="local_alarm_left_button">봐주세요🥹</string>
     <string name="local_alarm_right_button">장소 인증하기</string>
+    <string name="check_in_bottom_sheet_title">위치 확인중이에요</string>
+    <string name="check_in_bottom_sheet_sub_title">잠시만 기다려 주세요</string>
+    
+    <!-- 도착 인증 성공 화면 -->
+    <string name="success_check_in_header">도착 인증</string>
+    <string name="success_check_in_title">도착 인증에 성공했어요!</string>
+
+    <!-- 도착 인증 성공 화면 > 봐주세요 클릭 시 표시되는 비활성화 관련 내용 -->
+    <string name="check_in_alarm_disable_title">알람 비활성화는 주 2회만 가능해요!</string>
+    <string name="check_in_alarm_disable_sub_title">이번 주 알람 비활성화 남은 횟수 </string>
+    <string name="use_one_disable_change">1회 사용하기</string>
+    <string name="check_in_alarm_not_disable_title">알람 비활성화 횟수를 모두 사용했어요!</string>
+    <string name="check_in_alarm_not_disable_sub_title">지정한 장소로 이동해 인증해 보세요!</string>
 </resources>

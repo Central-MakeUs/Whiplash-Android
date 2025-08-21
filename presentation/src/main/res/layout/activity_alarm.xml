@@ -7,131 +7,292 @@
     android:layout_height="match_parent"
     tools:context=".alarm.AlarmActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <ImageView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:elevation="1dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/bg_local_alarm" />
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="1dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_local_alarm" />
+
+            <LinearLayout
+                android:id="@+id/llLocalAlarmAddressContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_map_pin_fill_gray300_22" />
+
+                <TextView
+                    android:id="@+id/tvLocalAlarmAddress"
+                    style="@style/body1_m_16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="위치명"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fcvNaverMap"
+                android:name="com.naver.maps.map.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/ivLocalAlarmTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/bg_clock"
+                app:layout_constraintBottom_toTopOf="@+id/btnCancelLocalAlarm"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/llLocalAlarmTimeContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/ivLocalAlarmTime"
+                app:layout_constraintEnd_toEndOf="@+id/ivLocalAlarmTime"
+                app:layout_constraintStart_toStartOf="@+id/ivLocalAlarmTime"
+                app:layout_constraintTop_toTopOf="@+id/ivLocalAlarmTime">
+
+                <TextView
+                    android:id="@+id/tvLocalAlarmTime"
+                    style="@style/number2_b_64"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    tools:text="12" />
+
+                <TextView
+                    style="@style/number2_b_64"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" : "
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/tvLocalAlarmMinute"
+                    style="@style/number2_b_64"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    tools:text="34" />
+
+            </LinearLayout>
+
+            <com.whiplash.presentation.component.button.WhiplashCommonButton
+                android:id="@+id/btnCancelLocalAlarm"
+                android:layout_width="116dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginBottom="40dp"
+                android:elevation="1dp"
+                app:buttonBackgroundColor="@color/white"
+                app:buttonText="@string/local_alarm_left_button"
+                app:buttonTextColor="@color/grey_900"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.whiplash.presentation.component.button.WhiplashCommonButton
+                android:id="@+id/btnCheckIn"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="18dp"
+                android:elevation="1dp"
+                app:buttonBackgroundColor="@color/lemon_400"
+                app:buttonText="@string/local_alarm_right_button"
+                app:buttonTextColor="@color/grey_900"
+                app:layout_constraintBottom_toBottomOf="@+id/btnCancelLocalAlarm"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btnCancelLocalAlarm"
+                app:layout_constraintTop_toTopOf="@+id/btnCancelLocalAlarm" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
-            android:id="@+id/llLocalAlarmAddressContainer"
+            android:id="@+id/checkInBottomSheet"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="300dp"
+            android:background="@drawable/bg_bottom_sheet_16_radius"
+            android:elevation="2dp"
+            android:gravity="center|top"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:visibility="gone"
+            app:behavior_hideable="false"
+            app:layout_behavior="@string/bottom_sheet_behavior">
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_map_pin_fill_gray300_22" />
+                android:layout_marginTop="36dp"
+                android:src="@drawable/ic_loading_44" />
 
             <TextView
-                android:id="@+id/tvLocalAlarmAddress"
-                style="@style/body1_m_16"
+                style="@style/subtitle3_b_18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="위치명"
+                android:layout_marginTop="10dp"
+                android:text="@string/check_in_bottom_sheet_title"
                 android:textColor="@color/white" />
 
+            <TextView
+                style="@style/body2_m_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/check_in_bottom_sheet_sub_title"
+                android:textColor="@color/grey_500" />
+
         </LinearLayout>
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fcvNaverMap"
-            android:name="com.naver.maps.map.MapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/ivLocalAlarmTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/bg_clock"
-            app:layout_constraintBottom_toTopOf="@+id/btnCancelLocalAlarm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <LinearLayout
-            android:id="@+id/llLocalAlarmTimeContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/ivLocalAlarmTime"
-            app:layout_constraintEnd_toEndOf="@+id/ivLocalAlarmTime"
-            app:layout_constraintStart_toStartOf="@+id/ivLocalAlarmTime"
-            app:layout_constraintTop_toTopOf="@+id/ivLocalAlarmTime">
+            android:id="@+id/disableAlarmBottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="@drawable/bg_bottom_sheet_16_radius"
+            android:elevation="2dp"
+            android:gravity="center|top"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            app:behavior_hideable="false"
+            app:layout_behavior="@string/bottom_sheet_behavior">
 
-            <TextView
-                android:id="@+id/tvLocalAlarmTime"
-                style="@style/number2_b_64"
+            <ImageView
+                android:id="@+id/ivDisableAlarmBottomSheet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                tools:text="12" />
+                android:layout_marginTop="36dp"
+                android:src="@drawable/ic_notice_44" />
 
             <TextView
-                style="@style/number2_b_64"
+                android:id="@+id/tvDisableBottomSheetTitle"
+                style="@style/subtitle5_b_16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" : "
+                android:layout_marginTop="@dimen/dp_16"
+                android:minHeight="24dp"
+                android:text="@string/check_in_alarm_disable_title"
                 android:textColor="@color/white" />
 
             <TextView
-                android:id="@+id/tvLocalAlarmMinute"
-                style="@style/number2_b_64"
+                android:id="@+id/tvDisableBottomSheetSubTitle"
+                style="@style/body2_m_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                tools:text="34" />
+                android:layout_marginTop="@dimen/dp_4"
+                android:minHeight="20dp"
+                android:text="@string/check_in_alarm_not_disable_sub_title"
+                android:textColor="@color/grey_300"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/llRemainDisableAlarmCountContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                android:background="@drawable/bg_bordered_container_4_radius"
+                android:orientation="horizontal"
+                android:paddingHorizontal="@dimen/dp_10"
+                android:paddingVertical="@dimen/dp_4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDisableAlarmSubContent">
+
+                <TextView
+                    style="@style/body2_m_14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/check_in_alarm_disable_sub_title"
+                    android:textColor="@color/grey_300" />
+
+                <TextView
+                    android:id="@+id/tvRemainDisableAlarmCount"
+                    style="@style/body2_m_14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:textColor="@color/lemon_400"
+                    tools:text="2회" />
+
+            </LinearLayout>
+
+            <!-- 장소 인증하기 -->
+            <com.whiplash.presentation.component.button.WhiplashCommonButton
+                android:id="@+id/btnCheckInPlace"
+                style="@style/subtitle5_b_16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_40"
+                android:visibility="gone"
+                app:buttonBackgroundColor="@color/white"
+                app:buttonText="@string/local_alarm_right_button"
+                app:buttonTextColor="@color/grey_900" />
+
+            <LinearLayout
+                android:id="@+id/llDisableButtonsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="24dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/llRemainDisableAlarmCount">
+
+                <com.whiplash.presentation.component.button.WhiplashCommonButton
+                    android:id="@+id/btnCancelDisable"
+                    style="@style/subtitle5_b_16"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:layout_weight="1"
+                    app:buttonBackgroundColor="@color/grey_800"
+                    app:buttonText="@string/cancel_string"
+                    app:buttonTextColor="@color/white" />
+
+                <com.whiplash.presentation.component.button.WhiplashCommonButton
+                    android:id="@+id/btnAlarmDisable"
+                    style="@style/subtitle5_b_16"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_weight="1"
+                    app:buttonBackgroundColor="@color/white"
+                    app:buttonText="@string/use_one_disable_change"
+                    app:buttonTextColor="@color/grey_900" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <com.whiplash.presentation.component.button.WhiplashCommonButton
-            android:id="@+id/btnCancelLocalAlarm"
-            android:layout_width="116dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="40dp"
-            android:elevation="1dp"
-            app:buttonBackgroundColor="@color/white"
-            app:buttonText="@string/local_alarm_left_button"
-            app:buttonTextColor="@color/grey_900"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <com.whiplash.presentation.component.button.WhiplashCommonButton
-            android:id="@+id/btnCheckIn"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="18dp"
-            android:elevation="1dp"
-            app:buttonBackgroundColor="@color/lemon_400"
-            app:buttonText="@string/local_alarm_right_button"
-            app:buttonTextColor="@color/grey_900"
-            app:layout_constraintBottom_toBottomOf="@+id/btnCancelLocalAlarm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btnCancelLocalAlarm"
-            app:layout_constraintTop_toTopOf="@+id/btnCancelLocalAlarm" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </FrameLayout>

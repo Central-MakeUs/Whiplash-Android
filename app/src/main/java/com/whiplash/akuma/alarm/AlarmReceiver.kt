@@ -64,6 +64,7 @@ class AlarmReceiver : BroadcastReceiver() {
             val soundType = intent.getStringExtra("soundType") ?: "알람 소리1"
             val originalHour = intent.getIntExtra("originalHour", 0)
             val originalMinute = intent.getIntExtra("originalMinute", 0)
+            val dayOfWeek = intent.getIntExtra("dayOfWeek", -1)
 
             Timber.d("## [알람 수신] ID: $alarmId, 목적: $alarmPurpose, 주소: $address, 위도: $latitude, 경도: $longitude")
 
@@ -89,48 +90,46 @@ class AlarmReceiver : BroadcastReceiver() {
         val soundType = originalIntent.getStringExtra("soundType") ?: "알람 소리1"
         val originalHour = originalIntent.getIntExtra("originalHour", 9)
         val originalMinute = originalIntent.getIntExtra("originalMinute", 0)
+        val dayOfWeek = originalIntent.getIntExtra("dayOfWeek", -1)
 
-        if (alarmId > 10) {
-            val dayOfWeek = alarmId % 10
-
-            if (dayOfWeek in 1..7) {
-                val calendar = Calendar.getInstance().apply {
-                    add(Calendar.WEEK_OF_YEAR, 1)
-                    set(Calendar.DAY_OF_WEEK, dayOfWeek)
-                    set(Calendar.HOUR_OF_DAY, originalHour)
-                    set(Calendar.MINUTE, originalMinute)
-                    set(Calendar.SECOND, 0)
-                    set(Calendar.MILLISECOND, 0)
-                }
-
-                val newIntent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
-                    component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
-                    putExtra("alarmId", alarmId)
-                    putExtra("alarmPurpose", alarmPurpose)
-                    putExtra("address", address)
-                    putExtra("latitude", latitude)
-                    putExtra("longitude", longitude)
-                    putExtra("soundType", soundType)
-                    putExtra("originalHour", originalHour)
-                    putExtra("originalMinute", originalMinute)
-                }
-
-                val pendingIntent = PendingIntent.getBroadcast(
-                    context,
-                    alarmId,
-                    newIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    pendingIntent
-                )
-
-                Timber.d("## [다음 주 알람 스케줄링] 시간: ${calendar.time}")
+        if (dayOfWeek in 1..7) {
+            val calendar = Calendar.getInstance().apply {
+                add(Calendar.WEEK_OF_YEAR, 1)
+                set(Calendar.DAY_OF_WEEK, dayOfWeek)
+                set(Calendar.HOUR_OF_DAY, originalHour)
+                set(Calendar.MINUTE, originalMinute)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
             }
+
+            val newIntent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
+                component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
+                putExtra("alarmId", alarmId)
+                putExtra("alarmPurpose", alarmPurpose)
+                putExtra("address", address)
+                putExtra("latitude", latitude)
+                putExtra("longitude", longitude)
+                putExtra("soundType", soundType)
+                putExtra("originalHour", originalHour)
+                putExtra("originalMinute", originalMinute)
+                putExtra("dayOfWeek", dayOfWeek)
+            }
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                alarmId * 10 + dayOfWeek,
+                newIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                calendar.timeInMillis,
+                pendingIntent
+            )
+
+            Timber.d("## [다음 주 알람 스케줄링] 시간: ${calendar.time}")
         }
     }
 

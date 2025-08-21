@@ -11,6 +11,7 @@ import com.whiplash.domain.usecase.alarm.CheckInAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
 import com.whiplash.domain.usecase.alarm.DeleteAlarmUseCase
 import com.whiplash.domain.usecase.alarm.GetAlarmsUseCase
+import com.whiplash.domain.usecase.alarm.GetRemainingDisableCountUseCase
 import com.whiplash.domain.usecase.alarm.TurnOffAlarmUseCase
 import com.whiplash.domain.usecase.auth.RegisterFcmTokenUseCase
 import com.whiplash.domain.usecase.auth.ReissueTokenUseCase
@@ -99,6 +100,11 @@ object UseCaseModule {
     @Singleton
     fun provideTurnOffAlarmUseCase(repository: AlarmRepository): TurnOffAlarmUseCase =
         TurnOffAlarmUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetRemainingDisableCountUseCase(repository: AlarmRepository): GetRemainingDisableCountUseCase =
+        GetRemainingDisableCountUseCase(repository)
 
     @Provides
     @Singleton

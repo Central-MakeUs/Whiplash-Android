@@ -3,16 +3,19 @@ package com.whiplash.presentation.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.whiplash.domain.entity.alarm.request.AddAlarmRequestEntity
+import com.whiplash.domain.entity.alarm.request.CheckInAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.request.DeleteAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.request.TurnOffAlarmRequestEntity
 import com.whiplash.domain.entity.alarm.response.CreateAlarmOccurrenceEntity
 import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.domain.provider.CrashlyticsProvider
+import com.whiplash.domain.repository.alarm.AlarmSchedulerRepository
 import com.whiplash.domain.usecase.alarm.AddAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CheckInAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
 import com.whiplash.domain.usecase.alarm.DeleteAlarmUseCase
 import com.whiplash.domain.usecase.alarm.GetAlarmsUseCase
+import com.whiplash.domain.usecase.alarm.GetRemainingDisableCountUseCase
 import com.whiplash.domain.usecase.alarm.TurnOffAlarmUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,11 +29,13 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getAlarmsUseCase: GetAlarmsUseCase,
+    private val getRemainingDisableCountUseCase: GetRemainingDisableCountUseCase,
     private val addAlarmUseCase: AddAlarmUseCase,
     private val deleteAlarmUseCase: DeleteAlarmUseCase,
     private val turnOffAlarmUseCase: TurnOffAlarmUseCase,
     private val createAlarmOccurrenceUseCase: CreateAlarmOccurrenceUseCase,
     private val checkInAlarmUseCase: CheckInAlarmUseCase,
+    private val alarmScheduler: AlarmSchedulerRepository,
     private val crashlyticsProvider: CrashlyticsProvider,
 ) : ViewModel() {
 
@@ -41,8 +46,14 @@ class MainViewModel @Inject constructor(
         // 알람 생성 성공 여부
         val isAlarmCreated: Boolean = false,
 
+        // 알람 생성 api로 생성된 알람 id
+        val createdAlarmId: Long? = null,
+
         // 알람 목록 조회 api 결과
         val alarmList: List<GetAlarmEntity> = emptyList(),
+
+        // 남은 알람 끄기 횟수 조회 결과
+        val remainCount: Int? = null,
 
         // 알람 발생 내역 생성 결과
         val createdOccurrence: CreateAlarmOccurrenceEntity? = null,
@@ -131,18 +142,59 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    // 남은 알람 끄기 횟수 조회
+    fun getRemainingDisableCount() = viewModelScope.launch {
+        _uiState.update { it.copy(isLoading = true) }
+
+        try {
+            getRemainingDisableCountUseCase.invoke().collect { result ->
+                result.onSuccess { response ->
+                    Timber.d("## [남은 알람 끄기 횟수 조회] 성공 : ${response.remainingOffCount}")
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            remainCount = response.remainingOffCount,
+                            errorMessage = null
+                        )
+                    }
+                }.onFailure { e ->
+                    crashlyticsProvider.recordError(e)
+                    crashlyticsProvider.logError("남은 알람 끄기 횟수 조회 api 실패 : ${e.message}")
+                    Timber.e("## [남은 알람 끄기 횟수 조회] 실패 : $e")
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = e.message
+                        )
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            crashlyticsProvider.recordError(e)
+            crashlyticsProvider.logError("남은 알람 끄기 횟수 조회 api 실패 : ${e.message}")
+            Timber.e("## [남은 알람 끄기 횟수 조회] 에러 : $e")
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    errorMessage = e.message
+                )
+            }
+        }
+    }
+
     // 알람 등록
     fun addAlarm(request: AddAlarmRequestEntity) = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
 
         try {
             addAlarmUseCase(request).collect { result ->
-                result.onSuccess {
-                    Timber.d("## [알람 등록] 성공")
+                result.onSuccess { response ->
+                    Timber.d("## [알람 등록] 성공, 생성된 ID: ${response.alarmId}")
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             isAlarmCreated = true,
+                            createdAlarmId = response.alarmId,
                             errorMessage = null
                         )
                     }
@@ -155,6 +207,7 @@ class MainViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             isAlarmCreated = false,
+                            createdAlarmId = null,
                             errorMessage = e.message
                         )
                     }
@@ -168,6 +221,7 @@ class MainViewModel @Inject constructor(
                 it.copy(
                     isLoading = false,
                     isAlarmCreated = false,
+                    createdAlarmId = null,
                     errorMessage = e.message
                 )
             }
@@ -227,6 +281,10 @@ class MainViewModel @Inject constructor(
             deleteAlarmUseCase.invoke(alarmId, deleteAlarmRequestEntity)
                 .collect { result ->
                     result.onSuccess { response ->
+                        // 서버 삭제 성공 시 AlarmManager에 저장된 알람도 삭제
+                        Timber.d("## [알람 삭제] AlarmManager에서 알람 삭제. id : $alarmId")
+                        alarmScheduler.cancelAlarm(alarmId.toInt())
+
                         Timber.d("## [알람 삭제] 성공 : $response")
                         _uiState.update {
                             it.copy(
@@ -314,11 +372,12 @@ class MainViewModel @Inject constructor(
     }
 
     // 알람 도착 인증
-    fun checkInAlarm(alarmId: Long) = viewModelScope.launch {
+    fun checkInAlarm(alarmId: Long, latitude: Double, longitude: Double) = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
 
         try {
-            checkInAlarmUseCase.invoke(alarmId).collect { result ->
+            val request = CheckInAlarmRequestEntity(latitude = latitude, longitude = longitude)
+            checkInAlarmUseCase.invoke(alarmId, request).collect { result ->
                 result.onSuccess { response ->
                     Timber.d("## [알람 도착 인증] 성공 : $response")
                     _uiState.update {

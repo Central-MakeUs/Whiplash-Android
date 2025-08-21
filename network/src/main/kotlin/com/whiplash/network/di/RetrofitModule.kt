@@ -63,7 +63,7 @@ object RetrofitModule {
         json: Json
     ): Retrofit =
         Retrofit.Builder()
-            .baseUrl("http://3.34.221.212:8080/api/")
+            .baseUrl("https://api-dev.nuntteo.com/api/")
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
@@ -101,7 +101,7 @@ object RetrofitModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit =
         Retrofit.Builder()
-            .baseUrl("http://3.34.221.212:8080/api/")
+            .baseUrl("https://api-dev.nuntteo.com/api/")
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()

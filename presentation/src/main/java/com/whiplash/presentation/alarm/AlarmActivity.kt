@@ -1,18 +1,22 @@
 package com.whiplash.presentation.alarm
 
 import android.Manifest
+import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PointF
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
@@ -20,6 +24,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapFragment
@@ -32,14 +37,14 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.whiplash.presentation.R
 import com.whiplash.presentation.databinding.ActivityAlarmBinding
 import com.whiplash.presentation.main.MainViewModel
-import com.whiplash.presentation.map.SelectPlaceActivity
-import com.whiplash.presentation.map.SelectPlaceActivity.Companion
 import com.whiplash.presentation.search_place.SearchPlaceViewModel
+import com.whiplash.presentation.util.ActivityUtils.navigateTo
 import com.whiplash.presentation.util.PermissionUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import androidx.core.view.isVisible
 
 /**
  * 기기 상단에 표시되는 알람 클릭 시 이동하는 화면
@@ -57,6 +62,7 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private lateinit var binding: ActivityAlarmBinding
+
     private val mainViewModel: MainViewModel by viewModels()
     private val searchPlaceViewModel: SearchPlaceViewModel by viewModels()
 
@@ -72,11 +78,17 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var hour: Int = 0
     private var minute: Int = 0
+    private var alarmId: Long = 0
+    private var address: String = ""
 
     // 화면 중앙에 고정된 마커, 원형 오버레이
     private var centerMarker: Marker? = null
     private var centerCircleOverlay: CircleOverlay? = null
     private var locationUpdateJob: Job? = null
+
+    // 알람 끄기 위치 확인 로딩 바텀시트
+    private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
+    private var disableAlarmBehavior: BottomSheetBehavior<View>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,11 +101,18 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
             insets
         }
 
-        setupUserLocationSource()
+        onBackPressedDispatcher.addCallback(this) {
+            // 안드 13+ 대응
+            // 이 화면에선 뒤로가기 버튼을 눌러도 뒤로 이동하지 않음
+        }
 
-        val alarmId = intent.getIntExtra("alarmId", -1)
+        setupUserLocationSource()
+        setupBottomSheet()
+        setupDisableAlarmBottomSheet()
+
+        alarmId = intent.getIntExtra("alarmId", -1).toLong()
         val alarmPurpose = intent.getStringExtra("alarmPurpose") ?: ""
-        val address = intent.getStringExtra("address") ?: ""
+        address = intent.getStringExtra("address") ?: ""
         latitude = intent.getDoubleExtra("latitude", 0.0)
         longitude = intent.getDoubleExtra("longitude", 0.0)
         hour = intent.getIntExtra("hour", 0)
@@ -102,9 +121,119 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
         Timber.e("## [알람 울림] 위도 : $latitude, 경도 : $longitude, 시간 : $hour, 분 : $minute")
 
         searchPlaceViewModel.getPlaceDetail(latitude, longitude)
+        observeMainViewModel()
         observeSearchPlaceVieWModel()
         setupNaverMap()
         setupView()
+    }
+
+    private fun setupBottomSheet() {
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.checkInBottomSheet)
+        bottomSheetBehavior?.apply {
+            isDraggable = false
+            isHideable = true
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        // 처음에는 바텀시트 숨김
+        binding.checkInBottomSheet.visibility = View.GONE
+    }
+
+    private fun setupDisableAlarmBottomSheet() {
+        disableAlarmBehavior = BottomSheetBehavior.from(binding.disableAlarmBottomSheet)
+        disableAlarmBehavior?.apply {
+            isDraggable = false
+            isHideable = true
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.disableAlarmBottomSheet.visibility = View.GONE
+    }
+
+    private fun observeMainViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    mainViewModel.uiState.collect { state ->
+                        // 장소 인증 로딩 시에만 checkInBottomSheet 표시
+                        if (state.isLoading && !state.isAlarmCheckedIn) {
+                            binding.checkInBottomSheet.visibility = View.VISIBLE
+                            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+                            // disableAlarmBottomSheet는 숨김
+                            disableAlarmBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                            binding.disableAlarmBottomSheet.visibility = View.GONE
+                        } else if (!state.isLoading && binding.checkInBottomSheet.isVisible) {
+                            // 장소 인증 로딩이 끝났을 때만 checkInBottomSheet 숨김
+                            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                            binding.checkInBottomSheet.visibility = View.GONE
+                        }
+
+                        // 남은 알람 끄기 횟수 - UI만 업데이트, 바텀시트 상태는 변경하지 않음
+                        val remainCount = state.remainCount
+                        remainCount?.let { count ->
+                            updateDisableBottomSheetUI(count)
+                        }
+
+                        // 알람 도착 인증 결과
+                        val isAlarmCheckedIn = state.isAlarmCheckedIn
+                        if (isAlarmCheckedIn) {
+                            val stopIntent = Intent("com.whiplash.akuma.STOP_ALARM").apply {
+                                component = ComponentName(
+                                    "com.whiplash.akuma",
+                                    "com.whiplash.akuma.alarm.StopAlarmReceiver"
+                                )
+                                putExtra("alarmId", alarmId.toInt())
+                            }
+                            sendBroadcast(stopIntent)
+                            Timber.d("## [알람 정지] ComponentName으로 브로드캐스트 전송. alarmId: $alarmId")
+
+                            // 브로드캐스트 처리용 딜레이
+                            lifecycleScope.launch {
+                                kotlinx.coroutines.delay(100)
+
+                                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                                binding.checkInBottomSheet.visibility = View.GONE
+                                disableAlarmBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                                binding.disableAlarmBottomSheet.visibility = View.GONE
+
+                                navigateTo<AlarmCheckInSuccessActivity> {
+                                    putExtra("address", address)
+                                    finishCurrentActivity()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 바텀시트 UI 업데이트
+    private fun updateDisableBottomSheetUI(count: Int) {
+        with(binding) {
+            tvRemainDisableAlarmCount.text = "${count}회"
+
+            if (count > 0) {
+                ivDisableAlarmBottomSheet.setImageDrawable(
+                    ContextCompat.getDrawable(this@AlarmActivity, R.drawable.ic_notice_44)
+                )
+                tvDisableBottomSheetTitle.text = getString(R.string.check_in_alarm_disable_title)
+                tvDisableBottomSheetSubTitle.visibility = View.VISIBLE
+                tvDisableBottomSheetSubTitle.text = getString(R.string.check_in_alarm_not_disable_sub_title)
+                btnCheckInPlace.visibility = View.GONE
+                llDisableButtonsContainer.visibility = View.VISIBLE
+                llRemainDisableAlarmCountContainer.visibility = View.VISIBLE
+            } else {
+                ivDisableAlarmBottomSheet.setImageDrawable(
+                    ContextCompat.getDrawable(this@AlarmActivity, R.drawable.ic_warning_44)
+                )
+                tvDisableBottomSheetTitle.text = "알람 끄기 횟수를 모두 사용했어요"
+                tvDisableBottomSheetSubTitle.visibility = View.GONE
+                btnCheckInPlace.visibility = View.VISIBLE
+                llDisableButtonsContainer.visibility = View.GONE
+                llRemainDisableAlarmCountContainer.visibility = View.GONE
+            }
+        }
     }
 
     private fun observeSearchPlaceVieWModel() {
@@ -143,20 +272,47 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
             btnCancelLocalAlarm.setOnClickListener {
                 // 봐주세요 클릭 시 바텀 시트 표시
+                showDisableBottomSheet()
             }
 
             btnCheckIn.setOnClickListener {
                 // 장소 인증 api 호출. 호출 성공 시 알람 끄고 도착 인증 화면으로 이동
+                mainViewModel.checkInAlarm(alarmId, latitude, longitude)
             }
 
-            root.setOnClickListener {
-                // 알람 정지 브로드캐스트 전송
-                val stopIntent = Intent("com.whiplash.akuma.STOP_ALARM").apply {
-                    putExtra("alarmId", intent.getIntExtra("alarmId", -1))
-                }
-                sendBroadcast(stopIntent)
+            btnCancelDisable.setOnClickListener {
+                // 비활성화 바텀시트 > 취소
+                hideDisableBottomSheet()
+            }
+
+            btnAlarmDisable.setOnClickListener {
+                // 1회 사용하기 - 알람 끄기 API 호출
+                Timber.d("## [비활성화] 1회 사용하기 클릭")
+                // TODO: 1회 사용하기 API 호출 후 알람 끄기
+                hideDisableBottomSheet()
                 finish()
             }
+
+            btnCheckInPlace.setOnClickListener {
+                mainViewModel.checkInAlarm(alarmId, latitude, longitude)
+            }
+        }
+    }
+
+    private fun showDisableBottomSheet() {
+        with(binding) {
+            checkInBottomSheet.visibility = View.GONE
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+
+            disableAlarmBottomSheet.visibility = View.VISIBLE
+            disableAlarmBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
+    private fun hideDisableBottomSheet() {
+        with(binding) {
+            disableAlarmBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+            disableAlarmBottomSheet.visibility = View.GONE
         }
     }
 
@@ -320,6 +476,18 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        // 안드 13 미만 버전 대응
+        // 이 화면에선 뒤로가기 버튼을 눌러도 뒤로 이동하지 않음
+        super.onBackPressed()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainViewModel.getRemainingDisableCount()
     }
 
 }

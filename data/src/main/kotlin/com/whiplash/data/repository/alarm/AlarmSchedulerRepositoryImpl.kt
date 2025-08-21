@@ -43,16 +43,40 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
     }
 
     override fun cancelAlarm(alarmId: Int) {
-        val pendingIntent = createPendingIntent(
-            alarmId = alarmId,
-            purpose = "",
-            address = "",
-            hour = 0,
-            minute = 0,
-            latitude = 0.0,
-            longitude = 0.0
+        // 반복 알람은 모든 요일에 대해 울리지 않게 취소
+        val dayOfWeekList = listOf(1, 2, 3, 4, 5, 6, 7) // 월~일
+
+        dayOfWeekList.forEach { dayOfWeek ->
+            val requestCode = alarmId * 10 + dayOfWeek
+            val intent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
+                component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
+            }
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            alarmManager.cancel(pendingIntent)
+
+            Timber.d("## [AlarmScheduler] 반복 알람 취소 - ID : $alarmId, 요일 : $dayOfWeek, requestCode : $requestCode")
+        }
+
+        // 단발성 알람 취소
+        val singleIntent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
+            component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
+        }
+
+        val singlePendingIntent = PendingIntent.getBroadcast(
+            context,
+            alarmId,
+            singleIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        alarmManager.cancel(pendingIntent)
+        alarmManager.cancel(singlePendingIntent)
+
+        Timber.d("## [AlarmScheduler] 단발성 알람 취소 - ID : $alarmId")
     }
 
     private fun scheduleOneTimeAlarm(
@@ -85,7 +109,7 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
     }
 
     private fun scheduleRepeatingAlarms(
-        baseAlarmId: Int,
+        alarmId: Int,
         hour: Int,
         minute: Int,
         repeatDays: List<String>,
@@ -107,7 +131,28 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
 
         repeatDays.forEach { day ->
             val dayOfWeek = dayMap[day] ?: return@forEach
-            val alarmId = baseAlarmId * 10 + dayOfWeek
+            // PendingIntent의 requestCode는 Int 사용
+            val requestCode = alarmId * 10 + dayOfWeek
+
+            val intent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
+                component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
+                putExtra("alarmId", alarmId)
+                putExtra("dayOfWeek", dayOfWeek)
+                putExtra("alarmPurpose", purpose)
+                putExtra("address", address)
+                putExtra("latitude", latitude)
+                putExtra("longitude", longitude)
+                putExtra("soundType", soundType)
+                putExtra("originalHour", hour)
+                putExtra("originalMinute", minute)
+            }
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                requestCode,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
 
             val calendar = Calendar.getInstance().apply {
                 set(Calendar.DAY_OF_WEEK, dayOfWeek)
@@ -120,26 +165,6 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
                     add(Calendar.WEEK_OF_YEAR, 1)
                 }
             }
-
-            // 시간 정보를 포함하는 인텐트 생성
-            val intent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
-                component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
-                putExtra("alarmId", alarmId)
-                putExtra("alarmPurpose", purpose)
-                putExtra("address", address)
-                putExtra("latitude", latitude)
-                putExtra("longitude", longitude)
-                putExtra("soundType", soundType)
-                putExtra("originalHour", hour)
-                putExtra("originalMinute", minute)
-            }
-
-            val pendingIntent = PendingIntent.getBroadcast(
-                context,
-                alarmId,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
 
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
@@ -155,11 +180,11 @@ class AlarmSchedulerRepositoryImpl @Inject constructor(
         alarmId: Int,
         purpose: String,
         address: String,
-        soundType: String = "알람 소리1",
+        soundType: String,
         hour: Int,
         minute: Int,
-        latitude: Double = 0.0,
-        longitude: Double = 0.0
+        latitude: Double,
+        longitude: Double,
     ): PendingIntent {
         val intent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
             component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")

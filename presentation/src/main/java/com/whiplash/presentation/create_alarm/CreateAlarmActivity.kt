@@ -108,8 +108,12 @@ class CreateAlarmActivity : AppCompatActivity() {
                         // 알람 생성 결과는 1번만 처리
                         if (state.isAlarmCreated && !isAlarmScheduled) {
                             isAlarmScheduled = true
-                            // 서버에 알람 등록 성공 후 로컬 알람 스케줄링
-                            scheduleLocalAlarm()
+                            // 생성된 알람의 실제 id를 AlarmActivity에서 받을 수 있게 수정
+                            // 도착 인증 api 호출 시 필요
+                            val createdAlarmId = state.createdAlarmId
+                            if (createdAlarmId != null) {
+                                scheduleLocalAlarm(createdAlarmId)
+                            }
                             WhiplashToast.showSuccessToast(this@CreateAlarmActivity, getString(R.string.alarm_created))
                             finish()
                         }
@@ -300,7 +304,7 @@ class CreateAlarmActivity : AppCompatActivity() {
         bottomSheetFragment.show(supportFragmentManager, "AlarmSoundBottomSheet")
     }
 
-    private fun scheduleLocalAlarm() {
+    private fun scheduleLocalAlarm(alarmId: Long) {
         val time = getSelectedTime24Hour()
         val selectedDays = getSelectedDays()
         val detailAddress = mainViewModel.uiState.value.selectedPlace?.detailAddress ?: ""
@@ -308,10 +312,8 @@ class CreateAlarmActivity : AppCompatActivity() {
         val latitude = mainViewModel.uiState.value.selectedPlace?.latitude ?: 0.0
         val longitude = mainViewModel.uiState.value.selectedPlace?.longitude ?: 0.0
 
-        val alarmId = (detailAddress + alarmPurpose + time + selectedDays.joinToString()).hashCode()
-
         alarmScheduler.scheduleAlarm(
-            alarmId = alarmId,
+            alarmId = alarmId.toInt(),
             time = time,
             repeatDays = selectedDays,
             alarmPurpose = alarmPurpose,

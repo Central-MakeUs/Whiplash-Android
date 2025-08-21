@@ -1,13 +1,16 @@
 package com.whiplash.network.api
 
 import com.whiplash.network.dto.request.RequestAddAlarms
+import com.whiplash.network.dto.request.RequestCheckInAlarm
 import com.whiplash.network.dto.request.RequestDeleteAlarm
 import com.whiplash.network.dto.request.RequestTurnOffAlarm
 import com.whiplash.network.dto.response.BaseResponse
+import com.whiplash.network.dto.response.ResponseAddAlarm
 import com.whiplash.network.dto.response.ResponseCheckInAlarm
 import com.whiplash.network.dto.response.ResponseCreateAlarmOccurrence
 import com.whiplash.network.dto.response.ResponseDeleteAlarm
 import com.whiplash.network.dto.response.ResponseGetAlarmList
+import com.whiplash.network.dto.response.ResponseGetRemainingDisableCount
 import com.whiplash.network.dto.response.ResponseTurnOffAlarm
 import retrofit2.Response
 import retrofit2.http.Body
@@ -26,12 +29,18 @@ interface AlarmService {
     suspend fun getAlarms(): Response<ResponseGetAlarmList>
 
     /**
+     * 남은 알람 끄기 횟수 조회
+     */
+    @GET("alarms/off-count")
+    suspend fun getRemainingDisableCount(): Response<ResponseGetRemainingDisableCount>
+
+    /**
      * 알람 등록
      */
     @POST("alarms")
     suspend fun addAlarm(
         @Body requestAddAlarms: RequestAddAlarms
-    ): Response<BaseResponse<Unit>>
+    ): Response<ResponseAddAlarm>
 
     /**
      * 알람 발생 내역 생성
@@ -68,9 +77,10 @@ interface AlarmService {
      *
      * 도착 위치 반경 100m 이내에 들어와야 도착 인증 가능
      */
-    @POST("alarms./{alarmId}/checkIn")
+    @POST("alarms/{alarmId}/checkin")
     suspend fun checkInAlarm(
-        @Path("alarmId") alarmId: Long
-    ): Response<ResponseCheckInAlarm>
+        @Path("alarmId") alarmId: Long,
+        @Body requestCheckInAlarm: RequestCheckInAlarm,
+    ): Response<Unit>
 
 }
