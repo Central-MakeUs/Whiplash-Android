@@ -79,6 +79,9 @@ class AlarmListAdapter(
                 // 장소명
                 tvAddress.text = alarm.address
 
+                // 토글 상태는 서버 응답대로 설정
+                wtAlarm.setChecked(alarm.isToggleOn)
+
                 // 체크박스 가시성, 상태 설정
                 if (isDeleteMode) {
                     ivAlarmCheck.visibility = android.view.View.VISIBLE
