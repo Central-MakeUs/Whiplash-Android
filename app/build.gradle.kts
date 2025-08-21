@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId = "com.whiplash.akuma"
-        minSdk = 24
+        minSdk = 28
         targetSdk = 35
         versionCode = 5
         versionName = "0.0.5"

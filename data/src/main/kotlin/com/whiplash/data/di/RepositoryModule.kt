@@ -2,6 +2,7 @@ package com.whiplash.data.di
 
 import com.whiplash.data.repository.alarm.AlarmRepositoryImpl
 import com.whiplash.data.repository.alarm.AlarmSchedulerRepositoryImpl
+import com.whiplash.data.repository.alarm.DisabledAlarmRepositoryImpl
 import com.whiplash.data.repository.auth.AuthRepositoryImpl
 import com.whiplash.data.repository.login.GoogleAuthRepositoryImpl
 import com.whiplash.data.repository.login.KakaoAuthRepositoryImpl
@@ -11,6 +12,7 @@ import com.whiplash.data.repository.place.PlaceRepositoryImpl
 import com.whiplash.data.repository.token.TokenRepositoryImpl
 import com.whiplash.domain.repository.alarm.AlarmRepository
 import com.whiplash.domain.repository.alarm.AlarmSchedulerRepository
+import com.whiplash.domain.repository.alarm.DisabledAlarmRepository
 import com.whiplash.domain.repository.login.AuthRepository
 import com.whiplash.domain.repository.login.GoogleAuthRepository
 import com.whiplash.domain.repository.login.KakaoAuthRepository
@@ -53,5 +55,8 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindAlarmSchedulerRepository(impl: AlarmSchedulerRepositoryImpl): AlarmSchedulerRepository
+
+    @Binds
+    abstract fun bindDisabledAlarmRepository(impl: DisabledAlarmRepositoryImpl): DisabledAlarmRepository
 
 }

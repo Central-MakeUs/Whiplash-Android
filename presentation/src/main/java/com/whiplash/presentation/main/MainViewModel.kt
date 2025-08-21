@@ -16,13 +16,16 @@ import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
 import com.whiplash.domain.usecase.alarm.DeleteAlarmUseCase
 import com.whiplash.domain.usecase.alarm.GetAlarmsUseCase
 import com.whiplash.domain.usecase.alarm.GetRemainingDisableCountUseCase
+import com.whiplash.domain.usecase.alarm.SetAlarmDisabledUseCase
 import com.whiplash.domain.usecase.alarm.TurnOffAlarmUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -36,6 +39,7 @@ class MainViewModel @Inject constructor(
     private val createAlarmOccurrenceUseCase: CreateAlarmOccurrenceUseCase,
     private val checkInAlarmUseCase: CheckInAlarmUseCase,
     private val alarmScheduler: AlarmSchedulerRepository,
+    private val setAlarmDisabledUseCase: SetAlarmDisabledUseCase,
     private val crashlyticsProvider: CrashlyticsProvider,
 ) : ViewModel() {
 
@@ -101,6 +105,15 @@ class MainViewModel @Inject constructor(
         it.copy(
             selectedPlace = null
         )
+    }
+
+    fun setAlarmDisabled(alarmId: Long, dayOfWeek: Int) = viewModelScope.launch(Dispatchers.IO) {
+        try {
+            setAlarmDisabledUseCase(alarmId, dayOfWeek, true)
+            Timber.d("## [알람 비활성화] 성공. alarmId: $alarmId, dayOfWeek: $dayOfWeek")
+        } catch (e: Exception) {
+            Timber.e("## [알람 비활성화] 실패: ${e.message}")
+        }
     }
 
     // 알람 목록 조회
@@ -371,6 +384,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun resetIsAlarmTurnedOff() = _uiState.update { it.copy(isAlarmTurnedOff = false) }
+
     // 알람 도착 인증
     fun checkInAlarm(alarmId: Long, latitude: Double, longitude: Double) = viewModelScope.launch {
         _uiState.update { it.copy(isLoading = true) }
@@ -413,5 +428,7 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetIsAlarmCheckedIn() = _uiState.update { it.copy(isAlarmCheckedIn = false) }
 
 }

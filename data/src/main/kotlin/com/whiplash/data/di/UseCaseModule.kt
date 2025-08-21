@@ -1,6 +1,7 @@
 package com.whiplash.data.di
 
 import com.whiplash.domain.repository.alarm.AlarmRepository
+import com.whiplash.domain.repository.alarm.DisabledAlarmRepository
 import com.whiplash.domain.repository.login.AuthRepository
 import com.whiplash.domain.repository.member.MemberRepository
 import com.whiplash.domain.repository.onboarding.OnboardingRepository
@@ -10,8 +11,10 @@ import com.whiplash.domain.usecase.alarm.AddAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CheckInAlarmUseCase
 import com.whiplash.domain.usecase.alarm.CreateAlarmOccurrenceUseCase
 import com.whiplash.domain.usecase.alarm.DeleteAlarmUseCase
+import com.whiplash.domain.usecase.alarm.GetAlarmDisabledUseCase
 import com.whiplash.domain.usecase.alarm.GetAlarmsUseCase
 import com.whiplash.domain.usecase.alarm.GetRemainingDisableCountUseCase
+import com.whiplash.domain.usecase.alarm.SetAlarmDisabledUseCase
 import com.whiplash.domain.usecase.alarm.TurnOffAlarmUseCase
 import com.whiplash.domain.usecase.auth.RegisterFcmTokenUseCase
 import com.whiplash.domain.usecase.auth.ReissueTokenUseCase
@@ -135,5 +138,15 @@ object UseCaseModule {
     @Singleton
     fun provideClearFcmTokenUseCase(repository: TokenRepository): ClearFcmTokenUseCase =
         ClearFcmTokenUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideSetAlarmDisabledUseCase(repository: DisabledAlarmRepository): SetAlarmDisabledUseCase =
+        SetAlarmDisabledUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetAlarmDisabledUseCase(repository: DisabledAlarmRepository): GetAlarmDisabledUseCase =
+        GetAlarmDisabledUseCase(repository)
 
 }

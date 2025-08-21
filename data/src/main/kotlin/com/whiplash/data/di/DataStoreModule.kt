@@ -1,6 +1,7 @@
 package com.whiplash.data.di
 
 import android.content.Context
+import com.whiplash.data.datastore.DisabledAlarmDataStore
 import com.whiplash.data.datastore.OnboardingDataStore
 import com.whiplash.data.datastore.TokenDataStore
 import dagger.Module
@@ -25,5 +26,11 @@ object DataStoreModule {
     fun provideOnboardingDataStore(
         @ApplicationContext context: Context
     ): OnboardingDataStore = OnboardingDataStore(context)
+
+    @Provides
+    @Singleton
+    fun provideDisabledAlarmDataStore(
+        @ApplicationContext context: Context
+    ): DisabledAlarmDataStore = DisabledAlarmDataStore(context)
 
 }

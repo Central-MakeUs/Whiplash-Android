@@ -1,5 +1,6 @@
 package com.whiplash.presentation.main
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,9 +29,17 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import androidx.core.view.isVisible
+import com.whiplash.domain.entity.alarm.request.TurnOffAlarmRequestEntity
+import com.whiplash.domain.entity.alarm.response.GetAlarmEntity
 import com.whiplash.presentation.alarm.AlarmActivity
 import com.whiplash.presentation.component.bottom_sheet.RemoveAlarmBottomSheet
 import com.whiplash.presentation.util.WhiplashToast
+import java.time.Instant
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 
 /**
  * 알람 리사이클러뷰 표시 및 알람 등록 버튼, 상단에 알림 관련 문구 표시 등이 표시되는 메인 화면
@@ -53,6 +62,8 @@ class MainActivity : AppCompatActivity() {
     private var previousExpandableContentVisibility = View.GONE
 
     private var removeAlarmBottomSheet: RemoveAlarmBottomSheet? = null
+
+    private var currentTurnOffAlarmId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,13 +151,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        alarmListAdapter = AlarmListAdapter { position ->
-            if (isDeleteMode) {
-                alarmListAdapter.toggleSelection(position)
-                showRemoveAlarmBottomSheet()
+        alarmListAdapter = AlarmListAdapter(
+            onItemClick = { position ->
+                if (isDeleteMode) {
+                    alarmListAdapter.toggleSelection(position)
+                    showRemoveAlarmBottomSheet()
+                }
+            },
+            onToggleClick = { alarm ->
+                // on 상태인 토글 클릭 시 팝업 표시
+                // off 상태면 토글 클릭해도 무반응
+                showDisableAlarmPopup(alarm)
             }
-        }
+        )
         binding.rvHomeAlarm.adapter = alarmListAdapter
+    }
+
+    private fun showDisableAlarmPopup(alarm: GetAlarmEntity) {
+        val remainCount = mainViewModel.uiState.value.remainCount ?: 0
+        Timber.d("## [알람 끄기] 남은 알람 끄기 횟수 : $remainCount")
+
+        disableAlarmPopup.show(
+            title = getString(R.string.check_in_alarm_disable_title),
+            subContent = null,
+            count = remainCount,
+            disableAlarmClickListener = {
+                currentTurnOffAlarmId = alarm.alarmId
+                Timber.d("## [알람 끄기] disableAlarmClickListener 호출. currentTurnOffAlarmId : $currentTurnOffAlarmId")
+                mainViewModel.turnOffAlarm(
+                    alarmId = alarm.alarmId,
+                    turnOffAlarmRequestEntity = TurnOffAlarmRequestEntity(
+                        clientNow = Instant.now().toString()
+                    )
+                )
+            },
+            okClickListener = {
+                //
+            },
+            cancelText = "취소",
+            cancelClickListener = {}
+        )
     }
 
     private fun setupExpandableView() {
@@ -180,6 +224,11 @@ class MainActivity : AppCompatActivity() {
                                 loadingScreen.hide()
                             }
 
+                            val errorMessage = state.errorMessage
+                            if (!errorMessage.isNullOrEmpty()) {
+                                WhiplashToast.showErrorToast(this@MainActivity, errorMessage)
+                            }
+
                             // 알람 목록 조회
                             val alarmList = state.alarmList
                             Timber.d("## [알람 목록 조회] 액티비티에서 확인 : $state")
@@ -198,11 +247,70 @@ class MainActivity : AppCompatActivity() {
                                 WhiplashToast.showSuccessToast(this@MainActivity, "알람 삭제가 완료되었습니다")
                                 mainViewModel.resetIsAlarmDeleted()
                             }
+
+                            // 알람 끄기 결과
+                            val isAlarmTurnedOff = state.isAlarmTurnedOff
+                            if (isAlarmTurnedOff) {
+                                // 특정 알람만 토글 off로 변경하고 로컬 알람에서도 제거
+                                currentTurnOffAlarmId?.let { alarmId ->
+                                    alarmListAdapter.updateAlarmToggleState(alarmId, false)
+                                    cancelLocalAlarm(alarmId)
+                                    Timber.d("## [알람 끄기] api 호출 성공. alarmId : $alarmId, uiState 값 초기화")
+                                }
+                                mainViewModel.resetIsAlarmTurnedOff()
+                                mainViewModel.getAlarms()
+                                currentTurnOffAlarmId = null
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    // 여러 요일에 알람이 울리는 경우 알람을 끈 날(=오늘)에만 알람이 울리지 않게 취소
+    private fun cancelLocalAlarm(alarmId: Long) {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // 현재 요일 확인 (Calendar.SUNDAY = 1, Calendar.MONDAY = 2...)
+        val calendar = java.util.Calendar.getInstance()
+        val currentDayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK)
+
+        // AlarmSchedulerRepositoryImpl에서 사용하는 것과 같은 requestCode 패턴
+        // alarmId는 Int만 사용할 수 있어서 Int 캐스팅은 필수
+        val requestCode = alarmId.toInt() * 10 + currentDayOfWeek
+
+        val intent = Intent("com.whiplash.akuma.ALARM_TRIGGER").apply {
+            component = ComponentName("com.whiplash.akuma", "com.whiplash.akuma.alarm.AlarmReceiver")
+            putExtra("alarmId", alarmId.toInt())
+            putExtra("dayOfWeek", currentDayOfWeek)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            requestCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // 끄려는 요일의 알람만 취소
+        alarmManager.cancel(pendingIntent)
+        pendingIntent.cancel()
+
+        // 비활성화 상태 저장
+        mainViewModel.setAlarmDisabled(alarmId, currentDayOfWeek)
+
+        val dayNames = mapOf(
+            java.util.Calendar.SUNDAY to "일",
+            java.util.Calendar.MONDAY to "월",
+            java.util.Calendar.TUESDAY to "화",
+            java.util.Calendar.WEDNESDAY to "수",
+            java.util.Calendar.THURSDAY to "목",
+            java.util.Calendar.FRIDAY to "금",
+            java.util.Calendar.SATURDAY to "토"
+        )
+
+        Timber.d("## [AlarmManager] 특정 요일 알람 취소 완료. alarmId : $alarmId, 요일 : ${dayNames[currentDayOfWeek]}($currentDayOfWeek), requestCode : $requestCode")
     }
 
     private fun showThreeDotMenu() {
@@ -351,6 +459,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         mainViewModel.getAlarms()
+        mainViewModel.getRemainingDisableCount()
     }
 
 }

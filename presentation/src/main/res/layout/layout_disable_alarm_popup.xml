@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:gravity="center"
-            android:text="@string/disable_popup_content"
+            android:text="@string/check_in_alarm_disable_title"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:gravity="center"
-            android:text="@string/cannot_disable_alarm"
+            android:text="@string/check_in_alarm_not_disable_sub_title"
             android:textColor="@color/grey_300"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
@@ -82,6 +82,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvDisableAlarmSubContent">
 
             <TextView
+                style="@style/body2_m_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/disable_alarm_remain_count"
@@ -89,6 +90,7 @@
 
             <TextView
                 android:id="@+id/tvRemainDisableAlarmCount"
+                style="@style/body2_m_14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
@@ -124,7 +126,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 app:buttonBackgroundColor="@color/white"
-                app:buttonText="@string/home_turn_off_alarm"
+                app:buttonText="@string/use_one_disable_change"
                 app:buttonTextColor="@color/grey_900" />
 
         </LinearLayout>
