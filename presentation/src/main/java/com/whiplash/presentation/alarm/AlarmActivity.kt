@@ -180,19 +180,6 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
                         // 알람 도착 인증 결과
                         val isAlarmCheckedIn = state.isAlarmCheckedIn
                         if (isAlarmCheckedIn) {
-                            mainViewModel.turnOffAlarm(
-                                alarmId = alarmId,
-                                turnOffAlarmRequestEntity = TurnOffAlarmRequestEntity(
-                                    clientNow = Instant.now().toString()
-                                )
-                            )
-                            mainViewModel.resetIsAlarmCheckedIn()
-                        }
-
-                        // 알람 끄기 결과
-                        val isAlarmTurnedOff = state.isAlarmTurnedOff
-                        if (isAlarmTurnedOff) {
-                            // turnOffAlarm 성공 시 브로드캐스트 실행
                             val stopIntent = Intent("com.whiplash.akuma.STOP_ALARM").apply {
                                 component = ComponentName(
                                     "com.whiplash.akuma",
@@ -205,7 +192,6 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
 
                             // 브로드캐스트 처리용 딜레이
                             lifecycleScope.launch {
-                                mainViewModel.resetIsAlarmTurnedOff()
                                 delay(100)
 
                                 bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
