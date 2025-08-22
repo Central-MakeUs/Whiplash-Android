@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import androidx.core.view.isVisible
 import com.whiplash.domain.entity.alarm.request.TurnOffAlarmRequestEntity
+import com.whiplash.presentation.util.WhiplashToast
 import kotlinx.coroutines.delay
 import java.time.Instant
 
@@ -169,6 +170,11 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
                             // 장소 인증 로딩이 끝났을 때만 checkInBottomSheet 숨김
                             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
                             binding.checkInBottomSheet.visibility = View.GONE
+                        }
+
+                        val errorMessage = state.errorMessage
+                        if (!errorMessage.isNullOrEmpty()) {
+                            WhiplashToast.showErrorToast(this@AlarmActivity, errorMessage)
                         }
 
                         // 남은 알람 끄기 횟수 - UI만 업데이트, 바텀시트 상태는 변경하지 않음

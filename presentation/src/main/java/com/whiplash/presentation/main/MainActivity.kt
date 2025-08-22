@@ -162,9 +162,30 @@ class MainActivity : AppCompatActivity() {
                 // on 상태인 토글 클릭 시 팝업 표시
                 // off 상태면 토글 클릭해도 무반응
                 showDisableAlarmPopup(alarm)
+            },
+            onArrivedConfirmClick = { alarm ->
+                // 도착 인증 버튼 클릭 시 AlarmActivity 이동
+                navigateToAlarmActivity(alarm)
             }
         )
         binding.rvHomeAlarm.adapter = alarmListAdapter
+    }
+
+    private fun navigateToAlarmActivity(alarm: GetAlarmEntity) {
+        // time(12:34)을 hour, minute로 파싱
+        val timeParts = alarm.time.split(":")
+        val hour = timeParts[0].toInt()
+        val minute = timeParts[1].toInt()
+
+        navigateTo<AlarmActivity> {
+            putExtra("alarmId", alarm.alarmId.toInt())
+            putExtra("alarmPurpose", alarm.alarmPurpose)
+            putExtra("address", alarm.address)
+            putExtra("latitude", alarm.latitude)
+            putExtra("longitude", alarm.longitude)
+            putExtra("hour", hour)
+            putExtra("minute", minute)
+        }
     }
 
     private fun showDisableAlarmPopup(alarm: GetAlarmEntity) {

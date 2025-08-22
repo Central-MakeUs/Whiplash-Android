@@ -13,7 +13,8 @@ import timber.log.Timber
 
 class AlarmListAdapter(
     private val onItemClick: (Int) -> Unit = {},
-    private val onToggleClick: (GetAlarmEntity) -> Unit = {}
+    private val onToggleClick: (GetAlarmEntity) -> Unit = {},
+    private val onArrivedConfirmClick: (GetAlarmEntity) -> Unit = {}
 ) : ListAdapter<GetAlarmEntity, AlarmListAdapter.AlarmViewHolder>(AlarmDiffCallback()) {
 
     private var isDeleteMode = false
@@ -47,7 +48,7 @@ class AlarmListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlarmViewHolder {
         val binding = ItemHomeAlarmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AlarmViewHolder(binding, onItemClick, onToggleClick)
+        return AlarmViewHolder(binding, onItemClick, onToggleClick, onArrivedConfirmClick)
     }
 
     override fun onBindViewHolder(holder: AlarmViewHolder, position: Int) {
@@ -68,7 +69,8 @@ class AlarmListAdapter(
     class AlarmViewHolder(
         private val binding: ItemHomeAlarmBinding,
         private val onItemClick: (Int) -> Unit,
-        private val onToggleClick: (GetAlarmEntity) -> Unit
+        private val onToggleClick: (GetAlarmEntity) -> Unit,
+        private val onArrivedConfirmClick: (GetAlarmEntity) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -95,6 +97,11 @@ class AlarmListAdapter(
 
                 // 토글 상태는 서버 응답대로 설정
                 wtAlarm.setChecked(alarm.isToggleOn)
+
+                // 도착 인증 버튼 클릭 리스너
+                btnArrivedConfirm.setOnClickListener {
+                    onArrivedConfirmClick(alarm)
+                }
 
                 // 토글 클릭 리스너 설정
                 wtAlarm.setOnCheckedChangeListener { isChecked ->
