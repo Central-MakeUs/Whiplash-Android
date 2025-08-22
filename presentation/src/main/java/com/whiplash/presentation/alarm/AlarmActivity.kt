@@ -108,11 +108,6 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
             insets
         }
 
-        onBackPressedDispatcher.addCallback(this) {
-            // 안드 13+ 대응
-            // 이 화면에선 뒤로가기 버튼을 눌러도 뒤로 이동하지 않음
-        }
-
         setupUserLocationSource()
         setupBottomSheet()
         setupDisableAlarmBottomSheet()
@@ -490,13 +485,6 @@ class AlarmActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        // 안드 13 미만 버전 대응
-        // 이 화면에선 뒤로가기 버튼을 눌러도 뒤로 이동하지 않음
-        super.onBackPressed()
     }
 
     override fun onResume() {
