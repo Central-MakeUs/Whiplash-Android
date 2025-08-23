@@ -23,6 +23,11 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
     private var soundPool: SoundPool? = null
     private var soundIds: IntArray = IntArray(4)
     private var currentSoundId: Int = 0
+    
+    // 재생 상태를 추적하는 변수 추가
+    private var isPlaying: Boolean = false
+    private var playbackHandler: android.os.Handler? = null
+    private var playbackRunnable: Runnable? = null
 
     companion object {
         private const val KEY_SELECTED_ID = "selected_radio_button_id"
@@ -92,13 +97,25 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
 
     private fun playSelectedAlarmSound() {
         soundPool?.let { pool ->
-            if (currentSoundId != 0) {
-                pool.stop(currentSoundId)
+            val checkedId = binding.rgAlarmSound.checkedRadioButtonId
+            
+            // "소리없음"이 선택된 경우 재생하지 않음
+            if (checkedId == R.id.rbNothing) {
+                WhiplashToast.showErrorToast(requireActivity(), "소리없음이 선택되어 있습니다.")
+                return
             }
 
-            val checkedId = binding.rgAlarmSound.checkedRadioButtonId
+            if (isPlaying) {
+                // 현재 재생 중이면 정지
+                if (currentSoundId != 0) {
+                    pool.stop(currentSoundId)
+                }
+                stopPlayback()
+                return
+            }
+
+            // 재생 시작
             val soundIndex = when (checkedId) {
-                R.id.rbNothing -> return
                 R.id.rbOption1 -> 0
                 R.id.rbOption2 -> 1
                 R.id.rbOption3 -> 2
@@ -114,9 +131,56 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
                 0,
                 1.0f
             )
+
+            if (currentSoundId != 0) {
+                startPlayback()
+                // 3초 후에 자동으로 재생 완료 처리 (알람 소리 길이에 맞게 조정 필요)
+                schedulePlaybackEnd(3000)
+            }
         } ?: run {
             WhiplashToast.showErrorToast(requireActivity(), "알람 소리 재생 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요")
         }
+    }
+
+    private fun startPlayback() {
+        isPlaying = true
+        updatePlayPauseIcon()
+    }
+
+    private fun stopPlayback() {
+        isPlaying = false
+        currentSoundId = 0
+        cancelScheduledPlaybackEnd()
+        updatePlayPauseIcon()
+    }
+
+    private fun updatePlayPauseIcon() {
+        val iconRes = if (isPlaying) {
+            R.drawable.ic_pause_22
+        } else {
+            R.drawable.ic_play_22
+        }
+        binding.ivAlarmPreListening.setImageResource(iconRes)
+    }
+
+    private fun schedulePlaybackEnd(delayMillis: Long) {
+        cancelScheduledPlaybackEnd()
+        
+        playbackHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        playbackRunnable = Runnable {
+            if (isPlaying) {
+                stopPlayback()
+            }
+        }
+        playbackHandler?.postDelayed(playbackRunnable!!, delayMillis)
+    }
+
+    private fun cancelScheduledPlaybackEnd() {
+        playbackRunnable?.let { runnable ->
+            playbackHandler?.removeCallbacks(runnable)
+        }
+        playbackRunnable = null
+        playbackHandler = null
     }
 
     private fun restoreSelectedState() {
@@ -178,6 +242,7 @@ class AlarmSoundBottomSheet: BottomSheetDialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        cancelScheduledPlaybackEnd()
         soundPool?.release()
         soundPool = null
         _binding = null
