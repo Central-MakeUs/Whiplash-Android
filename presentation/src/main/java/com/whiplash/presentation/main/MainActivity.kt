@@ -248,6 +248,7 @@ class MainActivity : AppCompatActivity() {
                             val errorMessage = state.errorMessage
                             if (!errorMessage.isNullOrEmpty()) {
                                 WhiplashToast.showErrorToast(this@MainActivity, errorMessage)
+                                mainViewModel.clearErrorMessage()
                             }
 
                             // 알람 목록 조회

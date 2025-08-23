@@ -107,6 +107,8 @@ class MainViewModel @Inject constructor(
         )
     }
 
+    fun clearErrorMessage() = _uiState.update { it.copy(errorMessage = null) }
+
     fun setAlarmDisabled(alarmId: Long, dayOfWeek: Int) = viewModelScope.launch(Dispatchers.IO) {
         try {
             setAlarmDisabledUseCase(alarmId, dayOfWeek, true)
